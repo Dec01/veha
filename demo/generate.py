@@ -1329,7 +1329,7 @@ def write_atlas_yaml() -> None:
     a('    - "DEMO*"')
     a("  attribution_window_ms: 2500")
     a("")
-    (ROOT / "atlas.yaml").write_text("\n".join(L) + "\n", encoding="utf-8")
+    (ROOT / "atlas.yaml").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_app_map() -> None:
@@ -1409,7 +1409,7 @@ def write_app_map() -> None:
     a("auth:")
     a("  provider: svc:identity")
     a("  note: Bearer-токен; без токена 401, отключённая запись 403")
-    (ROOT / "app_map.yaml").write_text("\n".join(L) + "\n", encoding="utf-8")
+    (ROOT / "app_map.yaml").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
 
 
 # ===========================================================================
@@ -1429,14 +1429,14 @@ def write_artifact(kind: str, payload: dict) -> None:
         raise SystemExit(f"{kind}: артефакт не сходится с контрактом: {problems}")
     path = SCOPE.path(ROOT / "atlas", kind)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8")
+    path.write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
 
 
 def write_live(name: str, data: dict) -> None:
     """Снимок для вкладки «Live» — файл сервера, а не артефакт агента."""
     path = ROOT / "live" / name
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
 
 
 def write_openapi() -> None:
@@ -2475,7 +2475,7 @@ def write_allure(corpus: Corpus) -> int:
                                      else {"id": rnd.randint(100, 9999)})}
                     (out / src).write_text(
                         json.dumps(body, ensure_ascii=False, indent=1),
-                        encoding="utf-8")
+                        encoding="utf-8", newline="\n")
                     step_atts.append({"name": akind, "source": src,
                                       "type": "application/json"})
                     written += 1
@@ -2534,12 +2534,12 @@ def write_allure(corpus: Corpus) -> int:
             src = uid("log" + t["nodeid"]) + "-attachment.txt"
             (out / src).write_text(
                 "\n".join([f"[{i:03d}] шаг прогона: проверка {t['name']}"
-                           for i in range(12)] + [head]), encoding="utf-8")
+                           for i in range(12)] + [head]), encoding="utf-8", newline="\n")
             attachments.append({"name": "log", "source": src,
                                 "type": "text/plain"})
             written += 1
         (out / f"{rec['uuid']}-result.json").write_text(
-            json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+            json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
         written += 1
     return written
 
@@ -2649,7 +2649,7 @@ def write_container_logs() -> None:
                 lines.append(f"{stamp:%Y-%m-%d %H:%M:%S} INFO  [{key}] {cls} "
                              f": health check ok")
         (log_dir / f"{key}.log").write_text("\n".join(lines) + "\n",
-                                            encoding="utf-8")
+                                            encoding="utf-8", newline="\n")
     # Артефакт агента — только находки, по имени контейнера в среде запуска. Журнал
     # перезапускающегося или упавшего контейнера источник не отдал: его находок нет.
     write_artifact("containers.logs", atlas_container_logs.build(
@@ -2801,7 +2801,7 @@ def write_logs(corpus: Corpus) -> None:
         lines.append(f"FAILED {t['nodeid']}")
     lines.append(f"{len(bad)} failed, {len(corpus.tests) - len(bad)} passed")
     (ROOT / "logs" / "pytest.log").write_text("\n".join(lines) + "\n",
-                                              encoding="utf-8")
+                                              encoding="utf-8", newline="\n")
     collect = [f"{RUN_START:%Y-%m-%d %H:%M:%S} сборщик схемы: таблиц "
                f"{len(TABLES)}",
                f"{RUN_START:%Y-%m-%d %H:%M:%S} сборщик контракта: операций "
@@ -2812,7 +2812,7 @@ def write_logs(corpus: Corpus) -> None:
                f"{len(corpus.bus_events)}",
                f"{RUN_START:%Y-%m-%d %H:%M:%S} готово"]
     (ROOT / "logs" / "collect.log").write_text("\n".join(collect) + "\n",
-                                               encoding="utf-8")
+                                               encoding="utf-8", newline="\n")
 
 
 # ===========================================================================
@@ -2863,7 +2863,7 @@ def write_screens() -> None:
         "role": "demo",
         "scenes": scenes,
         "skipped": [],
-    }, ensure_ascii=False, indent=1), encoding="utf-8")
+    }, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
 
 
 # ===========================================================================
@@ -2955,7 +2955,7 @@ def main() -> None:
     write_logs(corpus)
     write_screens()
     (ROOT / "coverage.json").write_text(
-        json.dumps(coverage, ensure_ascii=False, indent=1), encoding="utf-8")
+        json.dumps(coverage, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
     files = write_allure(corpus)
 
     print(f"эндпоинтов {len(ENDPOINTS)} · таблиц {len(TABLES)} · "

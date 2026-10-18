@@ -1,0 +1,22 @@
+# Что уходит в sdist, кроме пакета и его данных (`veha/demo_data/` — package-data).
+# Всё перечисленное здесь публично навсегда.
+#
+# В отличие от соседей по семейству README остаётся: он же описание страницы на PyPI
+# (`readme` в pyproject), и колесо из sdist без него не собирается.
+include README.md
+include CHANGELOG.md
+include LICENSE
+
+# Генератор демонстрационного набора и описание обхода: из sdist набор можно пересобрать.
+recursive-include demo *.py *.md
+
+# Тесты проходят из распакованного sdist: им нужны conftest, генератор и документы,
+# на которые ссылаются README и CHANGELOG (их ссылки проверяет tests/test_readme_links.py).
+recursive-include tests *.py
+recursive-include docs *.md
+
+# Намеренно НЕ уходит:
+#   .private-names — список закрытых имён, закрыт .gitignore; без него tests/test_private.py
+#                    пропускается, а не проходит
+exclude .private-names
+global-exclude __pycache__ *.py[cod]

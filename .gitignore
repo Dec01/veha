@@ -10,6 +10,8 @@ dist/
 .env
 
 # Артефакты и рабочие каталоги
+# плагин partest под pytest-xdist складывает сюда call_storage воркеров
+.partest/
 atlas/
 reports/
 logs/

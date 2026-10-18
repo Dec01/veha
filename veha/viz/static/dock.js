@@ -130,7 +130,12 @@ function viewOverview() {
   const s = (g.coverage || {}).summary || {};
   const runs = (g.coverage || {}).runs || {};
   const r = g.run || {};
-  const d = runs.deltaCoverage;
+  // `summary.avg: null` — отчёт ничего не посчитал (partest 2.7.0 при `endpoints: 0`):
+  // среднего нет, и разницы с прошлым прогоном тоже
+  // (`num(null)` — 0, поэтому null проверяется отдельно)
+  const noAvg = s.avg == null || num(s.avg) === '';
+  const d = noAvg || runs.deltaCoverage == null || num(runs.deltaCoverage) === '' ? null
+    : num(runs.deltaCoverage);
   const passRate = r.total ? Math.round((r.passed / r.total) * 100) : null;
 
   const kpi = (label, value, sub, color) => `<div class="kpi">
@@ -150,7 +155,8 @@ function viewOverview() {
     </div>` : '';
 
   return warn + `<div class="grid-kpi">
-    ${kpi('Среднее покрытие', pct(s.avg), d == null ? 'по методике'
+    ${kpi('Среднее покрытие', pct(s.avg), noAvg && s.avg === null ? 'не посчитано'
+      : d == null ? 'по методике'
       : `${d > 0 ? '▲' : '▼'} ${Math.abs(d)} п.п. к прошлому прогону`,
       d == null ? null : (d >= 0 ? 'var(--ok)' : 'var(--bad)'))}
     ${kpi('Эндпоинтов в отчёте', s.endpoints == null ? '—' : num(s.endpoints),
@@ -1207,7 +1213,7 @@ function trendLine() {
     return '<div class="muted">Тренд покрытия (только полные прогоны): полных прогонов '
       + 'ещё не было.</div>';
   }
-  const pts = (s) => (s.points || []).slice(-12).map((x) => `${num(x.avg)}%`).join(' → ');
+  const pts = (s) => (s.points || []).slice(-12).map((x) => pct(x.avg)).join(' → ');
   const many = series.length > 1;
   const why = {
     differs: 'opt-in-наборы решены иначе — другой состав тестов, с текущей серией несравнимо',

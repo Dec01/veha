@@ -1,17 +1,18 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+# 77 — первая версия с выражением лицензии SPDX (`license = "MIT"`, PEP 639).
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "veha"
-# Первый выпуск — alpha (решение 2026-10-18). Номер дублирует `veha.__version__`;
-# расхождение ловит `tests/test_demo_command.py`.
-version = "0.1.0"
+# Номер живёт в одном месте — `veha.__version__` (см. `[tool.setuptools.dynamic]`).
+dynamic = ["version"]
 description = "Веха — сервер карты тестирования: сведение артефактов partest-atlas в граф и вебморда"
 readme = "README.md"
 # Согласовано с partest-atlas: потребитель не может требовать меньше, чем поставщик.
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "dec01" }]
 keywords = ["testing", "coverage", "observability", "pytest", "visualization"]
 classifiers = [
@@ -20,10 +21,12 @@ classifiers = [
     # выпуска и решение выпускать — не одно и то же.
     "Private :: Do Not Upload",
     "Development Status :: 3 - Alpha",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    # Только версии, на которых прогнан весь набор тестов из колеса.
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.14",
     "Framework :: FastAPI",
     "Environment :: Web Environment",
     "Intended Audience :: Developers",
@@ -51,11 +54,14 @@ dependencies = [
     # 0.132.0 — первая версия со `strict_content_type`: тело без Content-Type не
     # разбирается как JSON, и форма с чужой страницы не обходит CORS. Сверено по
     # колёсам: в 0.131.0 параметра нет.
-    "fastapi>=0.132.0",
-    "uvicorn>=0.27",
+    # Верхние границы — следующая мажорная: в ней пакет вправе сломать то, чем
+    # пользуется сервер, а узнавать об этом на установке у пользователя поздно.
+    "fastapi>=0.132.0,<1",
+    "uvicorn>=0.27,<1",
     # 2.7 — нижняя граница, которую требует fastapi 0.132.0 (Requires-Dist).
-    "pydantic>=2.7",
-    "PyYAML>=6.0",
+    "pydantic>=2.7,<3",
+    # Пол — как у partest и partest-atlas: иначе нижние границы семейства вместе не ставятся.
+    "PyYAML>=6.0.2,<7",
 ]
 
 [project.urls]
@@ -80,6 +86,9 @@ dev = [
 
 [project.scripts]
 veha = "veha.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "veha.__version__" }
 
 [tool.setuptools.packages.find]
 include = ["veha*"]

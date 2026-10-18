@@ -2,7 +2,7 @@
 title: Статус «Вехи»
 status: current
 verified: 2026-10-18
-sources: [README.md, pyproject.toml, CHANGELOG.md, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/static/api.js, veha/cli.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py]
+sources: [README.md, pyproject.toml, CHANGELOG.md, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, MANIFEST.in]
 audience: agent
 allow_version_literals: true
 ---
@@ -17,11 +17,11 @@ allow_version_literals: true
 | | |
 |---|---|
 | Стадия | alpha: сервер — устанавливаемый пакет и потребитель `partest-atlas`; демонстрация — `veha demo` из пакета |
-| Код | пакет `veha/`: `config.py`, `core/` (чтение и вывод), `viz/` (FastAPI + статика), `runner.py`, `redact.py`, `cli.py` |
-| Тесты | `tests/`, pytest, без сети и без стенда; на 2026-10-18 — 410 проверок: 409 проходят, 1 пропускается по окружению (например, символические ссылки там, где их нельзя создать) (partest 2.6.0, partest-atlas 0.2.0) |
-| Версия | 0.1.0 — готовится, не выпущена (alpha, решение 2026-10-18). Номер — в `pyproject.toml` и `veha.__version__`, их равенство держит тест |
-| Зависимости | `partest-atlas>=0.1.0,<0.3` (формат артефактов, схема 2; 0.2 формат не менял — поменял, когда и какие записи пишутся, см. ниже), `partest>=2.6.0,<3` (`redact.mask_secret`; пол 2.6.0 — ноль исходящего трафика: раньше импорт `partest` читал `confpartest` с `sys.path` и грузил спецификации по URL, держит `tests/test_import_egress.py`; `meta.selection.optin` пол не поднимал — его пишет partest проекта, сервер читает JSON), `fastapi>=0.132.0` (`strict_content_type`); сверка правила opt-in с `compare_payloads` в `dev` отдельной строки не требует — пол основной зависимости выше |
-| Выпуск | открытый проект, MIT (решение 2026-10-18); на PyPI выпусков нет. 0.1.0 подготовлена: колесо с демонстрационным набором, метаданные, `CHANGELOG.md`. Классификатор `Private :: Do Not Upload` стоит до момента выпуска и не даёт загрузить пакет по ошибке; снимается в момент выпуска отдельным изменением |
+| Код | пакет `veha/`: `config.py`, `core/` (чтение и вывод), `viz/` (FastAPI + статика), `runner.py`, `redact.py`, `cli.py`, `listen.py` (слушающий сокет — единственный модуль с `socket`), `demo.py`, данные `demo_data/` |
+| Тесты | `tests/`, pytest, без сети и без стенда; на 2026-10-18 — 423 проверки: 422 проходят, 1 пропускается по окружению (например, символические ссылки там, где их нельзя создать) (partest 2.6.0, partest-atlas 0.2.0) |
+| Версия | 0.1.0 — готовится, не выпущена (alpha, решение 2026-10-18). Номер — только в `veha.__version__` (`pyproject.toml` берёт его динамически). Политика версий и граница публичного — в начале `CHANGELOG.md` |
+| Зависимости | `partest-atlas>=0.1.0,<0.3` (формат артефактов, схема 2; 0.2 формат не менял — поменял, когда и какие записи пишутся, см. ниже), `partest>=2.6.0,<3` (`redact.mask_secret`; пол 2.6.0 — ноль исходящего трафика: раньше импорт `partest` читал `confpartest` с `sys.path` и грузил спецификации по URL, держит `tests/test_import_egress.py`; `meta.selection.optin` пол не поднимал — его пишет partest проекта, сервер читает JSON), `fastapi>=0.132.0,<1` (`strict_content_type`), `uvicorn>=0.27,<1`, `pydantic>=2.7,<3`, `PyYAML>=6.0.2,<7` (пол — как у partest и partest-atlas); сверка правила opt-in с `compare_payloads` в `dev` отдельной строки не требует — пол основной зависимости выше |
+| Выпуск | открытый проект, MIT (решение 2026-10-18); на PyPI выпусков нет. 0.1.0 подготовлена: колесо с демонстрационным набором, метаданные (лицензия SPDX `MIT`, классификаторы Python — только проверенные 3.10, 3.11, 3.14), `CHANGELOG.md`, sdist с тестами, которые проходят из распакованного архива. Классификатор `Private :: Do Not Upload` стоит до момента выпуска и не даёт загрузить пакет по ошибке; снимается в момент выпуска отдельным изменением. Колесо собирается только из чистого клона, не из рабочей копии (в ней `veha/demo_data/` мог измениться). Ссылки README и CHANGELOG ведут на тег `v<версия>` — он ставится при выпуске |
 | История | публичная история начинается с первого коммита репозитория |
 | Вики | заведена 2026-09-07; проектный документ `docs/architecture.md` на страницы не разобран |
 
@@ -51,7 +51,9 @@ allow_version_literals: true
   внутри пакета.
 - `veha/cli.py` — `veha serve --root <каталог> [--port] [--no-browser] [--system --env]
   [--allow-run]`, `veha demo [--port] [--no-browser]`, `veha export-static`; слушает только
-  `127.0.0.1`.
+  `127.0.0.1`. Порт занимается до баннера (на Windows — исключительно,
+  `SO_EXCLUSIVEADDRUSE`), и занятый — это сообщение и код 2; сокет передаётся uvicorn,
+  браузер открывается из его startup, то есть только у поднявшегося сервера.
 
 **Каждый артефакт получает состояние** — `ok`, `missing`, `broken`, `newer`, `invalid`, —
 и данные берутся только из `ok`. Схемы, которые сервер читает, — своя константа
@@ -138,6 +140,10 @@ JWT, токены сервисов по префиксу (AWS, GitHub, GitLab, S
 прогон дошёл до конца и `coverage.json` записан после его старта, иначе — «покрытие этим
 прогоном не записано». Тренд среднего покрытия — только по полным прогонам, строкой в
 панели раннера; если полного набора нет, это сказано и при старте, и в панели.
+Отчёт без среднего (`summary.avg: null` — так partest собирается писать отчёт с
+`endpoints: 0` вместо `avg: 0`) проходит через граф, API, вывод при старте и снимок как
+есть; вебморда показывает «—», разницу с прошлым прогоном не показывает, в тренд срез не
+идёт (`tests/test_avg_null.py`).
 
 **opt-in-наборы partest (с 2.5.0, `meta.selection.optin`).** Набор маркеров из
 `partest_optin_markers` снимается с прогона (deselect), пока его не попросили `-m` или
@@ -174,7 +180,8 @@ Allure, только если агент записал ровно такой no
 (`package-data`), `veha demo` (`veha/demo.py`) поднимает над ним сервер только для
 просмотра и читает его на месте — в режиме просмотра сервер не пишет ничего, и тест
 сверяет каталог набора до и после запросов, в том числе изменяющих. Переменные области
-на демонстрацию не действуют. Источник набора один: `demo/generate.py` пишет прямо в
+на демонстрацию не действуют. `--allow-run` над `veha/demo_data/` писал бы в дерево
+пакета — в README и `demo/README.md` для него совет копировать набор во временный каталог. Источник набора один: `demo/generate.py` пишет прямо в
 `veha/demo_data/` (сам генератор в колесо не входит), артефакты схемы 2 — в
 `veha/demo_data/atlas/default/default/` в той форме, какую даёт агент (экраны `#/…/42`, nodeid с
 параметрами), полезную нагрузку там, где у агента есть чистая функция сборки, строит она

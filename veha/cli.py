@@ -17,14 +17,14 @@ import os
 import sys
 import threading
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Callable, List, Optional
 
 from partest_atlas.artifacts import DEFAULT_SCOPE_KEY, Scope
 
 from veha import __version__
 from veha.core.sources import valid_segment
+from veha.listen import HOST, bind_socket
 
-HOST = "127.0.0.1"
 
 
 class ScopeError(ValueError):
@@ -132,6 +132,21 @@ def demo(args: argparse.Namespace) -> int:
 
 def _run(root: Path, *, scope: Optional[Scope], allow_run: bool, port: int,
          no_browser: bool, note: str = "") -> int:
+    try:
+        sock = bind_socket(port)
+    except OSError as exc:
+        print(f"порт {port} на {HOST} занят или недоступен ({exc.strerror or exc}); "
+              f"укажите другой: --port N", file=sys.stderr)
+        return 2
+    try:
+        return _run_bound(root, sock, scope=scope, allow_run=allow_run, port=port,
+                          no_browser=no_browser, note=note)
+    finally:
+        sock.close()
+
+
+def _run_bound(root: Path, sock, *, scope: Optional[Scope], allow_run: bool,
+               port: int, no_browser: bool, note: str) -> int:
     from veha.viz.app import create_app  # noqa: PLC0415 — тяжёлый импорт нужен серверу
 
     app = create_app(root, scope=scope, readonly=not allow_run, port=port)
@@ -148,10 +163,15 @@ def _run(root: Path, *, scope: Optional[Scope], allow_run: bool, port: int,
     if not any(s.full for s in veha_runner.suites(app.state.veha.cfg)):
         print("  ! в runner.suites нет набора с full: true — тренда среднего покрытия "
               "не будет")
-    if not no_browser:
-        threading.Timer(1.0, lambda: __import__("webbrowser").open(url)).start()
-    serve_app(app, port)
+    # Браузер — только когда сервер действительно поднялся (startup uvicorn прошёл).
+    opener = None if no_browser else (lambda: _open_browser(url))
+    serve_app(app, port, sock=sock, on_started=opener)
     return 0
+
+
+def _open_browser(url: str) -> None:
+    # в отдельном потоке: из цикла событий uvicorn нельзя ждать запуска браузера
+    threading.Thread(target=lambda: __import__("webbrowser").open(url), daemon=True).start()
 
 
 def export_static(args: argparse.Namespace) -> int:
@@ -184,7 +204,8 @@ def export_static(args: argparse.Namespace) -> int:
     return 0
 
 
-def serve_app(app, port: int) -> None:
+def serve_app(app, port: int, *, sock: Optional[Any] = None,
+              on_started: Optional[Callable[[], None]] = None) -> None:
     """Запустить uvicorn так, чтобы сигнал остановки сначала убивал деревья процессов.
 
     uvicorn на SIGINT/SIGTERM (и SIGBREAK на Windows) ставит флаг выхода и ждёт, пока
@@ -192,15 +213,23 @@ def serve_app(app, port: int) -> None:
     до тех пор не срабатывает: тест продолжал бы гонять стенд после Ctrl+C. Поэтому
     обработчик выхода сначала убивает деревья — тогда перезапуск отвечает сразу, и
     uvicorn завершается штатно.
+
+    *sock* — уже занятый порт (:func:`bind_socket`); *on_started* вызывается, когда
+    сервер принял сокет и прошёл startup.
     """
-    make_server(app, port).run()
+    make_server(app, port, on_started=on_started).run(sockets=[sock] if sock else None)
 
 
-def make_server(app, port: int):
+def make_server(app, port: int, on_started: Optional[Callable[[], None]] = None):
     """uvicorn.Server, у которого выход по сигналу сначала убивает деревья процессов."""
     import uvicorn  # noqa: PLC0415
 
     class VehaServer(uvicorn.Server):
+        async def startup(self, sockets=None):
+            await super().startup(sockets=sockets)
+            if self.started and not self.should_exit and on_started is not None:
+                on_started()
+
         def handle_exit(self, sig, frame):
             # в отдельном потоке: обработчик сигнала не должен ждать taskkill
             threading.Thread(target=app.state.veha.shutdown, daemon=True).start()

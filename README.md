@@ -5,12 +5,12 @@
 Сборка графа, эвристики соединения, сцена, показ расхождений. Управление ими (эталон,
 принятие, исключение из оценки) — следующий этап, `docs/architecture.md` §10.
 
-**Статус: alpha (0.1.0).** Лицензия — MIT.
+**Статус: alpha (0.1.0)**, что стабильно — в разделе «Статус» ниже. Лицензия — MIT.
 
 ## Быстрый старт
 
 ```text
-pip install veha
+pipx install veha        # или pip install veha в отдельном окружении — см. «Установка»
 veha demo
 ```
 
@@ -19,7 +19,7 @@ veha demo
 пакета; сервер над ним только показывает — прогоны не запускаются, на диск ничего не
 пишется. Сеть не нужна. Ключи `demo`: `--port` (по умолчанию 8770), `--no-browser`.
 
-Что смотреть и в каком порядке — [обход демонстрации на 7 шагов](https://github.com/Dec01/veha/blob/master/demo/README.md).
+Что смотреть и в каком порядке — [обход демонстрации на 7 шагов](https://github.com/Dec01/veha/blob/v0.1.0/demo/README.md).
 Та же карта без сервера — [демо на сайте](https://partest.ru/veha/demo/).
 
 Свой проект: `veha serve --root <каталог>`, где лежат `atlas.yaml`, артефакты
@@ -63,16 +63,16 @@ CLI), а конфликт имён на чужой машине ловится �
 **Вебморда живёт здесь**, в сервере, и другого места у неё быть не может: она показывает
 сведённый граф, находки и эталон — то, чего агент не знает. FastAPI отдаёт и `/api/*`, и
 статику; отрисовка — Canvas 2D в браузере; ни npm, ни WebGL, ни единого внешнего запроса.
-Подробности и недостающая аутентификация — [`docs/architecture.md`](https://github.com/Dec01/veha/blob/master/docs/architecture.md) §4.6.
+Подробности и недостающая аутентификация — [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.1.0/docs/architecture.md) §4.6.
 
 ## Документация
 
 | Документ | О чём |
 |---|---|
-| [docs/architecture.md](https://github.com/Dec01/veha/blob/master/docs/architecture.md) | проектный документ: модель данных, несколько систем и контуров, управление расхождениями, подключение к тестам, вебморда |
-| [docs/wiki/index.md](https://github.com/Dec01/veha/blob/master/docs/wiki/index.md) | каталог вики: состояние, решения, спорное |
-| [docs/wiki/status.md](https://github.com/Dec01/veha/blob/master/docs/wiki/status.md) | что сделано, чего нет, известные ограничения |
-| [demo/README.md](https://github.com/Dec01/veha/blob/master/demo/README.md) | демонстрация на вымышленных данных |
+| [docs/architecture.md](https://github.com/Dec01/veha/blob/v0.1.0/docs/architecture.md) | проектный документ: модель данных, несколько систем и контуров, управление расхождениями, подключение к тестам, вебморда |
+| [docs/wiki/index.md](https://github.com/Dec01/veha/blob/v0.1.0/docs/wiki/index.md) | каталог вики: состояние, решения, спорное |
+| [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.1.0/docs/wiki/status.md) | что сделано, чего нет, известные ограничения |
+| [demo/README.md](https://github.com/Dec01/veha/blob/v0.1.0/demo/README.md) | демонстрация на вымышленных данных |
 
 ## Красные линии
 
@@ -85,7 +85,7 @@ CLI), а конфликт имён на чужой машине ловится �
 3. **В consumer group не входим.** Смещения читаются, чужие консьюмеры не задеты.
 4. **Пишем только в свой каталог.** Артефакты — в `artifacts_dir`, ничего другого в
    тестируемой системе не создаётся и не меняется (о файле отметок МР —
-   [docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/master/docs/wiki/proposals.md)).
+   [docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.1.0/docs/wiki/proposals.md)).
 5. **Секреты не показываем.** Всё, что уходит в интерфейс, проходит через `redact`.
 6. **Аудит-лог обращений** к базе, шине и логам — в открытом виде, доступен тому, чью
    систему читают.
@@ -94,15 +94,20 @@ CLI), а конфликт имён на чужой машине ловится �
    эндпоинту, по таблице, по названию фичи); связь «эндпоинт — таблица» подписана окном
    теста, в котором снята, а «топик — таблица» — выводом из тишины записей. Единое поле
    `evidence` (`measured`, `inferred`, `declared`) на каждой связи — план, а не то, что
-   уже есть ([docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/master/docs/wiki/proposals.md)).
+   уже есть ([docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.1.0/docs/wiki/proposals.md)).
 8. **В ядре нет домена конкретного проекта.** Всё проектное — в `atlas.yaml`.
 
 ## Установка
 
-Нужен Python ≥ 3.10.
+Нужен Python ≥ 3.10. Ставьте Веху в **отдельное окружение**, а не в окружение проекта с
+тестами: у сервера свои зависимости (FastAPI, uvicorn, pydantic), и резолвер pip будет
+мирить их с пакетами проекта — проигрывает в этом обычно проект. Данные проекта сервер
+читает из каталога (`--root`), ставить его рядом с тестами незачем.
 
 ```text
-pip install veha
+pipx install veha                    # команда veha в своём окружении
+# или своё окружение:
+python -m venv ~/.veha && ~/.veha/bin/pip install veha    # Windows: ~/.veha/Scripts/pip
 ```
 
 Вместе с пакетом ставится `partest-atlas` (`>=0.1.0,<0.3`) — владелец формата артефактов;
@@ -118,7 +123,19 @@ python -m venv .venv
 
 Демонстрационный набор лежит в пакете, в `veha/demo_data/`; пишет его
 `demo/generate.py`, и править набор руками бесполезно — следующий запуск генератора
-перетрёт правку.
+перетрёт правку. Попробовать на нём `--allow-run` — только на копии во временном
+каталоге: с этим ключом сервер пишет в каталог данных (история прогонов, отметки МР),
+а `veha/demo_data/` — это дерево пакета.
+
+```text
+python -c "import shutil, tempfile, veha.demo as d; print(shutil.copytree(d.data_root(), tempfile.mkdtemp() + '/demo'))"
+veha serve --root <напечатанный каталог> --allow-run
+```
+
+Колесо для выпуска собирается **только из чистого клона** (`git clone`, затем
+`python -m build`), не из рабочей копии: в рабочей копии `veha/demo_data/` мог
+измениться — от `--allow-run`, от незакоммиченной генерации, — и в колесо уехало бы
+не то, что в репозитории.
 
 ## Запуск
 
@@ -147,16 +164,31 @@ CSP без `'unsafe-inline'`; действия, которым нужен сер
 своей страницы и отдаёт CSP без внешних источников. Секреты (авторизация, пароли, токены,
 куки) маскируются во всём, что уходит в интерфейс: вложения, логи, разбор падений.
 
-Что сервер прочитал, а что нет и почему — `GET /api/artifacts`; то же печатается при
-старте и видно в шапке сцены. Проверки — `python -m pytest` (без сети и без стенда).
+Что сервер прочитал, а что нет и почему, печатается при старте и видно в шапке сцены; для
+диагностики то же отдаёт `GET /api/artifacts` — это внутренний HTTP-интерфейс вебморды,
+его форма может меняться в любой версии. Проверки — `python -m pytest` (без сети и без стенда).
 
 ## Статус
 
 Alpha: сервер — устанавливаемый пакет и потребитель `partest-atlas`; подключение своего
-проекта пока требует ручной настройки `atlas.yaml`. Подробно, с
-тем, чего нет, и с ближайшими шагами, — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/master/docs/wiki/status.md).
-Проектное направление дальше — этапы в [`docs/architecture.md`](https://github.com/Dec01/veha/blob/master/docs/architecture.md) §10.
+проекта пока требует ручной настройки `atlas.yaml`.
+
+**Что стабильно.** Версии — [Semantic Versioning](https://semver.org/) с поправкой на
+линию `0.x`: пока она не кончилась, ломающее изменение поднимает **минорную** цифру и
+записывается в журнале изменений разделом «Сломано». Таблица — в начале
+[CHANGELOG.md](https://github.com/Dec01/veha/blob/v0.1.0/CHANGELOG.md).
+
+- **Публичное** — то, на что можно опираться: команды `veha serve`, `veha demo`,
+  `veha export-static` и их ключи; порт по умолчанию 8770; переменные `ATLAS_SYSTEM` и
+  `ATLAS_ENV`; раскладка каталога данных (`atlas.yaml`, `atlas/<система>/<контур>/`,
+  `coverage.json`, `allure-results/`) и разделы `atlas.yaml`, которые читает сервер;
+  то, что сервер пишет у пользователя, — история прогонов `runner.history` и отметки
+  `live/mr_checks.json`.
+- **Внутреннее** — меняется в любой версии без записи в «Сломано»: импорт `veha.*`
+  (кроме `veha.__version__`), HTTP-интерфейс `/api/*`, раскладка статического снимка. Подробно, с
+тем, чего нет, и с ближайшими шагами, — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.1.0/docs/wiki/status.md).
+Проектное направление дальше — этапы в [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.1.0/docs/architecture.md) §10.
 
 ## Лицензия
 
-MIT — см. [LICENSE](https://github.com/Dec01/veha/blob/master/LICENSE).
+MIT — см. [LICENSE](https://github.com/Dec01/veha/blob/v0.1.0/LICENSE).

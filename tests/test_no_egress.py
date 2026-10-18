@@ -102,16 +102,33 @@ def test_api_answers_carry_no_external_addresses(client):
         assert not external, f"{url}: {external[:3]}"
 
 
+#: Единственный модуль, которому можно `socket`: слушающий сокет сервера на loopback.
+LISTEN = PKG / "listen.py"
+
+
 def test_package_has_no_network_clients():
     forbidden = re.compile(
         r"^\s*(?:import|from)\s+(?:requests|httpx|aiohttp|urllib\.request|http\.client|"
         r"socket|smtplib|ftplib)\b", re.M)
+    clients = re.compile(r"^\s*(?:import|from)\s+(?:requests|httpx|aiohttp|urllib\.request|"
+                         r"http\.client|smtplib|ftplib)\b", re.M)
     for f in PKG.rglob("*.py"):
         text = f.read_text(encoding="utf-8")
-        assert not forbidden.search(text), f
+        assert not (clients if f == LISTEN else forbidden).search(text), f
         hosts = [m.group(0) for m in _URL_RE.finditer(text)
                  if not _LOCAL_RE.match(text[m.start():m.start() + 30])]
         assert not hosts, f"{f}: {hosts}"
+
+
+def test_listening_module_only_listens():
+    """`veha/listen.py` занимает порт и ничего не открывает наружу; другим модулям
+    пакета `socket` по-прежнему нельзя (тест выше)."""
+    text = LISTEN.read_text(encoding="utf-8")
+    for call in (".connect(", ".connect_ex(", "create_connection", "getaddrinfo",
+                 ".sendto(", "fromfd", "fromshare"):
+        assert call not in text, call
+    assert re.search(r'^HOST = "127\.0\.0\.1"$', text, re.M)
+    assert "sock.bind((HOST, port))" in text
 
 
 def test_server_listens_on_loopback_only(demo_root, monkeypatch, capsys):
@@ -122,9 +139,10 @@ def test_server_listens_on_loopback_only(demo_root, monkeypatch, capsys):
 
     seen = {}
 
-    def fake_run(server, *args, **kwargs):
+    def fake_run(server, *args, sockets=None, **kwargs):
         cfg = server.config
-        seen.update(host=cfg.host, port=cfg.port, app=cfg.app, server=server)
+        seen.update(host=cfg.host, port=cfg.port, app=cfg.app, server=server,
+                    bound=[s.getsockname() for s in sockets or []])
 
     monkeypatch.setattr(uvicorn.Server, "run", fake_run)
     monkeypatch.delenv("ATLAS_SYSTEM", raising=False)
@@ -132,6 +150,8 @@ def test_server_listens_on_loopback_only(demo_root, monkeypatch, capsys):
     assert cli.main(["serve", "--root", str(demo_root), "--port", "8791",
                      "--no-browser"]) == 0
     assert seen["host"] == "127.0.0.1" and seen["port"] == 8791
+    # uvicorn получает уже занятый сокет — проверяется, где он на самом деле слушает
+    assert seen["bound"] == [("127.0.0.1", 8791)]
     assert seen["app"].state.allowed_hosts == {"127.0.0.1:8791", "localhost:8791"}
     assert seen["app"].state.veha.readonly is True
     assert "только просмотр" in capsys.readouterr().out

@@ -129,13 +129,14 @@ logs/                   лог прогона и логи контейнеров
 python demo/generate.py
 ```
 
-Генератор детерминирован: один и тот же набор при каждом запуске и на любом
-интерпретаторе. PNG с теми же пикселями не перезаписываются — байты сжатия
+Генератор детерминирован: один и тот же набор при каждом запуске, на любом
+интерпретаторе и любой ОС (текст пишется с LF и на Windows). PNG с теми же пикселями не перезаписываются — байты сжатия
 зависят от сборки zlib, и иначе каждый запуск на другом Python пачкал бы git.
 Записи агента — в настоящей форме: экраны `#/…/42`, а не `/#/…/{id}`, у одной
 записи эффектов БД nodeid с параметрами `[…]`.
-Правки руками в `atlas.yaml`, `app_map.yaml`, `atlas/` и `live/` перетрутся —
-менять нужно модель в начале `generate.py`. Генератору нужен установленный
+Правки руками в `veha/demo_data/atlas.yaml`, `veha/demo_data/app_map.yaml`,
+`veha/demo_data/atlas/` и `veha/demo_data/live/` перетрутся — менять нужно модель
+в начале `demo/generate.py`. Генератору нужен установленный
 `partest-atlas`: заголовки артефактов проверяются его `validate`, а контракт,
 схема БД, связи UI, требования и логи контейнеров собираются его же функциями.
 
@@ -149,12 +150,19 @@ python demo/generate.py
   `meta.selection.optin` в `coverage.json`). Тренд показывает их отдельными
   сериями: состав тестов у них разный.
   Запуск — и отметки МР во вкладке «Live» — разрешает ключ
-  `veha serve --root veha/demo_data --allow-run` (из исходников: он пишет в
-  каталог набора). У `veha demo` такого ключа нет.
+  `veha serve --allow-run`. У `veha demo` такого ключа нет: с ним сервер пишет
+  в каталог данных, а `veha/demo_data/` — дерево пакета. Пробовать — на копии
+  во временном каталоге:
+
+  ```
+  python -c "import shutil, tempfile, veha.demo as d; print(shutil.copytree(d.data_root(), tempfile.mkdtemp() + '/demo'))"
+  veha serve --root <напечатанный каталог> --allow-run
+  ```
 * **Live-режим читает снимки, а не стенд.** Состояние контейнеров —
-  `live/containers.json`, логи — файлы из `logs/containers/`, merge
-  request'ы — `live/mrs.json`, отметки — `live/mr_checks.json` (пути —
-  раздел `live` в `atlas.yaml`).
+  `veha/demo_data/live/containers.json`, логи — файлы из
+  `veha/demo_data/logs/containers/`, merge request'ы —
+  `veha/demo_data/live/mrs.json`, отметки — `veha/demo_data/live/mr_checks.json`
+  (пути — раздел `live` в `atlas.yaml` набора).
   Наружу не ходим.
 * **Элементы без `data-testid`.** Агент не записывает видимый текст такого
   элемента, поэтому на экране они сведены в один узел «элемент без

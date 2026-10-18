@@ -56,3 +56,20 @@ def test_png_with_same_pixels_is_not_rewritten(gen, tmp_path):
 def test_demo_screens_decode(gen):
     shots = sorted((DEMO / "screens").glob("*.png"))
     assert len(shots) == 16 and all(gen.png_pixels(p) for p in shots)
+
+
+def test_every_text_write_is_lf():
+    """Набор пишется с LF на любой ОС: иначе на Windows после генерации git видит
+    изменения во всех файлах, хотя содержимое то же."""
+    import ast
+
+    tree = ast.parse(GENERATOR.read_text(encoding="utf-8"))
+    calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)
+             and isinstance(n.func, ast.Attribute) and n.func.attr in ("write_text", "open")]
+    assert calls
+    bad = [n.lineno for n in calls
+           if n.func.attr == "write_text"
+           and not any(k.arg == "newline" and isinstance(k.value, ast.Constant)
+                       and k.value.value == "\n" for k in n.keywords)]
+    assert not bad, f"write_text без newline=LF: строки {bad}"
+    assert not [n.lineno for n in calls if n.func.attr == "open"], "open() — писать через write_text"

@@ -7,7 +7,11 @@
 
 from __future__ import annotations
 
-import re
+import importlib.metadata
+import http.client
+import socket
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -30,8 +34,10 @@ def started(monkeypatch):
     """Приложение, которое `veha demo` отдал бы uvicorn, и порт."""
     seen = {}
 
-    def fake_serve(app, port):
+    def fake_serve(app, port, *, sock=None, on_started=None):
         seen["app"], seen["port"] = app, port
+        seen["sock"], seen["on_started"] = sock, on_started
+        seen["bound"] = sock.getsockname() if sock else None
 
     monkeypatch.setattr(cli, "serve_app", fake_serve)
     # atexit от каждого вызова копился бы до конца сессии pytest
@@ -77,6 +83,8 @@ def test_demo_serves_packaged_set_read_only(started, monkeypatch, capsys):
     assert cli.main(["demo", "--no-browser", "--port", "8901"]) == 0
     app = started["app"]
     assert started["port"] == 8901
+    assert started["bound"] == ("127.0.0.1", 8901)     # порт занят до запуска uvicorn
+    assert started["on_started"] is None                # --no-browser
     assert app.state.veha.readonly is True
     assert app.state.veha.root == root
     out = capsys.readouterr().out
@@ -114,7 +122,69 @@ def test_demo_without_packaged_set_says_so(monkeypatch, tmp_path, capsys):
 
 
 def test_version_is_one_number():
-    """Версия пакета и версия в pyproject не расходятся."""
+    """Номер версии — только в `veha.__version__`; метаданные берут его оттуда."""
     text = (REPO / "pyproject.toml").read_text(encoding="utf-8")
-    declared = re.search(r'^version = "([^"]+)"', text, re.M).group(1)
-    assert declared == veha.__version__
+    assert 'dynamic = ["version"]' in text
+    assert 'version = { attr = "veha.__version__" }' in text
+    assert importlib.metadata.version("veha") == veha.__version__
+
+
+def _busy_port():
+    """Порт, который слушает кто-то другой."""
+    other = socket.socket()
+    other.bind(("127.0.0.1", 0))
+    other.listen()
+    return other, other.getsockname()[1]
+
+
+def test_busy_port_is_reported_before_the_banner(started, monkeypatch, capsys):
+    opened = []
+    monkeypatch.setattr("webbrowser.open", lambda url, *a, **k: opened.append(url))
+    other, port = _busy_port()
+    try:
+        assert cli.main(["demo", "--port", str(port)]) == 2
+    finally:
+        other.close()
+    out, err = capsys.readouterr()
+    assert f"порт {port}" in err and "--port" in err
+    assert "Веха" not in out                    # ни баннера, ни адреса чужого процесса
+    assert "app" not in started                 # до uvicorn дело не дошло
+    assert opened == []                         # браузер на чужой порт не открыт
+
+
+def test_browser_opens_only_after_startup(started, monkeypatch):
+    """Ссылку на браузер команда отдаёт серверу, а не таймеру: откроет startup."""
+    opened = []
+    monkeypatch.setattr("webbrowser.open", lambda url, *a, **k: opened.append(url))
+    assert cli.main(["demo", "--port", "8902"]) == 0
+    assert opened == []                         # serve_app подменён — старта не было
+    started["on_started"]()
+    deadline = time.monotonic() + 5            # браузер открывается в своём потоке
+    while not opened and time.monotonic() < deadline:
+        time.sleep(0.01)
+    assert opened == ["http://127.0.0.1:8902"]
+
+
+def test_real_server_calls_on_started_and_serves():
+    from veha.viz.app import create_app
+
+    sock = cli.bind_socket(0)
+    port = sock.getsockname()[1]
+    up = threading.Event()
+    server = cli.make_server(create_app(veha_demo.data_root(), port=port), port,
+                             on_started=up.set)
+    t = threading.Thread(target=server.run, kwargs={"sockets": [sock]}, daemon=True)
+    t.start()
+    try:
+        assert up.wait(30), "startup не наступил"
+        conn = http.client.HTTPConnection("127.0.0.1", port, timeout=30)
+        conn.request("GET", "/api/artifacts")
+        assert conn.getresponse().status == 200
+        conn.close()
+        # тот же порт второй раз не занять: исключительное владение и на Windows
+        with pytest.raises(OSError):
+            cli.bind_socket(port).close()
+    finally:
+        server.should_exit = True
+        t.join(timeout=30)
+        sock.close()
