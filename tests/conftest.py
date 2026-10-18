@@ -10,7 +10,9 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[1]
-DEMO = REPO / "demo"
+#: Набор живёт в пакете — его же показывает `veha demo`; генератор — в `demo/`.
+DEMO = REPO / "veha" / "demo_data"
+GENERATOR = REPO / "demo" / "generate.py"
 
 
 @pytest.fixture(scope="session")

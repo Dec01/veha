@@ -8,12 +8,12 @@ import zlib
 
 import pytest
 
-from tests.conftest import DEMO
+from tests.conftest import DEMO, GENERATOR
 
 
 @pytest.fixture(scope="module")
 def gen():
-    spec = importlib.util.spec_from_file_location("veha_demo_generate", DEMO / "generate.py")
+    spec = importlib.util.spec_from_file_location("veha_demo_generate", GENERATOR)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

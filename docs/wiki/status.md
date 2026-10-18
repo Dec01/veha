@@ -2,7 +2,7 @@
 title: Статус «Вехи»
 status: current
 verified: 2026-10-18
-sources: [README.md, pyproject.toml, CHANGELOG.md, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/static/api.js, veha/cli.py, demo/generate.py, tests/test_graph_demo.py]
+sources: [README.md, pyproject.toml, CHANGELOG.md, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/static/api.js, veha/cli.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py]
 audience: agent
 allow_version_literals: true
 ---
@@ -16,12 +16,12 @@ allow_version_literals: true
 
 | | |
 |---|---|
-| Стадия | ранняя: сервер — устанавливаемый пакет и потребитель `partest-atlas` |
+| Стадия | alpha: сервер — устанавливаемый пакет и потребитель `partest-atlas`; демонстрация — `veha demo` из пакета |
 | Код | пакет `veha/`: `config.py`, `core/` (чтение и вывод), `viz/` (FastAPI + статика), `runner.py`, `redact.py`, `cli.py` |
-| Тесты | `tests/`, pytest, без сети и без стенда; на 2026-10-18 — 404 проверки: 402 проходят, 2 пропускаются по окружению (например, символические ссылки там, где их нельзя создать) (partest 2.6.0, partest-atlas 0.2.0) |
-| Версия | не назначена: `0.0.0.dev0`, пакет не выпускался |
+| Тесты | `tests/`, pytest, без сети и без стенда; на 2026-10-18 — 410 проверок: 409 проходят, 1 пропускается по окружению (например, символические ссылки там, где их нельзя создать) (partest 2.6.0, partest-atlas 0.2.0) |
+| Версия | 0.1.0 — готовится, не выпущена (alpha, решение 2026-10-18). Номер — в `pyproject.toml` и `veha.__version__`, их равенство держит тест |
 | Зависимости | `partest-atlas>=0.1.0,<0.3` (формат артефактов, схема 2; 0.2 формат не менял — поменял, когда и какие записи пишутся, см. ниже), `partest>=2.6.0,<3` (`redact.mask_secret`; пол 2.6.0 — ноль исходящего трафика: раньше импорт `partest` читал `confpartest` с `sys.path` и грузил спецификации по URL, держит `tests/test_import_egress.py`; `meta.selection.optin` пол не поднимал — его пишет partest проекта, сервер читает JSON), `fastapi>=0.132.0` (`strict_content_type`); сверка правила opt-in с `compare_payloads` в `dev` отдельной строки не требует — пол основной зависимости выше |
-| Выпуск | открытый проект, MIT (решение 2026-10-18); выпусков на PyPI нет — это отдельное решение после первой версии, до него классификатор `Private :: Do Not Upload` в pyproject не даёт загрузить пакет по ошибке |
+| Выпуск | открытый проект, MIT (решение 2026-10-18); на PyPI выпусков нет. 0.1.0 подготовлена: колесо с демонстрационным набором, метаданные, `CHANGELOG.md`. Классификатор `Private :: Do Not Upload` стоит до момента выпуска и не даёт загрузить пакет по ошибке; снимается в момент выпуска отдельным изменением |
 | История | публичная история начинается с первого коммита репозитория |
 | Вики | заведена 2026-09-07; проектный документ `docs/architecture.md` на страницы не разобран |
 
@@ -50,7 +50,8 @@ allow_version_literals: true
 - `veha/viz/app.py` — фабрика `create_app(root, scope=…, readonly=…, port=…)`, статика
   внутри пакета.
 - `veha/cli.py` — `veha serve --root <каталог> [--port] [--no-browser] [--system --env]
-  [--allow-run]`; слушает только `127.0.0.1`.
+  [--allow-run]`, `veha demo [--port] [--no-browser]`, `veha export-static`; слушает только
+  `127.0.0.1`.
 
 **Каждый артефакт получает состояние** — `ok`, `missing`, `broken`, `newer`, `invalid`, —
 и данные берутся только из `ok`. Схемы, которые сервер читает, — своя константа
@@ -169,8 +170,13 @@ Allure, только если агент записал ровно такой no
 иначе — по всем вариантам, каждый со своим последним статусом: перезапуск `[a]` не
 скрывает упавший `[b]`.
 
-**Демонстрация** работает из пакета: `demo/generate.py` пишет артефакты схемы 2 в
-`demo/atlas/default/default/` в той форме, какую даёт агент (экраны `#/…/42`, nodeid с
+**Демонстрация** поставляется в пакете: набор лежит в `veha/demo_data/` и входит в колесо
+(`package-data`), `veha demo` (`veha/demo.py`) поднимает над ним сервер только для
+просмотра и читает его на месте — в режиме просмотра сервер не пишет ничего, и тест
+сверяет каталог набора до и после запросов, в том числе изменяющих. Переменные области
+на демонстрацию не действуют. Источник набора один: `demo/generate.py` пишет прямо в
+`veha/demo_data/` (сам генератор в колесо не входит), артефакты схемы 2 — в
+`veha/demo_data/atlas/default/default/` в той форме, какую даёт агент (экраны `#/…/42`, nodeid с
 параметрами), полезную нагрузку там, где у агента есть чистая функция сборки, строит она
 же. Повторная генерация на любом интерпретаторе не меняет файлов. Эталонные цифры сцены
 держит `tests/test_graph_demo.py`. Люди в наборе — служебные метки (`dev-1`, `qa-1`).

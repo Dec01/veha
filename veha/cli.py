@@ -1,5 +1,6 @@
 """Команда `veha`.
 
+    veha demo [--port 8770] [--no-browser]
     veha serve --root <каталог> [--port 8770] [--no-browser]
                [--system S --env E] [--allow-run]
     veha export-static --root <каталог> --out <каталог> [--system S --env E]
@@ -105,25 +106,51 @@ def serve(args: argparse.Namespace) -> int:
         print(f"область: {exc}", file=sys.stderr)
         return 2
 
+    return _run(root, scope=scope, allow_run=args.allow_run, port=args.port,
+                no_browser=args.no_browser)
+
+
+def demo(args: argparse.Namespace) -> int:
+    """Вымышленный набор из пакета: только просмотр, ничего не пишется.
+
+    Область не берётся ни из ключей, ни из `ATLAS_SYSTEM`/`ATLAS_ENV`: набор описывает
+    один проект, а переменные, оставшиеся в оболочке от настоящего проекта, показали бы
+    пустую сцену.
+    """
+    from veha import demo as veha_demo  # noqa: PLC0415
+
+    root = veha_demo.data_root()
+    lost = veha_demo.missing(root)
+    if lost:
+        print(f"демонстрационного набора нет в пакете ({root}): нет " + ", ".join(lost),
+              file=sys.stderr)
+        print("из исходников набор собирает  python demo/generate.py", file=sys.stderr)
+        return 2
+    return _run(root, scope=None, allow_run=False, port=args.port,
+                no_browser=args.no_browser, note="демонстрация на вымышленных данных")
+
+
+def _run(root: Path, *, scope: Optional[Scope], allow_run: bool, port: int,
+         no_browser: bool, note: str = "") -> int:
     from veha.viz.app import create_app  # noqa: PLC0415 — тяжёлый импорт нужен серверу
 
-    app = create_app(root, scope=scope, readonly=not args.allow_run, port=args.port)
+    app = create_app(root, scope=scope, readonly=not allow_run, port=port)
     # Запасной путь к остановке дерева процессов, если lifespan не отработал
     # (жёсткий выход интерпретатора): прогон не должен пережить сервер.
     atexit.register(app.state.veha.shutdown)
-    url = f"http://{HOST}:{args.port}"
-    print(f"Веха {__version__} → {url}")
+    url = f"http://{HOST}:{port}"
+    print(f"Веха {__version__} → {url}" + (f"  ({note})" if note else ""))
     print(f"  корень {root}")
-    print("  режим: " + ("запуск прогонов разрешён" if args.allow_run else "только просмотр"))
+    print("  режим: " + ("запуск прогонов разрешён" if allow_run else "только просмотр"))
     _report(app.state.veha.graph(refresh=True), root)
     from veha import runner as veha_runner  # noqa: PLC0415
 
     if not any(s.full for s in veha_runner.suites(app.state.veha.cfg)):
         print("  ! в runner.suites нет набора с full: true — тренда среднего покрытия "
               "не будет")
-    if not args.no_browser:
+    if not no_browser:
         threading.Timer(1.0, lambda: __import__("webbrowser").open(url)).start()
-    serve_app(app, args.port)
+    serve_app(app, port)
     return 0
 
 
@@ -187,6 +214,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--version", action="version", version=f"veha {__version__}")
     sub = p.add_subparsers(dest="command", required=True)
 
+    d = sub.add_parser("demo", help="карта на вымышленном наборе из пакета: только просмотр",
+                       description="Поднять вебморду над вымышленным набором, который "
+                                   "поставляется в пакете. Только просмотр: прогоны не "
+                                   "запускаются, ничего не пишется.")
+    d.add_argument("--port", type=int, default=8770)
+    d.add_argument("--no-browser", action="store_true", help="не открывать браузер")
+    d.set_defaults(func=demo)
+
     s = sub.add_parser("serve", help="поднять вебморду над каталогом данных")
     s.add_argument("--root", required=True,
                    help="корень данных: atlas.yaml, atlas/, coverage.json, allure-results/")
@@ -201,7 +236,7 @@ def build_parser() -> argparse.ArgumentParser:
     e = sub.add_parser("export-static",
                        help="статический снимок вебморды для сайта: только просмотр",
                        description="Статический снимок вебморды: страница, статика и "
-                                   "ответы API файлами, без сервера. ВНИМАНИЕ: Снимок публикует всё, что показывает вебморда: контейнеры, логи, merge request'ы, шаги и вложения тестов, схему базы. Маскирование секретов — эвристика. Снимок настоящих данных наружу не выкладывать: для витрины есть вымышленный набор demo/.")
+                                   "ответы API файлами, без сервера. ВНИМАНИЕ: Снимок публикует всё, что показывает вебморда: контейнеры, логи, merge request'ы, шаги и вложения тестов, схему базы. Маскирование секретов — эвристика. Снимок настоящих данных наружу не выкладывать: для витрины есть вымышленный набор: veha demo.")
     e.add_argument("--root", required=True, help="корень данных, как у serve")
     e.add_argument("--out", required=True,
                    help="каталог снимка: пустой, новый или прежний снимок")

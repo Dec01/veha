@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "veha"
-# Версия не назначена: пакет ещё не выпускался. Номер появляется вместе с решением
-# о выпуске, а не вместе с фичей.
-version = "0.0.0.dev0"
+# Первый выпуск — alpha (решение 2026-10-18). Номер дублирует `veha.__version__`;
+# расхождение ловит `tests/test_demo_command.py`.
+version = "0.1.0"
 description = "Веха — сервер карты тестирования: сведение артефактов partest-atlas в граф и вебморда"
 readme = "README.md"
 # Согласовано с partest-atlas: потребитель не может требовать меньше, чем поставщик.
@@ -15,14 +15,18 @@ license = { text = "MIT" }
 authors = [{ name = "dec01" }]
 keywords = ["testing", "coverage", "observability", "pytest", "visualization"]
 classifiers = [
-    # Выпуска на PyPI ещё нет, и он — отдельное решение после первой версии. До него
-    # классификатор не даёт загрузить пакет по ошибке: PyPI отвергает `Private ::`.
+    # Пока стоит этот классификатор, PyPI отвергает загрузку (`Private ::`): пакет не
+    # уйдёт по ошибке. Снимается в момент выпуска 0.1.0 отдельным изменением: подготовка
+    # выпуска и решение выпускать — не одно и то же.
     "Private :: Do Not Upload",
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
+    "Framework :: FastAPI",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
     "Topic :: Software Development :: Testing",
 ]
 
@@ -54,6 +58,13 @@ dependencies = [
     "PyYAML>=6.0",
 ]
 
+[project.urls]
+Homepage = "https://partest.ru/veha/"
+Source = "https://github.com/Dec01/veha"
+Documentation = "https://partest.ru/wiki/veha/"
+Changelog = "https://github.com/Dec01/veha/blob/master/CHANGELOG.md"
+Issues = "https://github.com/Dec01/veha/issues"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8",
@@ -75,6 +86,9 @@ include = ["veha*"]
 
 [tool.setuptools.package-data]
 "veha.viz" = ["static/*"]
+# Демонстрационный набор (`veha demo`) — данные пакета, а не модули: пишет его
+# `demo/generate.py`, сам генератор в колесо не входит.
+"veha" = ["demo_data/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

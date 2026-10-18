@@ -5,7 +5,10 @@
 складом, биллингом и CRM. Имена, пути, топики, контейнеры и экраны придуманы:
 всё построено из описанной ниже модели.
 
-Файл — единственный источник правды для набора. Он пишет:
+Файл — единственный источник правды для набора. Набор он пишет внутрь пакета, в
+`veha/demo_data/`: оттуда его поднимает `veha demo`, и оттуда он попадает в колесо.
+Копии рядом с генератором нет — разъехаться нечему.
+
 
     atlas.yaml                 — проектное знание (контейнеры, домены, экраны)
     app_map.yaml               — карта интеграций UI ↔ API ↔ шина ↔ хранилище
@@ -36,7 +39,7 @@
 
 Нужен установленный `partest-atlas` (ставится вместе с пакетом `veha`).
 
-Запуск:  python generate.py
+Запуск:  python demo/generate.py   (из корня репозитория; из любого каталога — то же)
 """
 
 from __future__ import annotations
@@ -57,7 +60,9 @@ from partest_atlas.collect import openapi as atlas_openapi
 from partest_atlas.collect import specs as atlas_specs
 from partest_atlas.collect import ui_flow as atlas_ui_flow
 
-ROOT = Path(__file__).resolve().parent
+# Куда пишется набор: каталог данных пакета. Генератор в колесо не входит — он
+# нужен тому, кто меняет модель, а не тому, кто смотрит демонстрацию.
+ROOT = Path(__file__).resolve().parents[1] / "veha" / "demo_data"
 RND = random.Random(20261018)
 
 # Момент «последнего прогона»: набор должен выглядеть снятым вчера вечером.
@@ -2908,6 +2913,7 @@ def bus_record(ev: dict) -> dict:
 # ===========================================================================
 def main() -> None:
     check_model()
+    ROOT.mkdir(parents=True, exist_ok=True)
     # Артефакты прежней раскладки (плоский `atlas/`, схема 1) удаляются: сервер их
     # не читает, а лежащие рядом они путали бы, какой набор настоящий.
     for stale in (ROOT / "atlas", ROOT / "live"):
