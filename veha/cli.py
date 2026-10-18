@@ -238,6 +238,22 @@ def make_server(app, port: int, on_started: Optional[Callable[[], None]] = None)
     return VehaServer(uvicorn.Config(app, host=HOST, port=port, log_level="warning"))
 
 
+def port_number(text: str) -> int:
+    """Порт для `--port`: целое 1..65535.
+
+    0 — «любой свободный»: сервер поднялся бы на случайном порту, а проверка `Host`
+    ждала бы 0, и страница не открылась бы. За 65535 сокет падает `OverflowError` с
+    трассировкой вместо сообщения.
+    """
+    try:
+        value = int(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"не число: {text!r}") from None
+    if not 1 <= value <= 65535:
+        raise argparse.ArgumentTypeError(f"{value} вне диапазона 1..65535")
+    return value
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="veha", description="Веха — карта тестирования")
     p.add_argument("--version", action="version", version=f"veha {__version__}")
@@ -247,14 +263,14 @@ def build_parser() -> argparse.ArgumentParser:
                        description="Поднять вебморду над вымышленным набором, который "
                                    "поставляется в пакете. Только просмотр: прогоны не "
                                    "запускаются, ничего не пишется.")
-    d.add_argument("--port", type=int, default=8770)
+    d.add_argument("--port", type=port_number, default=8770, help="порт на 127.0.0.1, 1..65535")
     d.add_argument("--no-browser", action="store_true", help="не открывать браузер")
     d.set_defaults(func=demo)
 
     s = sub.add_parser("serve", help="поднять вебморду над каталогом данных")
     s.add_argument("--root", required=True,
                    help="корень данных: atlas.yaml, atlas/, coverage.json, allure-results/")
-    s.add_argument("--port", type=int, default=8770)
+    s.add_argument("--port", type=port_number, default=8770, help="порт на 127.0.0.1, 1..65535")
     s.add_argument("--no-browser", action="store_true", help="не открывать браузер")
     s.add_argument("--system", default="", help="система (по умолчанию — ATLAS_SYSTEM)")
     s.add_argument("--env", default="", help="контур (по умолчанию — ATLAS_ENV)")

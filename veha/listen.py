@@ -23,6 +23,9 @@ def bind_socket(port: int) -> socket.socket:
     """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
+        # Явно, а не по умолчанию PEP 446: раннер запускает pytest и всё, что тот
+        # запустит, и ни один из этих процессов не должен унаследовать порт сервера.
+        sock.set_inheritable(False)
         if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):            # Windows
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
         else:                                                  # POSIX: TIME_WAIT не мешает

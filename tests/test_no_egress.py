@@ -120,15 +120,66 @@ def test_package_has_no_network_clients():
         assert not hosts, f"{f}: {hosts}"
 
 
+#: Что `listen.py` может взять у модуля `socket` — белым списком, а не перечнем
+#: запретов: новое имя (`create_connection`, `AF_INET6`, `socketpair`…) не пройдёт, даже
+#: если его забыли запретить.
+_SOCKET_NAMES = {"socket", "AF_INET", "SOCK_STREAM", "SOL_SOCKET"}
+#: Методы, которые модуль может вызвать на чём угодно: настроить, занять, закрыть.
+#: Ни `connect`, ни `listen`/`accept`, ни `send`/`recv` — слушать начинает uvicorn.
+_METHODS = {"setsockopt", "set_inheritable", "bind", "close"}
+#: Встроенные функции, которые модулю можно вызвать.
+_BUILTINS = {"hasattr"}
+
+
 def test_listening_module_only_listens():
-    """`veha/listen.py` занимает порт и ничего не открывает наружу; другим модулям
-    пакета `socket` по-прежнему нельзя (тест выше)."""
-    text = LISTEN.read_text(encoding="utf-8")
-    for call in (".connect(", ".connect_ex(", "create_connection", "getaddrinfo",
-                 ".sendto(", "fromfd", "fromshare"):
-        assert call not in text, call
-    assert re.search(r'^HOST = "127\.0\.0\.1"$', text, re.M)
-    assert "sock.bind((HOST, port))" in text
+    """`veha/listen.py` занимает порт на loopback и ничего больше; другим модулям пакета
+    `socket` по-прежнему нельзя (тест выше). Проверяется дерево разбора, а не текст."""
+    import ast
+
+    tree = ast.parse(LISTEN.read_text(encoding="utf-8"))
+    imports = [(n.module if isinstance(n, ast.ImportFrom) else None,
+                tuple(a.name for a in n.names))
+               for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))]
+    assert sorted(imports, key=str) == sorted(
+        [("__future__", ("annotations",)), (None, ("socket",))], key=str), imports
+
+    used = {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)
+            and isinstance(n.value, ast.Name) and n.value.id == "socket"}
+    extra = {a for a in used if a not in _SOCKET_NAMES and not a.startswith("SO_")}
+    assert not extra, f"из socket взято лишнее: {sorted(extra)}"
+
+    calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
+    methods = [c.func.attr for c in calls if isinstance(c.func, ast.Attribute)
+               and not (isinstance(c.func.value, ast.Name) and c.func.value.id == "socket")]
+    assert set(methods) <= _METHODS, f"вызовы вне белого списка: {sorted(set(methods) - _METHODS)}"
+    builtins = {c.func.id for c in calls if isinstance(c.func, ast.Name)}
+    assert builtins <= _BUILTINS, builtins
+    # `hasattr(socket, "SO_…")` — проверка опции, а не обход белого списка по имени
+    for c in calls:
+        if isinstance(c.func, ast.Name) and c.func.id == "hasattr":
+            assert isinstance(c.args[1], ast.Constant) and c.args[1].value.startswith("SO_")
+
+    binds = [c for c in calls if isinstance(c.func, ast.Attribute) and c.func.attr == "bind"]
+    assert len(binds) == 1, "ровно один bind"
+    (addr,) = binds[0].args
+    assert (isinstance(addr, ast.Tuple)
+            and [getattr(e, "id", None) for e in addr.elts] == ["HOST", "port"]), \
+        "bind только на (HOST, port)"
+    hosts = [n.value.value for n in ast.walk(tree) if isinstance(n, ast.Assign)
+             and [getattr(t, "id", None) for t in n.targets] == ["HOST"]]
+    assert hosts == ["127.0.0.1"], hosts
+
+
+def test_listening_socket_is_not_inherited():
+    """Порт сервера не уходит дочерним процессам раннера (pytest и то, что он запустит)."""
+    from veha.listen import bind_socket
+
+    sock = bind_socket(0)
+    try:
+        assert sock.get_inheritable() is False
+        assert sock.getsockname()[0] == "127.0.0.1"
+    finally:
+        sock.close()
 
 
 def test_server_listens_on_loopback_only(demo_root, monkeypatch, capsys):

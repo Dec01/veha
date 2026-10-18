@@ -188,3 +188,20 @@ def test_real_server_calls_on_started_and_serves():
         server.should_exit = True
         t.join(timeout=30)
         sock.close()
+
+
+@pytest.mark.parametrize("command", [["demo"], ["serve", "--root", "."]])
+@pytest.mark.parametrize("port", ["0", "-1", "65536", "70000", "abc"])
+def test_port_outside_range_is_a_message_not_a_trace(command, port, capsys):
+    with pytest.raises(SystemExit) as exc:
+        cli.main([*command, "--no-browser", "--port", port])
+    assert exc.value.code == 2
+    err = capsys.readouterr().err
+    assert "--port" in err and ("1..65535" in err or "не число" in err)
+    assert "Traceback" not in err
+
+
+@pytest.mark.parametrize("port", ["1", "65535"])
+def test_port_range_edges_parse(port):
+    args = cli.build_parser().parse_args(["demo", "--port", port])
+    assert args.port == int(port)
