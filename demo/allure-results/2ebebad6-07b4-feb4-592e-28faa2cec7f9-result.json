@@ -1,0 +1,97 @@
+{
+ "name": "test_get_enums_payment_methods_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/enums/payment-methods → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317802752,
+       "stop": 1789317802753
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317802753,
+       "stop": 1789317802754
+      }
+     ],
+     "start": 1789317802607,
+     "stop": 1789317802754
+    }
+   ],
+   "attachments": [],
+   "start": 1789317802607,
+   "stop": 1789317802754
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317802607,
+ "stop": 1789317802754,
+ "uuid": "2ebebad6-07b4-feb4-592e-28faa2cec7f9",
+ "historyId": "8ffe0a40fe83db4eca1cbe73df63670c",
+ "testCaseId": "c738228d68385337f46c5229a8f08a2f",
+ "fullName": "src.api.tests.enums.test_enums_dict.TestEnumsDict#test_get_enums_payment_methods_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Enums / справочник"
+  },
+  {
+   "name": "story",
+   "value": "Способы оплаты"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.enums.test_enums_dict"
+  },
+  {
+   "name": "suite",
+   "value": "test_enums_dict"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestEnumsDict"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3239-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.enums.test_enums_dict"
+  },
+  {
+   "name": "tag",
+   "value": "enums"
+  },
+  {
+   "name": "tag",
+   "value": "справочник"
+  }
+ ]
+}

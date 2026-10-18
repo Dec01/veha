@@ -1,0 +1,97 @@
+{
+ "name": "test_get_accounts_by_id_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/accounts/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317794360,
+       "stop": 1789317794361
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317794361,
+       "stop": 1789317794362
+      }
+     ],
+     "start": 1789317794093,
+     "stop": 1789317794362
+    }
+   ],
+   "attachments": [],
+   "start": 1789317794093,
+   "stop": 1789317794362
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317794093,
+ "stop": 1789317794362,
+ "uuid": "108fa753-3e34-9669-d661-ac453e756dde",
+ "historyId": "4fb200e15a60c65b33e4467d3c9a16b1",
+ "testCaseId": "95893a1e69eb499263aa97e380339667",
+ "fullName": "src.api.tests.accounts.test_accounts_crud.TestAccountsCrud#test_get_accounts_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Accounts / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Accounts"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.accounts.test_accounts_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_accounts_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestAccountsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5772-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.accounts.test_accounts_crud"
+  },
+  {
+   "name": "tag",
+   "value": "accounts"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

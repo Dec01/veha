@@ -1,0 +1,118 @@
+{
+ "name": "test_get_prices_by_id_permissions",
+ "status": "broken",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/prices/4211 → expect status=403",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got —",
+       "status": "failed",
+       "start": 1789317641333,
+       "stop": 1789317641334
+      },
+      {
+       "name": "Response body validation",
+       "status": "skipped",
+       "start": 1789317641334,
+       "stop": 1789317641335
+      }
+     ],
+     "start": 1789317641059,
+     "stop": 1789317641335
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "b65c5da5-8d2e-33c3-87c5-04be1ee44952-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "3cce57c1-1ccf-925b-2a4d-7320b32a11dd-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317641059,
+   "stop": 1789317641335
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "532db8ee-ece5-00e5-a261-b0a4c7cab8a9-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317641059,
+ "stop": 1789317641335,
+ "uuid": "8b845b38-5b2e-5cbd-eb3b-6a7175fe2c31",
+ "historyId": "41e36768e64ae6c74f83f6b1d08b76d2",
+ "testCaseId": "5fd37262b5d2ffbad4340b4ad2504690",
+ "fullName": "src.api.tests.prices.test_prices_crud.TestPricesCrud#test_get_prices_by_id_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Prices / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Prices"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.prices.test_prices_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_prices_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPricesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2040-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.prices.test_prices_crud"
+  },
+  {
+   "name": "tag",
+   "value": "prices"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ],
+ "statusDetails": {
+  "message": "TimeoutError: запрос не уложился в 30 с\nExpected: ответ за 30 с\nActual: таймаут\nHint: очередь не разбиралась, консьюмер лежал",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/prices/test_prices_crud.py\", line 154, in test_get_prices_by_id_permissions\n    assert_response(response, expected)\nTimeoutError: запрос не уложился в 30 с"
+ }
+}

@@ -1,0 +1,97 @@
+{
+ "name": "test_get_returns_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/returns → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317713105,
+       "stop": 1789317713106
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317713106,
+       "stop": 1789317713107
+      }
+     ],
+     "start": 1789317712996,
+     "stop": 1789317713107
+    }
+   ],
+   "attachments": [],
+   "start": 1789317712996,
+   "stop": 1789317713107
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317712996,
+ "stop": 1789317713107,
+ "uuid": "c8acb292-11b1-ebef-5272-a328d53bc1eb",
+ "historyId": "297442e1e23763654403ed40b348a3f5",
+ "testCaseId": "11269c8c4890f4f83cd18df0eba93cae",
+ "fullName": "src.api.tests.returns.test_returns_list.TestReturnsList#test_get_returns_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Returns / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Returns"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.returns.test_returns_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_returns_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestReturnsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2168-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.returns.test_returns_list"
+  },
+  {
+   "name": "tag",
+   "value": "returns"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

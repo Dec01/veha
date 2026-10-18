@@ -1,0 +1,11 @@
+{
+ "method": "PUT",
+ "url": "https://shop-api.example.com/api/v1/accounts/{id}",
+ "headers": {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer <redacted>"
+ },
+ "body": {
+  "demo": true
+ }
+}

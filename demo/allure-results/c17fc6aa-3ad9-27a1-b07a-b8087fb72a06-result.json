@@ -1,0 +1,97 @@
+{
+ "name": "test_get_suppliers_by_id_products_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/suppliers/4211/products → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317744571,
+       "stop": 1789317744572
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317744572,
+       "stop": 1789317744573
+      }
+     ],
+     "start": 1789317744226,
+     "stop": 1789317744573
+    }
+   ],
+   "attachments": [],
+   "start": 1789317744226,
+   "stop": 1789317744573
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317744226,
+ "stop": 1789317744573,
+ "uuid": "c17fc6aa-3ad9-27a1-b07a-b8087fb72a06",
+ "historyId": "316eadb92021c6c53a7d2d03ec0735d9",
+ "testCaseId": "5d523d1bb8d28b407507147c474717a7",
+ "fullName": "src.api.tests.suppliers.test_suppliers_queries.TestSuppliersQueries#test_get_suppliers_by_id_products_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Suppliers / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Товары поставщика"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.suppliers.test_suppliers_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_suppliers_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSuppliersQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7170-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.suppliers.test_suppliers_queries"
+  },
+  {
+   "name": "tag",
+   "value": "suppliers"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ]
+}

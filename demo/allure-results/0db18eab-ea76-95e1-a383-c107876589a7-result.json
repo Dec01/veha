@@ -1,0 +1,137 @@
+{
+ "name": "test_put_customers_by_id_cross_field",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/customers → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317776079,
+       "stop": 1789317776080
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317776080,
+       "stop": 1789317776081
+      }
+     ],
+     "start": 1789317776023,
+     "stop": 1789317776081
+    }
+   ],
+   "attachments": [],
+   "start": 1789317776023,
+   "stop": 1789317776081
+  },
+  {
+   "name": "HTTP PUT /api/v1/customers/4211 → expect status=400",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 400, got 400",
+       "status": "passed",
+       "start": 1789317776137,
+       "stop": 1789317776138
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317776138,
+       "stop": 1789317776139
+      }
+     ],
+     "start": 1789317776081,
+     "stop": 1789317776139
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "d7004bfc-3265-ec0d-36b5-63854599bdba-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "72b9f852-b14c-58d6-3d39-6ad4553ca598-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317776081,
+   "stop": 1789317776139
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317776023,
+ "stop": 1789317776140,
+ "uuid": "0db18eab-ea76-95e1-a383-c107876589a7",
+ "historyId": "e1cdffcc41e73bf11d5e6f1c8ff931c3",
+ "testCaseId": "597d663c42414ce16c6b087b8d0eea32",
+ "fullName": "src.api.tests.customers.test_customers_crud.TestCustomersCrud#test_put_customers_by_id_cross_field",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Customers / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Customers"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.customers.test_customers_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_customers_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCustomersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8996-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.customers.test_customers_crud"
+  },
+  {
+   "name": "tag",
+   "value": "customers"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

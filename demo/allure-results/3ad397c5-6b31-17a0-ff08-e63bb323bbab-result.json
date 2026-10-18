@@ -1,0 +1,97 @@
+{
+ "name": "test_get_roles_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/roles/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317800021,
+       "stop": 1789317800022
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317800022,
+       "stop": 1789317800023
+      }
+     ],
+     "start": 1789317799883,
+     "stop": 1789317800023
+    }
+   ],
+   "attachments": [],
+   "start": 1789317799883,
+   "stop": 1789317800023
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317799883,
+ "stop": 1789317800023,
+ "uuid": "3ad397c5-6b31-17a0-ff08-e63bb323bbab",
+ "historyId": "07dcdc4b888cfdb19c8aded79e9bbe2d",
+ "testCaseId": "0d1b3bb6b064d8c0a1739d706b5cb936",
+ "fullName": "src.api.tests.roles.test_roles_crud.TestRolesCrud#test_get_roles_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Roles & Permissions / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Roles & Permissions"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.roles.test_roles_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_roles_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestRolesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5497-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.roles.test_roles_crud"
+  },
+  {
+   "name": "tag",
+   "value": "roles"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

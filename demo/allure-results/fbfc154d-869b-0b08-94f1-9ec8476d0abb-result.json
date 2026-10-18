@@ -1,0 +1,137 @@
+{
+ "name": "test_post_purchases_by_id_approve_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/purchases → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317754938,
+       "stop": 1789317754939
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317754939,
+       "stop": 1789317754940
+      }
+     ],
+     "start": 1789317754883,
+     "stop": 1789317754940
+    }
+   ],
+   "attachments": [],
+   "start": 1789317754883,
+   "stop": 1789317754940
+  },
+  {
+   "name": "HTTP POST /api/v1/purchases/4211/approve → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317754995,
+       "stop": 1789317754996
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317754996,
+       "stop": 1789317754997
+      }
+     ],
+     "start": 1789317754940,
+     "stop": 1789317754997
+    }
+   ],
+   "attachments": [],
+   "start": 1789317754940,
+   "stop": 1789317754997
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317754883,
+ "stop": 1789317754997,
+ "uuid": "fbfc154d-869b-0b08-94f1-9ec8476d0abb",
+ "historyId": "34cd726173f95f43882e7bf549ca260b",
+ "testCaseId": "4aeb7bc566df2acbb2c0b348227cd7e9",
+ "fullName": "src.api.tests.purchases.test_purchases_actions.TestPurchasesActions#test_post_purchases_by_id_approve_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Purchase Orders / операции"
+  },
+  {
+   "name": "story",
+   "value": "Согласовать закупку"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.purchases.test_purchases_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchases_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchasesActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6599-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.purchases.test_purchases_actions"
+  },
+  {
+   "name": "tag",
+   "value": "purchases"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  },
+  {
+   "name": "tag",
+   "value": "WMS-12.4"
+  }
+ ],
+ "links": [
+  {
+   "name": "WMS-12.4",
+   "url": "spec://WMS-12.4",
+   "type": "link"
+  }
+ ]
+}

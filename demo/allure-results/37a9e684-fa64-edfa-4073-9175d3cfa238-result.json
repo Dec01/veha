@@ -1,0 +1,97 @@
+{
+ "name": "test_get_customers_by_id_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/customers/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317774056,
+       "stop": 1789317774057
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317774057,
+       "stop": 1789317774058
+      }
+     ],
+     "start": 1789317773863,
+     "stop": 1789317774058
+    }
+   ],
+   "attachments": [],
+   "start": 1789317773863,
+   "stop": 1789317774058
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317773863,
+ "stop": 1789317774058,
+ "uuid": "37a9e684-fa64-edfa-4073-9175d3cfa238",
+ "historyId": "2b1b000bacb93578486f79a41188b753",
+ "testCaseId": "468ee2e5b1831da83fae46bc770e856b",
+ "fullName": "src.api.tests.customers.test_customers_crud.TestCustomersCrud#test_get_customers_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Customers / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Customers"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.customers.test_customers_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_customers_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCustomersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "1310-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.customers.test_customers_crud"
+  },
+  {
+   "name": "tag",
+   "value": "customers"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

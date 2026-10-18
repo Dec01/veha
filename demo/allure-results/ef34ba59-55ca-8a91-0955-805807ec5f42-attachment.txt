@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_post_invoices_incorrect_body
+[001] шаг прогона: проверка test_post_invoices_incorrect_body
+[002] шаг прогона: проверка test_post_invoices_incorrect_body
+[003] шаг прогона: проверка test_post_invoices_incorrect_body
+[004] шаг прогона: проверка test_post_invoices_incorrect_body
+[005] шаг прогона: проверка test_post_invoices_incorrect_body
+[006] шаг прогона: проверка test_post_invoices_incorrect_body
+[007] шаг прогона: проверка test_post_invoices_incorrect_body
+[008] шаг прогона: проверка test_post_invoices_incorrect_body
+[009] шаг прогона: проверка test_post_invoices_incorrect_body
+[010] шаг прогона: проверка test_post_invoices_incorrect_body
+[011] шаг прогона: проверка test_post_invoices_incorrect_body
+AssertionError: Response body validation failed

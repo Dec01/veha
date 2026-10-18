@@ -1,0 +1,1342 @@
+{
+ "version": 2,
+ "kind": "db.effects",
+ "scope": {
+  "system": "default",
+  "env": "default"
+ },
+ "collected_at": "2026-09-13T19:55:00+03:00",
+ "collector": "veha-demo/generate",
+ "records": [
+  {
+   "test": "test_order_to_invoice",
+   "nodeid": "src/api/tests/journeys/test_order_to_invoice.py::TestOrderToInvoice::test_order_to_invoice[case-1]",
+   "table": "order_header",
+   "insert": 4,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_order_to_invoice",
+   "nodeid": "src/api/tests/journeys/test_order_to_invoice.py::TestOrderToInvoice::test_order_to_invoice",
+   "table": "order_line",
+   "insert": 4,
+   "update": 2,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_order_to_invoice",
+   "nodeid": "src/api/tests/journeys/test_order_to_invoice.py::TestOrderToInvoice::test_order_to_invoice",
+   "table": "payment",
+   "insert": 4,
+   "update": 2,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_order_to_invoice",
+   "nodeid": "src/api/tests/journeys/test_order_to_invoice.py::TestOrderToInvoice::test_order_to_invoice",
+   "table": "notification",
+   "insert": 3,
+   "update": 0,
+   "delete": 0,
+   "shared": true,
+   "scope": "test"
+  },
+  {
+   "test": "test_order_cancellation",
+   "nodeid": "src/api/tests/journeys/test_order_cancellation.py::TestOrderCancellation::test_order_cancellation",
+   "table": "order_header",
+   "insert": 3,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_order_cancellation",
+   "nodeid": "src/api/tests/journeys/test_order_cancellation.py::TestOrderCancellation::test_order_cancellation",
+   "table": "notification",
+   "insert": 2,
+   "update": 0,
+   "delete": 0,
+   "shared": true,
+   "scope": "test"
+  },
+  {
+   "test": "test_return_and_refund",
+   "nodeid": "src/api/tests/journeys/test_return_and_refund.py::TestReturnAndRefund::test_return_and_refund",
+   "table": "return_request",
+   "insert": 2,
+   "update": 2,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_return_and_refund",
+   "nodeid": "src/api/tests/journeys/test_return_and_refund.py::TestReturnAndRefund::test_return_and_refund",
+   "table": "refund",
+   "insert": 1,
+   "update": 2,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_return_and_refund",
+   "nodeid": "src/api/tests/journeys/test_return_and_refund.py::TestReturnAndRefund::test_return_and_refund",
+   "table": "notification",
+   "insert": 4,
+   "update": 0,
+   "delete": 0,
+   "shared": true,
+   "scope": "test"
+  },
+  {
+   "test": "test_stock_replenishment",
+   "nodeid": "src/api/tests/journeys/test_stock_replenishment.py::TestStockReplenishment::test_stock_replenishment",
+   "table": "purchase_order",
+   "insert": 3,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_stock_replenishment",
+   "nodeid": "src/api/tests/journeys/test_stock_replenishment.py::TestStockReplenishment::test_stock_replenishment",
+   "table": "stock_item",
+   "insert": 3,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_shipment_flow",
+   "nodeid": "src/api/tests/journeys/test_shipment_flow.py::TestShipmentFlow::test_shipment_flow",
+   "table": "shipment",
+   "insert": 4,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_shipment_flow",
+   "nodeid": "src/api/tests/journeys/test_shipment_flow.py::TestShipmentFlow::test_shipment_flow",
+   "table": "shipment_item",
+   "insert": 2,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_loyalty_award",
+   "nodeid": "src/api/tests/journeys/test_loyalty_award.py::TestLoyaltyAward::test_loyalty_award",
+   "table": "order_header",
+   "insert": 4,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_loyalty_award",
+   "nodeid": "src/api/tests/journeys/test_loyalty_award.py::TestLoyaltyAward::test_loyalty_award",
+   "table": "loyalty_transaction",
+   "insert": 4,
+   "update": 0,
+   "delete": 0,
+   "shared": true,
+   "scope": "test"
+  },
+  {
+   "test": "test_campaign_launch",
+   "nodeid": "src/api/tests/journeys/test_campaign_launch.py::TestCampaignLaunch::test_campaign_launch",
+   "table": "campaign",
+   "insert": 4,
+   "update": 2,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_campaign_launch",
+   "nodeid": "src/api/tests/journeys/test_campaign_launch.py::TestCampaignLaunch::test_campaign_launch",
+   "table": "segment_member",
+   "insert": 2,
+   "update": 0,
+   "delete": 0,
+   "shared": true,
+   "scope": "test"
+  },
+  {
+   "test": "test_campaign_launch",
+   "nodeid": "src/api/tests/journeys/test_campaign_launch.py::TestCampaignLaunch::test_campaign_launch",
+   "table": "notification",
+   "insert": 4,
+   "update": 0,
+   "delete": 0,
+   "shared": true,
+   "scope": "test"
+  },
+  {
+   "test": "test_price_update",
+   "nodeid": "src/api/tests/journeys/test_price_update.py::TestPriceUpdate::test_price_update",
+   "table": "product",
+   "insert": 4,
+   "update": 2,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_price_update",
+   "nodeid": "src/api/tests/journeys/test_price_update.py::TestPriceUpdate::test_price_update",
+   "table": "price_entry",
+   "insert": 2,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_price_update",
+   "nodeid": "src/api/tests/journeys/test_price_update.py::TestPriceUpdate::test_price_update",
+   "table": "audit_event",
+   "insert": 2,
+   "update": 0,
+   "delete": 0,
+   "shared": true,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_default",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_default",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_default",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_default",
+   "table": "customer",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_pagination",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_pagination",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_pagination",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_pagination",
+   "table": "customer",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_permissions",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_permissions",
+   "table": "customer",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_extra_data",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_post_orders_extra_data",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_extra_data",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_post_orders_extra_data",
+   "table": "order_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_extra_data",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_post_orders_extra_data",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_post_orders_permissions",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_post_orders_permissions",
+   "table": "order_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_post_orders_permissions",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_by_id_elements",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_get_orders_by_id_elements",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_by_id_elements",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_get_orders_by_id_elements",
+   "table": "order_status_history",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_by_id_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_get_orders_by_id_permissions",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_by_id_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_get_orders_by_id_permissions",
+   "table": "order_status_history",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_put_orders_by_id_success",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_put_orders_by_id_success",
+   "table": "order_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_put_orders_by_id_success",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_put_orders_by_id_success",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_orders_by_id_elements",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_put_orders_by_id_elements",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_orders_by_id_incorrect_body",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_put_orders_by_id_incorrect_body",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_success",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_success",
+   "table": "order_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_success",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_success",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 1,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_success",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_success",
+   "table": "order_line",
+   "insert": 0,
+   "update": 0,
+   "delete": 1,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_lifecycle",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_lifecycle",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_lifecycle",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_lifecycle",
+   "table": "order_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_lifecycle",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_lifecycle",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_lifecycle",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_lifecycle",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 1,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_delete_orders_by_id_lifecycle",
+   "nodeid": "src/api/tests/orders/test_orders_crud.py::TestOrdersCrud::test_delete_orders_by_id_lifecycle",
+   "table": "order_line",
+   "insert": 0,
+   "update": 0,
+   "delete": 1,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_by_id_lines_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_queries.py::TestOrdersQueries::test_get_orders_by_id_lines_permissions",
+   "table": "order_line",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_by_id_lines_permissions",
+   "nodeid": "src/api/tests/orders/test_orders_queries.py::TestOrdersQueries::test_get_orders_by_id_lines_permissions",
+   "table": "product_variant",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_customer_by_id_default",
+   "nodeid": "src/api/tests/orders/test_orders_queries.py::TestOrdersQueries::test_get_orders_customer_by_id_default",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_customer_by_id_default",
+   "nodeid": "src/api/tests/orders/test_orders_queries.py::TestOrdersQueries::test_get_orders_customer_by_id_default",
+   "table": "customer",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_by_id_confirm_not_found",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_by_id_confirm_not_found",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_by_id_confirm_not_found",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_by_id_confirm_not_found",
+   "table": "order_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_by_id_confirm_not_found",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_by_id_confirm_not_found",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_by_id_confirm_not_found",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_by_id_confirm_not_found",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_by_id_confirm_not_found",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_by_id_confirm_not_found",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_export_success",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_export_success",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_export_success",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_export_success",
+   "table": "order_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_export_success",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_export_success",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_export_not_found",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_export_not_found",
+   "table": "order_header",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_export_not_found",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_export_not_found",
+   "table": "order_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_orders_export_not_found",
+   "nodeid": "src/api/tests/orders/test_orders_actions.py::TestOrdersActions::test_post_orders_export_not_found",
+   "table": "order_status_history",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_report_sales_default",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_report_sales_default",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_report_sales_default",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_report_sales_default",
+   "table": "order_line",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_report_sales_filters",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_report_sales_filters",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_report_sales_filters",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_report_sales_filters",
+   "table": "order_line",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_report_sales_pagination",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_report_sales_pagination",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_orders_report_sales_pagination",
+   "nodeid": "src/api/tests/orders/test_orders_list.py::TestOrdersList::test_get_orders_report_sales_pagination",
+   "table": "order_line",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_elements",
+   "nodeid": "src/api/tests/payments/test_payments_list.py::TestPaymentsList::test_get_payments_elements",
+   "table": "payment",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_sorting",
+   "nodeid": "src/api/tests/payments/test_payments_list.py::TestPaymentsList::test_get_payments_sorting",
+   "table": "payment",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_elements",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_post_payments_elements",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_extra_data",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_post_payments_extra_data",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_by_id_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_get_payments_by_id_not_found",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_payments_by_id_update_object",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_put_payments_by_id_update_object",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_payments_by_id_update_object",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_put_payments_by_id_update_object",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_payments_by_id_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_put_payments_by_id_not_found",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_payments_by_id_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_put_payments_by_id_not_found",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_payments_by_id_cross_field",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_put_payments_by_id_cross_field",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_payments_by_id_cross_field",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_put_payments_by_id_cross_field",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_order_by_id_default",
+   "nodeid": "src/api/tests/payments/test_payments_queries.py::TestPaymentsQueries::test_get_payments_order_by_id_default",
+   "table": "payment",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_order_by_id_default",
+   "nodeid": "src/api/tests/payments/test_payments_queries.py::TestPaymentsQueries::test_get_payments_order_by_id_default",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_order_by_id_permissions",
+   "nodeid": "src/api/tests/payments/test_payments_queries.py::TestPaymentsQueries::test_get_payments_order_by_id_permissions",
+   "table": "payment",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_order_by_id_permissions",
+   "nodeid": "src/api/tests/payments/test_payments_queries.py::TestPaymentsQueries::test_get_payments_order_by_id_permissions",
+   "table": "order_header",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_by_id_capture_success",
+   "nodeid": "src/api/tests/payments/test_payments_actions.py::TestPaymentsActions::test_post_payments_by_id_capture_success",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_by_id_capture_success",
+   "nodeid": "src/api/tests/payments/test_payments_actions.py::TestPaymentsActions::test_post_payments_by_id_capture_success",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_by_id_capture_success",
+   "nodeid": "src/api/tests/payments/test_payments_actions.py::TestPaymentsActions::test_post_payments_by_id_capture_success",
+   "table": "payment_attempt",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_by_id_capture_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_actions.py::TestPaymentsActions::test_post_payments_by_id_capture_not_found",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_by_id_capture_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_actions.py::TestPaymentsActions::test_post_payments_by_id_capture_not_found",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_by_id_capture_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_actions.py::TestPaymentsActions::test_post_payments_by_id_capture_not_found",
+   "table": "payment_attempt",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_by_id_capture_permissions",
+   "nodeid": "src/api/tests/payments/test_payments_actions.py::TestPaymentsActions::test_post_payments_by_id_capture_permissions",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_payments_by_id_capture_permissions",
+   "nodeid": "src/api/tests/payments/test_payments_actions.py::TestPaymentsActions::test_post_payments_by_id_capture_permissions",
+   "table": "payment_attempt",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_by_id_receipt_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_get_payments_by_id_receipt_not_found",
+   "table": "payment",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_by_id_receipt_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_get_payments_by_id_receipt_not_found",
+   "table": "payment",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_payments_by_id_receipt_not_found",
+   "nodeid": "src/api/tests/payments/test_payments_crud.py::TestPaymentsCrud::test_get_payments_by_id_receipt_not_found",
+   "table": "payment_attempt",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_default",
+   "nodeid": "src/api/tests/stock/test_stock_list.py::TestStockList::test_get_stock_default",
+   "table": "stock_item",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_default",
+   "nodeid": "src/api/tests/stock/test_stock_list.py::TestStockList::test_get_stock_default",
+   "table": "warehouse",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_elements",
+   "nodeid": "src/api/tests/stock/test_stock_list.py::TestStockList::test_get_stock_elements",
+   "table": "stock_item",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_elements",
+   "nodeid": "src/api/tests/stock/test_stock_list.py::TestStockList::test_get_stock_elements",
+   "table": "warehouse",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_filters",
+   "nodeid": "src/api/tests/stock/test_stock_list.py::TestStockList::test_get_stock_filters",
+   "table": "stock_item",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_filters",
+   "nodeid": "src/api/tests/stock/test_stock_list.py::TestStockList::test_get_stock_filters",
+   "table": "warehouse",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_product_by_id_default",
+   "nodeid": "src/api/tests/stock/test_stock_queries.py::TestStockQueries::test_get_stock_product_by_id_default",
+   "table": "stock_item",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_product_by_id_default",
+   "nodeid": "src/api/tests/stock/test_stock_queries.py::TestStockQueries::test_get_stock_product_by_id_default",
+   "table": "product_variant",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_warehouse_by_id_default",
+   "nodeid": "src/api/tests/stock/test_stock_queries.py::TestStockQueries::test_get_stock_warehouse_by_id_default",
+   "table": "stock_item",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_stock_warehouse_by_id_default",
+   "nodeid": "src/api/tests/stock/test_stock_queries.py::TestStockQueries::test_get_stock_warehouse_by_id_default",
+   "table": "warehouse",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_stock_moves_cross_field",
+   "nodeid": "src/api/tests/stock/test_stock_actions.py::TestStockActions::test_post_stock_moves_cross_field",
+   "table": "stock_move",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_stock_moves_cross_field",
+   "nodeid": "src/api/tests/stock/test_stock_actions.py::TestStockActions::test_post_stock_moves_cross_field",
+   "table": "stock_item",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_invoices_default",
+   "nodeid": "src/api/tests/invoices/test_invoices_list.py::TestInvoicesList::test_get_invoices_default",
+   "table": "invoice",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_invoices_default",
+   "nodeid": "src/api/tests/invoices/test_invoices_list.py::TestInvoicesList::test_get_invoices_default",
+   "table": "customer",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_invoices_incorrect_body",
+   "nodeid": "src/api/tests/invoices/test_invoices_crud.py::TestInvoicesCrud::test_post_invoices_incorrect_body",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_invoices_incorrect_body",
+   "nodeid": "src/api/tests/invoices/test_invoices_crud.py::TestInvoicesCrud::test_post_invoices_incorrect_body",
+   "table": "invoice_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_invoices_by_id_not_found",
+   "nodeid": "src/api/tests/invoices/test_invoices_crud.py::TestInvoicesCrud::test_get_invoices_by_id_not_found",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_invoices_by_id_not_found",
+   "nodeid": "src/api/tests/invoices/test_invoices_crud.py::TestInvoicesCrud::test_get_invoices_by_id_not_found",
+   "table": "invoice_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_invoices_by_id_elements",
+   "nodeid": "src/api/tests/invoices/test_invoices_crud.py::TestInvoicesCrud::test_put_invoices_by_id_elements",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_invoices_by_id_update_object",
+   "nodeid": "src/api/tests/invoices/test_invoices_crud.py::TestInvoicesCrud::test_put_invoices_by_id_update_object",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_invoices_by_id_update_object",
+   "nodeid": "src/api/tests/invoices/test_invoices_crud.py::TestInvoicesCrud::test_put_invoices_by_id_update_object",
+   "table": "invoice_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_put_invoices_by_id_update_object",
+   "nodeid": "src/api/tests/invoices/test_invoices_crud.py::TestInvoicesCrud::test_put_invoices_by_id_update_object",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_invoices_by_id_lines_default",
+   "nodeid": "src/api/tests/invoices/test_invoices_queries.py::TestInvoicesQueries::test_get_invoices_by_id_lines_default",
+   "table": "invoice_line",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_get_invoices_by_id_lines_default",
+   "nodeid": "src/api/tests/invoices/test_invoices_queries.py::TestInvoicesQueries::test_get_invoices_by_id_lines_default",
+   "table": "tax_rate",
+   "insert": 0,
+   "update": 0,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_invoices_by_id_send_not_found",
+   "nodeid": "src/api/tests/invoices/test_invoices_actions.py::TestInvoicesActions::test_post_invoices_by_id_send_not_found",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_invoices_by_id_send_not_found",
+   "nodeid": "src/api/tests/invoices/test_invoices_actions.py::TestInvoicesActions::test_post_invoices_by_id_send_not_found",
+   "table": "invoice_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_invoices_by_id_send_not_found",
+   "nodeid": "src/api/tests/invoices/test_invoices_actions.py::TestInvoicesActions::test_post_invoices_by_id_send_not_found",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_invoices_by_id_send_cross_field",
+   "nodeid": "src/api/tests/invoices/test_invoices_actions.py::TestInvoicesActions::test_post_invoices_by_id_send_cross_field",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_invoices_by_id_send_cross_field",
+   "nodeid": "src/api/tests/invoices/test_invoices_actions.py::TestInvoicesActions::test_post_invoices_by_id_send_cross_field",
+   "table": "invoice_line",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "test_post_invoices_by_id_send_cross_field",
+   "nodeid": "src/api/tests/invoices/test_invoices_actions.py::TestInvoicesActions::test_post_invoices_by_id_send_cross_field",
+   "table": "invoice",
+   "insert": 1,
+   "update": 1,
+   "delete": 0,
+   "shared": false,
+   "scope": "test"
+  },
+  {
+   "test": "",
+   "nodeid": "",
+   "table": "audit_event",
+   "insert": 234,
+   "update": 28,
+   "delete": 0,
+   "shared": true,
+   "scope": "session"
+  },
+  {
+   "test": "",
+   "nodeid": "",
+   "table": "order_status_history",
+   "insert": 41,
+   "update": 36,
+   "delete": 0,
+   "shared": true,
+   "scope": "session"
+  },
+  {
+   "test": "",
+   "nodeid": "",
+   "table": "product_attribute",
+   "insert": 280,
+   "update": 16,
+   "delete": 0,
+   "shared": true,
+   "scope": "session"
+  }
+ ]
+}

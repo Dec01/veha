@@ -1,0 +1,97 @@
+{
+ "name": "test_get_notifications_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/notifications → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317801655,
+       "stop": 1789317801656
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317801656,
+       "stop": 1789317801657
+      }
+     ],
+     "start": 1789317801411,
+     "stop": 1789317801657
+    }
+   ],
+   "attachments": [],
+   "start": 1789317801411,
+   "stop": 1789317801657
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317801411,
+ "stop": 1789317801657,
+ "uuid": "96dfb19b-52a5-f23b-fd04-ef261cb4dc18",
+ "historyId": "116725d8af08312aeb6f50a4cfab7f67",
+ "testCaseId": "113b1304795623aa38d29ffbe1ca853b",
+ "fullName": "src.api.tests.notifications.test_notifications_list.TestNotificationsList#test_get_notifications_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Notifications / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Notifications"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.notifications.test_notifications_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_notifications_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestNotificationsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7687-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.notifications.test_notifications_list"
+  },
+  {
+   "name": "tag",
+   "value": "notifications"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

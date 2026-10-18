@@ -1,0 +1,105 @@
+{
+ "mrs": [
+  {
+   "iid": 118,
+   "title": "Заказ: запрет обратного перехода статуса",
+   "state": "opened",
+   "author": "dev-1",
+   "url": "",
+   "branch": "feature/order-status-guard",
+   "updated": "2026-09-13T19:40:00+03:00",
+   "merged": null
+  },
+  {
+   "iid": 119,
+   "title": "Склад: резерв не больше доступного остатка",
+   "state": "opened",
+   "author": "dev-2",
+   "url": "",
+   "branch": "fix/stock-reserve-limit",
+   "updated": "2026-09-12T19:40:00+03:00",
+   "merged": null
+  },
+  {
+   "iid": 120,
+   "title": "Счета: строки счёта с налоговой ставкой",
+   "state": "opened",
+   "author": "qa-1",
+   "url": "",
+   "branch": "feature/invoice-tax-lines",
+   "updated": "2026-09-11T19:40:00+03:00",
+   "merged": null
+  },
+  {
+   "iid": 121,
+   "title": "Каталог: массовая переоценка",
+   "state": "merged",
+   "author": "dev-3",
+   "url": "",
+   "branch": "feature/bulk-price-update",
+   "updated": "2026-09-10T19:40:00+03:00",
+   "merged": "2026-09-10T19:40:00+03:00"
+  },
+  {
+   "iid": 122,
+   "title": "CRM: пересчёт сегмента по расписанию",
+   "state": "merged",
+   "author": "dev-1",
+   "url": "",
+   "branch": "feature/segment-schedule",
+   "updated": "2026-09-09T19:40:00+03:00",
+   "merged": "2026-09-09T19:40:00+03:00"
+  },
+  {
+   "iid": 123,
+   "title": "Возвраты: согласование возврата оплаты",
+   "state": "merged",
+   "author": "dev-2",
+   "url": "",
+   "branch": "feature/refund-approval",
+   "updated": "2026-09-08T19:40:00+03:00",
+   "merged": "2026-09-08T19:40:00+03:00"
+  },
+  {
+   "iid": 124,
+   "title": "Отгрузка: трек-номер приходит асинхронно",
+   "state": "merged",
+   "author": "qa-1",
+   "url": "",
+   "branch": "fix/shipment-tracking",
+   "updated": "2026-09-07T19:40:00+03:00",
+   "merged": "2026-09-07T19:40:00+03:00"
+  },
+  {
+   "iid": 125,
+   "title": "Права: роль «кладовщик»",
+   "state": "merged",
+   "author": "dev-3",
+   "url": "",
+   "branch": "feature/role-storekeeper",
+   "updated": "2026-09-06T19:40:00+03:00",
+   "merged": "2026-09-06T19:40:00+03:00"
+  },
+  {
+   "iid": 126,
+   "title": "Отчёты: выгрузка реестра заказов",
+   "state": "merged",
+   "author": "dev-1",
+   "url": "",
+   "branch": "feature/orders-export",
+   "updated": "2026-09-05T19:40:00+03:00",
+   "merged": "2026-09-05T19:40:00+03:00"
+  },
+  {
+   "iid": 127,
+   "title": "Платежи: третья попытка авторизации",
+   "state": "merged",
+   "author": "dev-2",
+   "url": "",
+   "branch": "fix/payment-retry",
+   "updated": "2026-09-04T19:40:00+03:00",
+   "merged": "2026-09-04T19:40:00+03:00"
+  }
+ ],
+ "project": "shop/storefront (демонстрационный набор)"
+}

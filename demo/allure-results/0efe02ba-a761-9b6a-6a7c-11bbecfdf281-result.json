@@ -1,0 +1,118 @@
+{
+ "name": "test_get_categories_elements",
+ "status": "broken",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/categories → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317615371,
+       "stop": 1789317615372
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317615372,
+       "stop": 1789317615373
+      }
+     ],
+     "start": 1789317615129,
+     "stop": 1789317615373
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "89882e45-9e65-418d-8dfa-635201ffb5bd-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "016a990f-f00c-1583-81b2-80cf9633447a-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317615129,
+   "stop": 1789317615373
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "ce459e10-417e-0833-010d-fdc856cd09d3-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317615129,
+ "stop": 1789317615373,
+ "uuid": "0efe02ba-a761-9b6a-6a7c-11bbecfdf281",
+ "historyId": "af3d8ab1f1f76a3509e0242d4d5e866d",
+ "testCaseId": "51067fc674b575d638dd8e655e559c02",
+ "fullName": "src.api.tests.categories.test_categories_list.TestCategoriesList#test_get_categories_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Categories / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Categories"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.categories.test_categories_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_categories_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCategoriesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7058-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.categories.test_categories_list"
+  },
+  {
+   "name": "tag",
+   "value": "categories"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Response body validation failed\nExpected: поле «total» присутствует и не пусто\nActual: поля нет\nHint: контракт объявляет total обязательным",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/categories/test_categories_list.py\", line 227, in test_get_categories_elements\n    assert_response(response, expected)\nAssertionError: Response body validation failed"
+ }
+}

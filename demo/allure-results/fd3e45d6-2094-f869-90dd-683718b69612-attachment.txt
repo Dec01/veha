@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_get_categories_sorting
+[001] шаг прогона: проверка test_get_categories_sorting
+[002] шаг прогона: проверка test_get_categories_sorting
+[003] шаг прогона: проверка test_get_categories_sorting
+[004] шаг прогона: проверка test_get_categories_sorting
+[005] шаг прогона: проверка test_get_categories_sorting
+[006] шаг прогона: проверка test_get_categories_sorting
+[007] шаг прогона: проверка test_get_categories_sorting
+[008] шаг прогона: проверка test_get_categories_sorting
+[009] шаг прогона: проверка test_get_categories_sorting
+[010] шаг прогона: проверка test_get_categories_sorting
+[011] шаг прогона: проверка test_get_categories_sorting
+AssertionError: Sum of lines does not match order total

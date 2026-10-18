@@ -1,0 +1,90 @@
+2026-09-13 19:40:14 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event payment.authorized, offset 1000
+2026-09-13 19:40:42 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "invoice_line"
+2026-09-13 19:40:57 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published return.requested in 80 ms
+2026-09-13 19:41:29 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:41:45 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:42:05 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event return.requested, offset 1005
+2026-09-13 19:42:27 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "gift_card"
+2026-09-13 19:42:43 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published invoice.issued in 17 ms
+2026-09-13 19:43:05 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:43:42 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:44:14 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event invoice.issued, offset 1010
+2026-09-13 19:44:26 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "subscription_plan"
+2026-09-13 19:44:52 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published payment.authorized in 64 ms
+2026-09-13 19:45:19 WARN  [billing-worker] c.e.s.b.PaymentAuthorizedListener : slow query on table "gift_card" (1022 ms)
+2026-09-13 19:45:22 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:45:26 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event payment.authorized, offset 1015
+2026-09-13 19:45:37 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "tax_rate"
+2026-09-13 19:45:39 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published return.requested in 49 ms
+2026-09-13 19:46:11 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:46:41 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:47:14 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event return.requested, offset 1020
+2026-09-13 19:47:20 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "invoice"
+2026-09-13 19:47:38 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published invoice.issued in 57 ms
+2026-09-13 19:48:13 WARN  [billing-worker] c.e.s.b.PaymentAuthorizedListener : slow query on table "tax_rate" (2819 ms)
+2026-09-13 19:48:16 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:48:25 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event invoice.issued, offset 1025
+2026-09-13 19:48:49 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "subscription"
+2026-09-13 19:49:19 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published payment.authorized in 26 ms
+2026-09-13 19:49:26 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:50:02 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:50:20 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event payment.authorized, offset 1030
+2026-09-13 19:50:39 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "refund"
+2026-09-13 19:50:47 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published return.requested in 50 ms
+2026-09-13 19:51:21 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:51:32 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:51:51 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event return.requested, offset 1035
+2026-09-13 19:52:09 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "invoice_line"
+2026-09-13 19:52:38 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published invoice.issued in 31 ms
+2026-09-13 19:53:05 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:53:27 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:53:39 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event invoice.issued, offset 1040
+2026-09-13 19:53:40 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "gift_card"
+2026-09-13 19:54:16 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published payment.authorized in 87 ms
+2026-09-13 19:54:47 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:54:59 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:55:02 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event payment.authorized, offset 1045
+2026-09-13 19:55:04 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "subscription_plan"
+2026-09-13 19:55:32 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published return.requested in 85 ms
+2026-09-13 19:55:57 WARN  [billing-worker] com.example.shop.billing.InvoiceService : slow query on table "gift_card" (2521 ms)
+2026-09-13 19:56:06 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:56:14 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event return.requested, offset 1050
+2026-09-13 19:56:34 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "tax_rate"
+2026-09-13 19:56:41 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published invoice.issued in 46 ms
+2026-09-13 19:57:01 WARN  [billing-worker] c.e.s.b.PaymentAuthorizedListener : slow query on table "subscription_plan" (3331 ms)
+2026-09-13 19:57:31 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 19:57:47 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event invoice.issued, offset 1055
+2026-09-13 19:58:22 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "invoice"
+2026-09-13 19:58:40 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published payment.authorized in 90 ms
+2026-09-13 19:59:06 WARN  [billing-worker] com.example.shop.billing.InvoiceService : slow query on table "tax_rate" (3634 ms)
+2026-09-13 19:59:08 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 19:59:16 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event payment.authorized, offset 1060
+2026-09-13 19:59:49 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "subscription"
+2026-09-13 20:00:27 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published return.requested in 6 ms
+2026-09-13 20:00:36 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 20:00:44 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 20:01:13 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event return.requested, offset 1065
+2026-09-13 20:01:31 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "refund"
+2026-09-13 20:02:11 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published invoice.issued in 19 ms
+2026-09-13 20:02:27 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 20:03:01 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 20:03:11 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event invoice.issued, offset 1070
+2026-09-13 20:03:43 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "invoice_line"
+2026-09-13 20:03:49 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published payment.authorized in 46 ms
+2026-09-13 20:04:28 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 20:04:43 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 20:05:11 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event payment.authorized, offset 1075
+2026-09-13 20:05:37 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "gift_card"
+2026-09-13 20:06:02 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published return.requested in 53 ms
+2026-09-13 20:06:04 WARN  [billing-worker] com.example.shop.billing.InvoiceService : slow query on table "invoice_line" (1052 ms)
+2026-09-13 20:06:44 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 20:06:58 INFO  [billing-worker] com.example.shop.billing.InvoiceService : received event return.requested, offset 1080
+2026-09-13 20:07:24 DEBUG [billing-worker] c.e.s.b.PaymentAuthorizedListener : persisted 1 row into table "subscription_plan"
+2026-09-13 20:07:52 INFO  [billing-worker] com.example.shop.billing.InvoiceService : published invoice.issued in 17 ms
+2026-09-13 20:07:59 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok
+2026-09-13 20:08:33 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 20:09:11 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : received event invoice.issued, offset 1085
+2026-09-13 20:09:34 DEBUG [billing-worker] com.example.shop.billing.InvoiceService : persisted 1 row into table "tax_rate"
+2026-09-13 20:10:13 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : published payment.authorized in 67 ms
+2026-09-13 20:10:50 INFO  [billing-worker] com.example.shop.billing.InvoiceService : health check ok
+2026-09-13 20:11:00 INFO  [billing-worker] c.e.s.b.PaymentAuthorizedListener : health check ok

@@ -1,0 +1,158 @@
+{
+ "name": "test_delete_shipments_by_id_success",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/shipments → expect status=201",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got —",
+       "status": "failed",
+       "start": 1789317709521,
+       "stop": 1789317709522
+      },
+      {
+       "name": "Response body validation",
+       "status": "skipped",
+       "start": 1789317709522,
+       "stop": 1789317709523
+      }
+     ],
+     "start": 1789317709431,
+     "stop": 1789317709523
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "cf4af73f-b851-d172-86f2-63c287f356cd-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "63b025a3-3bdd-935f-1779-35ee3d5bfc28-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317709431,
+   "stop": 1789317709523
+  },
+  {
+   "name": "HTTP DELETE /api/v1/shipments/4211 → expect status=204",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 204, got 204",
+       "status": "passed",
+       "start": 1789317709613,
+       "stop": 1789317709614
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317709614,
+       "stop": 1789317709615
+      }
+     ],
+     "start": 1789317709523,
+     "stop": 1789317709615
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "75322bfb-2ed1-e81b-b6e3-138ea74ba41e-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "cd920ab9-b018-1d97-a06f-326fbbe0e5ee-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317709523,
+   "stop": 1789317709615
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "0f67c3a0-7791-9085-b80e-c98d5ff353f7-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317709431,
+ "stop": 1789317709616,
+ "uuid": "dd733979-07cd-dd3a-64f8-b0adaebd5489",
+ "historyId": "c74de4065c0beb734743425aa68d14f5",
+ "testCaseId": "3836ea22e1dcd9d2c2ae615f463d3112",
+ "fullName": "src.api.tests.shipments.test_shipments_crud.TestShipmentsCrud#test_delete_shipments_by_id_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Shipments / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Удаление: Shipments"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.shipments.test_shipments_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_shipments_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestShipmentsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8301-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.shipments.test_shipments_crud"
+  },
+  {
+   "name": "tag",
+   "value": "shipments"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ],
+ "statusDetails": {
+  "message": "TimeoutError: запрос не уложился в 30 с\nExpected: ответ за 30 с\nActual: таймаут\nHint: очередь не разбиралась, консьюмер лежал",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/shipments/test_shipments_crud.py\", line 110, in test_delete_shipments_by_id_success\n    assert_response(response, expected)\nTimeoutError: запрос не уложился в 30 с"
+ }
+}

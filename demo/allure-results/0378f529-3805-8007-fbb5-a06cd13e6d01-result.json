@@ -1,0 +1,118 @@
+{
+ "name": "test_put_invoices_by_id_elements",
+ "status": "broken",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/invoices/4211 → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317760641,
+       "stop": 1789317760642
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317760642,
+       "stop": 1789317760643
+      }
+     ],
+     "start": 1789317760417,
+     "stop": 1789317760643
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "d0bd4650-f5dc-967e-b477-a801e7406fb7-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "80ec78d7-7ffb-c5d5-ebdc-7bf1a1f9a11a-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317760417,
+   "stop": 1789317760643
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "057a89d5-f2b1-04a6-6d6a-1f0de5b6fd7a-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317760417,
+ "stop": 1789317760643,
+ "uuid": "0378f529-3805-8007-fbb5-a06cd13e6d01",
+ "historyId": "46120965b0bc407472a33ad594919c77",
+ "testCaseId": "227eff82c2adb399889c0d7488492070",
+ "fullName": "src.api.tests.invoices.test_invoices_crud.TestInvoicesCrud#test_put_invoices_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Invoices / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Invoices"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.invoices.test_invoices_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_invoices_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestInvoicesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2122-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.invoices.test_invoices_crud"
+  },
+  {
+   "name": "tag",
+   "value": "invoices"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Response body validation failed\nExpected: поле «total» присутствует и не пусто\nActual: поля нет\nHint: контракт объявляет total обязательным",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/invoices/test_invoices_crud.py\", line 151, in test_put_invoices_by_id_elements\n    assert_response(response, expected)\nAssertionError: Response body validation failed"
+ }
+}

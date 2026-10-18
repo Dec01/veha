@@ -1,0 +1,97 @@
+{
+ "name": "test_get_variants_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/variants → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317627073,
+       "stop": 1789317627074
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317627074,
+       "stop": 1789317627075
+      }
+     ],
+     "start": 1789317626735,
+     "stop": 1789317627075
+    }
+   ],
+   "attachments": [],
+   "start": 1789317626735,
+   "stop": 1789317627075
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317626735,
+ "stop": 1789317627075,
+ "uuid": "dff8e63e-81dd-657d-dba5-9fd5376ee2a9",
+ "historyId": "fecc77910598b45241a49effac5990d0",
+ "testCaseId": "41fb597dc1ef593db427b01b5f1718f2",
+ "fullName": "src.api.tests.variants.test_variants_list.TestVariantsList#test_get_variants_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Variants / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Variants"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.variants.test_variants_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_variants_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestVariantsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4562-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.variants.test_variants_list"
+  },
+  {
+   "name": "tag",
+   "value": "variants"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

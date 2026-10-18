@@ -1,0 +1,97 @@
+{
+ "name": "test_get_categories_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/categories → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317615002,
+       "stop": 1789317615003
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317615003,
+       "stop": 1789317615004
+      }
+     ],
+     "start": 1789317614608,
+     "stop": 1789317615004
+    }
+   ],
+   "attachments": [],
+   "start": 1789317614608,
+   "stop": 1789317615004
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317614608,
+ "stop": 1789317615004,
+ "uuid": "621a3819-8933-2228-9b85-699050ef7934",
+ "historyId": "f835ce48861cb3ba604ddb617a45da15",
+ "testCaseId": "8c70d52e8a6a3eef2c682e134fdd1d96",
+ "fullName": "src.api.tests.categories.test_categories_list.TestCategoriesList#test_get_categories_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Categories / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Categories"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.categories.test_categories_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_categories_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCategoriesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3112-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.categories.test_categories_list"
+  },
+  {
+   "name": "tag",
+   "value": "categories"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

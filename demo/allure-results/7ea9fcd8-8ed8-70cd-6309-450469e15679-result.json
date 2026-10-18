@@ -1,0 +1,131 @@
+{
+ "name": "Поставщик и условия",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/purchases/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318000560,
+       "stop": 1789318000561
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318000561,
+       "stop": 1789318000562
+      }
+     ],
+     "start": 1789317999167,
+     "stop": 1789318000562
+    }
+   ],
+   "attachments": [],
+   "start": 1789317999167,
+   "stop": 1789318000562
+  },
+  {
+   "name": "HTTP GET /api/v1/suppliers → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318001955,
+       "stop": 1789318001956
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318001956,
+       "stop": 1789318001957
+      }
+     ],
+     "start": 1789318000562,
+     "stop": 1789318001957
+    }
+   ],
+   "attachments": [],
+   "start": 1789318000562,
+   "stop": 1789318001957
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317999167,
+ "stop": 1789318001957,
+ "uuid": "7ea9fcd8-8ed8-70cd-6309-450469e15679",
+ "historyId": "ce6075074593b200eccba0148f03cbdc",
+ "testCaseId": "6cd038acdefd6baa61fea727be4ab1f1",
+ "fullName": "src.ui.tests.warehouse.test_purchase_order.TestPurchaseOrder#test_purchase_header_panel[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Склад / закупка"
+  },
+  {
+   "name": "story",
+   "value": "Поставщик и условия"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.warehouse.test_purchase_order"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchase_order"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchaseOrder"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6400-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.warehouse.test_purchase_order"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "warehouse"
+  }
+ ]
+}

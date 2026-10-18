@@ -1,0 +1,118 @@
+{
+ "name": "test_get_products_by_id_elements",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/products/4211 → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got —",
+       "status": "failed",
+       "start": 1789317604127,
+       "stop": 1789317604128
+      },
+      {
+       "name": "Response body validation",
+       "status": "skipped",
+       "start": 1789317604128,
+       "stop": 1789317604129
+      }
+     ],
+     "start": 1789317603982,
+     "stop": 1789317604129
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "27e0885b-52a7-7222-2f76-e139582b12d0-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "f6c746a5-00e8-6cc6-54c0-730bb55361f3-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317603982,
+   "stop": 1789317604129
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "259a89ce-7c6a-dad3-f67d-54a273bcee40-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317603982,
+ "stop": 1789317604129,
+ "uuid": "e05cee09-fb22-9951-dd33-bc5a91d30aae",
+ "historyId": "3c27730d03afd8cce37a5ffc02448098",
+ "testCaseId": "c3be0ab846233ecae4c4994697261927",
+ "fullName": "src.api.tests.products.test_products_crud.TestProductsCrud#test_get_products_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Products / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Products"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.products.test_products_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_products_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestProductsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7463-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.products.test_products_crud"
+  },
+  {
+   "name": "tag",
+   "value": "products"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ],
+ "statusDetails": {
+  "message": "TimeoutError: запрос не уложился в 30 с\nExpected: ответ за 30 с\nActual: таймаут\nHint: очередь не разбиралась, консьюмер лежал",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/products/test_products_crud.py\", line 123, in test_get_products_by_id_elements\n    assert_response(response, expected)\nTimeoutError: запрос не уложился в 30 с"
+ }
+}

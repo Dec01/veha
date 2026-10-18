@@ -1,0 +1,126 @@
+{
+ "name": "test_post_shipments_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/shipments → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317704346,
+       "stop": 1789317704347
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317704347,
+       "stop": 1789317704348
+      }
+     ],
+     "start": 1789317704253,
+     "stop": 1789317704348
+    }
+   ],
+   "attachments": [],
+   "start": 1789317704253,
+   "stop": 1789317704348
+  },
+  {
+   "name": "HTTP POST /api/v1/shipments → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317704441,
+       "stop": 1789317704442
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317704442,
+       "stop": 1789317704443
+      }
+     ],
+     "start": 1789317704348,
+     "stop": 1789317704443
+    }
+   ],
+   "attachments": [],
+   "start": 1789317704348,
+   "stop": 1789317704443
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317704253,
+ "stop": 1789317704443,
+ "uuid": "7f5fc190-9e6e-913f-ee8e-7b1376e2c0fb",
+ "historyId": "6d1b0a64aeb0738aeb9504b8446c27bb",
+ "testCaseId": "9059e22033e4ea6c4c7414ea3623df36",
+ "fullName": "src.api.tests.shipments.test_shipments_crud.TestShipmentsCrud#test_post_shipments_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Shipments / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Создание: Shipments"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.shipments.test_shipments_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_shipments_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestShipmentsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9799-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.shipments.test_shipments_crud"
+  },
+  {
+   "name": "tag",
+   "value": "shipments"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

@@ -1,0 +1,108 @@
+{
+ "name": "test_get_variants_product_by_id_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/variants/product/{productId} → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317635861,
+       "stop": 1789317635862
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317635862,
+       "stop": 1789317635863
+      }
+     ],
+     "start": 1789317635528,
+     "stop": 1789317635863
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "0affb703-e3d5-55e6-44bb-1ed092cae828-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "12d34692-01e1-f716-bbec-548826ddcafd-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317635528,
+   "stop": 1789317635863
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317635528,
+ "stop": 1789317635863,
+ "uuid": "96b81187-759c-6ede-ae8f-a2d3c0699e7f",
+ "historyId": "770d65a215f15f79959b41f984cae057",
+ "testCaseId": "12b3142d435bc465c58cf166261cb631",
+ "fullName": "src.api.tests.variants.test_variants_queries.TestVariantsQueries#test_get_variants_product_by_id_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Variants / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Варианты по товару"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.variants.test_variants_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_variants_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestVariantsQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5568-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.variants.test_variants_queries"
+  },
+  {
+   "name": "tag",
+   "value": "variants"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ]
+}

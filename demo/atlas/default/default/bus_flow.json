@@ -1,0 +1,228 @@
+{
+ "version": 2,
+ "kind": "bus.flow",
+ "scope": {
+  "system": "default",
+  "env": "default"
+ },
+ "collected_at": "2026-09-13T19:55:00+03:00",
+ "collector": "veha-demo/generate",
+ "records": [
+  {
+   "test": "test_order_to_invoice",
+   "nodeid": "src/api/tests/journeys/test_order_to_invoice.py::TestOrderToInvoice::test_order_to_invoice",
+   "topic": "order.confirmed",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 9,
+    "writes": 4
+   }
+  },
+  {
+   "test": "test_order_to_invoice",
+   "nodeid": "src/api/tests/journeys/test_order_to_invoice.py::TestOrderToInvoice::test_order_to_invoice",
+   "topic": "payment.authorized",
+   "events": 1,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 9,
+    "writes": 4
+   }
+  },
+  {
+   "test": "test_order_to_invoice",
+   "nodeid": "src/api/tests/journeys/test_order_to_invoice.py::TestOrderToInvoice::test_order_to_invoice",
+   "topic": "invoice.issued",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 9,
+    "writes": 4
+   }
+  },
+  {
+   "test": "test_order_to_invoice",
+   "nodeid": "src/api/tests/journeys/test_order_to_invoice.py::TestOrderToInvoice::test_order_to_invoice",
+   "topic": "notification.sent",
+   "events": 2,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 9,
+    "writes": 4
+   }
+  },
+  {
+   "test": "test_order_cancellation",
+   "nodeid": "src/api/tests/journeys/test_order_cancellation.py::TestOrderCancellation::test_order_cancellation",
+   "topic": "order.confirmed",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 4,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_order_cancellation",
+   "nodeid": "src/api/tests/journeys/test_order_cancellation.py::TestOrderCancellation::test_order_cancellation",
+   "topic": "order.cancelled",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 4,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_order_cancellation",
+   "nodeid": "src/api/tests/journeys/test_order_cancellation.py::TestOrderCancellation::test_order_cancellation",
+   "topic": "notification.sent",
+   "events": 2,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 4,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_return_and_refund",
+   "nodeid": "src/api/tests/journeys/test_return_and_refund.py::TestReturnAndRefund::test_return_and_refund",
+   "topic": "return.requested",
+   "events": 1,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 5,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_return_and_refund",
+   "nodeid": "src/api/tests/journeys/test_return_and_refund.py::TestReturnAndRefund::test_return_and_refund",
+   "topic": "notification.sent",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 5,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_stock_replenishment",
+   "nodeid": "src/api/tests/journeys/test_stock_replenishment.py::TestStockReplenishment::test_stock_replenishment",
+   "topic": "stock.replenished",
+   "events": 1,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 5,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_stock_replenishment",
+   "nodeid": "src/api/tests/journeys/test_stock_replenishment.py::TestStockReplenishment::test_stock_replenishment",
+   "topic": "stock.reserved",
+   "events": 1,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 5,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_shipment_flow",
+   "nodeid": "src/api/tests/journeys/test_shipment_flow.py::TestShipmentFlow::test_shipment_flow",
+   "topic": "shipment.created",
+   "events": 2,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 4,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_shipment_flow",
+   "nodeid": "src/api/tests/journeys/test_shipment_flow.py::TestShipmentFlow::test_shipment_flow",
+   "topic": "stock.reserved",
+   "events": 1,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 4,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_loyalty_award",
+   "nodeid": "src/api/tests/journeys/test_loyalty_award.py::TestLoyaltyAward::test_loyalty_award",
+   "topic": "payment.authorized",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 4,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_loyalty_award",
+   "nodeid": "src/api/tests/journeys/test_loyalty_award.py::TestLoyaltyAward::test_loyalty_award",
+   "topic": "loyalty.points.awarded",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 4,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_campaign_launch",
+   "nodeid": "src/api/tests/journeys/test_campaign_launch.py::TestCampaignLaunch::test_campaign_launch",
+   "topic": "campaign.launched",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 5,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_campaign_launch",
+   "nodeid": "src/api/tests/journeys/test_campaign_launch.py::TestCampaignLaunch::test_campaign_launch",
+   "topic": "notification.sent",
+   "events": 1,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 5,
+    "writes": 2
+   }
+  },
+  {
+   "test": "test_price_update",
+   "nodeid": "src/api/tests/journeys/test_price_update.py::TestPriceUpdate::test_price_update",
+   "topic": "notification.sent",
+   "events": 3,
+   "scope": "test",
+   "afterWrite": true,
+   "http": {
+    "requests": 4,
+    "writes": 2
+   }
+  }
+ ]
+}

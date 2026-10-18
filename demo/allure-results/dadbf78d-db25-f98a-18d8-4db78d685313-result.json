@@ -1,0 +1,108 @@
+{
+ "name": "test_get_suppliers_sorting",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/suppliers → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317737574,
+       "stop": 1789317737575
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317737575,
+       "stop": 1789317737576
+      }
+     ],
+     "start": 1789317737190,
+     "stop": 1789317737576
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "941cbe83-cf04-1b48-2e87-7080a0c5e011-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "40376a4b-347e-3292-252e-502c5e08c6b5-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317737190,
+   "stop": 1789317737576
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317737190,
+ "stop": 1789317737576,
+ "uuid": "dadbf78d-db25-f98a-18d8-4db78d685313",
+ "historyId": "e5806eaaf56f17e11e351e68d0d00e43",
+ "testCaseId": "a2d7f3a7b0b0541c48588ed7ea85eb49",
+ "fullName": "src.api.tests.suppliers.test_suppliers_list.TestSuppliersList#test_get_suppliers_sorting",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Suppliers / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Suppliers"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.suppliers.test_suppliers_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_suppliers_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSuppliersList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3921-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.suppliers.test_suppliers_list"
+  },
+  {
+   "name": "tag",
+   "value": "suppliers"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

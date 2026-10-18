@@ -1,0 +1,102 @@
+{
+ "name": "Таблица учётных записей",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/accounts → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318065199,
+       "stop": 1789318065200
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318065200,
+       "stop": 1789318065201
+      }
+     ],
+     "start": 1789318061305,
+     "stop": 1789318065201
+    }
+   ],
+   "attachments": [],
+   "start": 1789318061305,
+   "stop": 1789318065201
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318061305,
+ "stop": 1789318065201,
+ "uuid": "9aa87fb8-be09-304f-4c16-c2dad22dae2d",
+ "historyId": "fc9bdb9036e99b3c1d5bcf2788fe1581",
+ "testCaseId": "04e799c523753e3aca63470828ac6935",
+ "fullName": "src.ui.tests.admin.test_admin_accounts.TestAdminAccounts#test_accounts_table[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Администрирование / записи"
+  },
+  {
+   "name": "story",
+   "value": "Таблица учётных записей"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.admin.test_admin_accounts"
+  },
+  {
+   "name": "suite",
+   "value": "test_admin_accounts"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestAdminAccounts"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4147-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.admin.test_admin_accounts"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "admin"
+  }
+ ]
+}

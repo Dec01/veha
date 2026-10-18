@@ -1,0 +1,97 @@
+{
+ "name": "test_post_refunds_by_id_confirm_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/refunds/4211/confirm → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317767543,
+       "stop": 1789317767544
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317767544,
+       "stop": 1789317767545
+      }
+     ],
+     "start": 1789317767383,
+     "stop": 1789317767545
+    }
+   ],
+   "attachments": [],
+   "start": 1789317767383,
+   "stop": 1789317767545
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317767383,
+ "stop": 1789317767545,
+ "uuid": "4aba029f-cf1f-407f-26f4-bb4a61b29d3b",
+ "historyId": "5a631a42178f3e462a89838ce1277067",
+ "testCaseId": "acce52de2e52889792266734f21d1b84",
+ "fullName": "src.api.tests.refunds.test_refunds_actions.TestRefundsActions#test_post_refunds_by_id_confirm_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Refunds / операции"
+  },
+  {
+   "name": "story",
+   "value": "Подтвердить возврат"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.refunds.test_refunds_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_refunds_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestRefundsActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6921-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.refunds.test_refunds_actions"
+  },
+  {
+   "name": "tag",
+   "value": "refunds"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  }
+ ]
+}

@@ -1,0 +1,118 @@
+{
+ "name": "test_get_stock_filters",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/stock → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317720893,
+       "stop": 1789317720894
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317720894,
+       "stop": 1789317720895
+      }
+     ],
+     "start": 1789317720800,
+     "stop": 1789317720895
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "429b62ff-6531-a214-8d65-433e2f4f4240-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "a60d5af4-6465-7f68-9b0d-320d2b7b2df4-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317720800,
+   "stop": 1789317720895
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "2b6a16f0-c8d1-bc84-93f2-73d57e0a0387-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317720800,
+ "stop": 1789317720895,
+ "uuid": "c146a09f-9ce0-a474-8eac-7e272300c49b",
+ "historyId": "977d7d8de63d5d961d22d6b01fcc3d00",
+ "testCaseId": "2598ebf9d05eaa9b1b61c6c7bc6d4b7f",
+ "fullName": "src.api.tests.stock.test_stock_list.TestStockList#test_get_stock_filters",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Stock / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Stock"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.stock.test_stock_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_stock_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestStockList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "1144-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.stock.test_stock_list"
+  },
+  {
+   "name": "tag",
+   "value": "stock"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Sum of lines does not match order total\nExpected: 18450.00\nActual: 18300.00\nHint: скидка применена дважды",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/stock/test_stock_list.py\", line 235, in test_get_stock_filters\n    assert_response(response, expected)\nAssertionError: Sum of lines does not match order total"
+ }
+}

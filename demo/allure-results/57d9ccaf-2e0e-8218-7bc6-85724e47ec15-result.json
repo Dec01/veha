@@ -1,0 +1,97 @@
+{
+ "name": "test_post_loyalty_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/loyalty → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317788679,
+       "stop": 1789317788680
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317788680,
+       "stop": 1789317788681
+      }
+     ],
+     "start": 1789317788302,
+     "stop": 1789317788681
+    }
+   ],
+   "attachments": [],
+   "start": 1789317788302,
+   "stop": 1789317788681
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317788302,
+ "stop": 1789317788681,
+ "uuid": "57d9ccaf-2e0e-8218-7bc6-85724e47ec15",
+ "historyId": "e97800171484145351b5a65002a3efb8",
+ "testCaseId": "f185a794122aef29a5af04ef5aa567e9",
+ "fullName": "src.api.tests.loyalty.test_loyalty_crud.TestLoyaltyCrud#test_post_loyalty_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Loyalty / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Создание: Loyalty"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.loyalty.test_loyalty_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_loyalty_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestLoyaltyCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7292-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.loyalty.test_loyalty_crud"
+  },
+  {
+   "name": "tag",
+   "value": "loyalty"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

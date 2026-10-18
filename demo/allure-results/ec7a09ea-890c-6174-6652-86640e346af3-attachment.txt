@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_get_subscriptions_by_id_default
+[001] шаг прогона: проверка test_get_subscriptions_by_id_default
+[002] шаг прогона: проверка test_get_subscriptions_by_id_default
+[003] шаг прогона: проверка test_get_subscriptions_by_id_default
+[004] шаг прогона: проверка test_get_subscriptions_by_id_default
+[005] шаг прогона: проверка test_get_subscriptions_by_id_default
+[006] шаг прогона: проверка test_get_subscriptions_by_id_default
+[007] шаг прогона: проверка test_get_subscriptions_by_id_default
+[008] шаг прогона: проверка test_get_subscriptions_by_id_default
+[009] шаг прогона: проверка test_get_subscriptions_by_id_default
+[010] шаг прогона: проверка test_get_subscriptions_by_id_default
+[011] шаг прогона: проверка test_get_subscriptions_by_id_default
+TimeoutError: запрос не уложился в 30 с

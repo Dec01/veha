@@ -1,0 +1,97 @@
+{
+ "name": "test_get_enums_units_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/enums/units → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317803636,
+       "stop": 1789317803637
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317803637,
+       "stop": 1789317803638
+      }
+     ],
+     "start": 1789317803277,
+     "stop": 1789317803638
+    }
+   ],
+   "attachments": [],
+   "start": 1789317803277,
+   "stop": 1789317803638
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317803277,
+ "stop": 1789317803638,
+ "uuid": "67f9e480-1c2d-a522-2f41-fc22cfa93055",
+ "historyId": "9425849f169cd1a34b6a1c6734386b22",
+ "testCaseId": "1fda4fc0f02c2845ffca32a196aa11af",
+ "fullName": "src.api.tests.enums.test_enums_dict.TestEnumsDict#test_get_enums_units_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Enums / справочник"
+  },
+  {
+   "name": "story",
+   "value": "Единицы измерения"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.enums.test_enums_dict"
+  },
+  {
+   "name": "suite",
+   "value": "test_enums_dict"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestEnumsDict"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5617-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.enums.test_enums_dict"
+  },
+  {
+   "name": "tag",
+   "value": "enums"
+  },
+  {
+   "name": "tag",
+   "value": "справочник"
+  }
+ ]
+}

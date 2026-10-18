@@ -1,0 +1,108 @@
+{
+ "name": "test_get_stock_warehouse_by_id_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/stock/warehouse/{warehouseId} → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317725634,
+       "stop": 1789317725635
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317725635,
+       "stop": 1789317725636
+      }
+     ],
+     "start": 1789317725287,
+     "stop": 1789317725636
+    }
+   ],
+   "attachments": [],
+   "start": 1789317725287,
+   "stop": 1789317725636
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317725287,
+ "stop": 1789317725636,
+ "uuid": "1c3ea116-b7fc-2e6c-e476-7582714cedf6",
+ "historyId": "7cdc1ca32f92f8a14288a6f1782b6b96",
+ "testCaseId": "57fc4dcf385ed83ad6c30f6caf3b8e57",
+ "fullName": "src.api.tests.stock.test_stock_queries.TestStockQueries#test_get_stock_warehouse_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Stock / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Остатки по складу"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.stock.test_stock_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_stock_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestStockQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6708-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.stock.test_stock_queries"
+  },
+  {
+   "name": "tag",
+   "value": "stock"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  },
+  {
+   "name": "tag",
+   "value": "WMS-12.1"
+  }
+ ],
+ "links": [
+  {
+   "name": "WMS-12.1",
+   "url": "spec://WMS-12.1",
+   "type": "link"
+  }
+ ]
+}

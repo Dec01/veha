@@ -1,0 +1,113 @@
+{
+ "name": "Фильтр по складу",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/warehouses → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317986663,
+       "stop": 1789317986664
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317986664,
+       "stop": 1789317986665
+      }
+     ],
+     "start": 1789317980193,
+     "stop": 1789317986665
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "8413fea7-9195-7f0e-8ba6-42e344fb1dbd-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "64f6a27e-4879-a347-25f2-3030330b7259-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317980193,
+   "stop": 1789317986665
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317980193,
+ "stop": 1789317986665,
+ "uuid": "17b91d0e-c25d-0ed8-2152-9bb0bbd9cf51",
+ "historyId": "3c542beb8d10d310203afe8e5cc0cbb8",
+ "testCaseId": "a367d20a7b3f823b0b01f3905297c31c",
+ "fullName": "src.ui.tests.warehouse.test_warehouse_stock.TestWarehouseStock#test_stock_warehouse_filter[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Склад / остатки"
+  },
+  {
+   "name": "story",
+   "value": "Фильтр по складу"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.warehouse.test_warehouse_stock"
+  },
+  {
+   "name": "suite",
+   "value": "test_warehouse_stock"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestWarehouseStock"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6808-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.warehouse.test_warehouse_stock"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "warehouse"
+  }
+ ]
+}

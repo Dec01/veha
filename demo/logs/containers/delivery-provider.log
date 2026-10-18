@@ -1,0 +1,90 @@
+2026-09-13 19:40:39 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1000
+2026-09-13 19:40:57 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:41:20 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 18 ms
+2026-09-13 19:41:41 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:42:06 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:42:40 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1005
+2026-09-13 19:42:50 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:43:29 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 44 ms
+2026-09-13 19:43:50 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:44:18 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:44:56 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1010
+2026-09-13 19:45:28 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:45:33 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 36 ms
+2026-09-13 19:46:00 WARN  [delivery-provider] com.example.shop.App : slow query on table "order_header" (3721 ms)
+2026-09-13 19:46:19 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:46:52 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1015
+2026-09-13 19:47:11 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:47:47 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 67 ms
+2026-09-13 19:47:54 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:48:15 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:48:22 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1020
+2026-09-13 19:48:38 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:48:39 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 68 ms
+2026-09-13 19:48:47 WARN  [delivery-provider] com.example.shop.App : slow query on table "order_header" (1148 ms)
+2026-09-13 19:49:19 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:49:47 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1025
+2026-09-13 19:50:23 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:50:58 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 40 ms
+2026-09-13 19:51:27 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:51:34 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:51:53 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1030
+2026-09-13 19:52:23 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:52:45 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 78 ms
+2026-09-13 19:53:00 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:53:19 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:53:34 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1035
+2026-09-13 19:53:42 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:53:51 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 21 ms
+2026-09-13 19:54:31 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:54:54 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:55:20 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1040
+2026-09-13 19:55:52 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:56:07 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 71 ms
+2026-09-13 19:56:34 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:56:44 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:57:19 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1045
+2026-09-13 19:57:38 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:58:17 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 43 ms
+2026-09-13 19:58:23 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:59:03 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:59:05 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1050
+2026-09-13 19:59:25 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:59:29 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 8 ms
+2026-09-13 19:59:41 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 19:59:54 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 20:00:10 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1055
+2026-09-13 20:00:19 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 20:00:24 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 23 ms
+2026-09-13 20:00:30 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 20:00:49 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 20:01:10 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1060
+2026-09-13 20:01:38 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 20:02:00 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 36 ms
+2026-09-13 20:02:15 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 20:02:17 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 20:02:29 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1065
+2026-09-13 20:02:45 DEBUG [delivery-provider] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 20:02:52 INFO  [delivery-provider] com.example.shop.App : published order.confirmed in 54 ms
+2026-09-13 20:03:13 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 20:03:47 INFO  [delivery-provider] com.example.shop.App : health check ok
+2026-09-13 20:03:58 INFO  [delivery-provider] com.example.shop.App : received event order.confirmed, offset 1070
+2026-09-13 20:04:14 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:04:16 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:04:55 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:05:07 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:05:23 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:05:32 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:06:08 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:06:12 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:06:29 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:06:40 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:07:06 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:07:19 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:07:55 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:08:12 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:08:35 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:08:43 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:09:13 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:09:32 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s
+2026-09-13 20:10:09 ERROR [delivery-provider] com.example.shop.App : Connection refused, retrying in 5s

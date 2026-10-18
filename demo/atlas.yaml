@@ -1,0 +1,292 @@
+# Конфигурация просмотрщика «Веха» — демонстрационный ландшафт.
+#
+# ВСЁ СОДЕРЖИМОЕ ВЫМЫШЛЕНО. Ландшафт «Сеть N»: интернет-магазин, склад,
+# биллинг и CRM. Файл целиком создаётся generate.py — правки руками
+# перетрутся при следующей генерации.
+
+project:
+  name: Сеть N
+  frontend_env: FRONTEND_URL
+  api_prefix: /api/v1
+
+artifacts_dir: atlas
+
+# ---------------------------------------------------------------------
+# Контейнеры и внешние системы. Первый подошедший шаблон выигрывает,
+# `default: true` подбирает всё остальное.
+# ---------------------------------------------------------------------
+containers:
+  storefront-api:
+    label: "storefront-api"
+    kind: service
+    default: true
+    match:
+      - "/api/v1/*"
+    container_names: [shop-api]
+    note: "Основной backend витрины. Обслуживает всё, что не размечено иначе."
+  checkout-worker:
+    label: "checkout-worker"
+    kind: worker
+    tier: 1
+    match: []
+    container_names: [shop-checkout-worker]
+    note: "Разбирает order.confirmed, просит авторизацию платежа."
+  warehouse-worker:
+    label: "warehouse-worker"
+    kind: worker
+    tier: 1
+    match: []
+    container_names: [shop-wms-worker]
+    note: "Резервирует и списывает остатки по событиям склада."
+  billing-worker:
+    label: "billing-worker"
+    kind: worker
+    tier: 1
+    match: []
+    container_names: [shop-billing-worker]
+    note: "Выписывает счета и проводит возвраты по событиям оплаты."
+  crm-worker:
+    label: "crm-worker"
+    kind: worker
+    tier: 1
+    match: []
+    container_names: [shop-crm-worker]
+    note: "Пересчитывает сегменты и начисляет бонусы."
+  notifier:
+    label: "notifier"
+    kind: worker
+    tier: 1
+    match: []
+    container_names: [shop-notifier]
+    note: "Рассылает уведомления по событиям шины."
+  payment-gateway:
+    label: "Платёжный шлюз"
+    kind: external
+    match: []
+    container_names: [sandbox-payments]
+    note: "Внешняя система. HTTP-эндпоинтов набора не обслуживает — её дёргает storefront-api при авторизации оплаты."
+  delivery-provider:
+    label: "Служба доставки"
+    kind: external
+    match: []
+    container_names: [sandbox-delivery]
+    note: "Внешняя система: расчёт и резерв доставки."
+  identity:
+    label: "Провайдер входа"
+    kind: auth
+    match: []
+    container_names: [identity-provider]
+    note: "Выдаёт токены. Эндпоинты учётных записей обслуживает storefront-api."
+  broker:
+    label: "Шина сообщений"
+    kind: bus
+    match: []
+    container_names: [shop-broker]
+  db-primary:
+    label: "PostgreSQL"
+    kind: store
+    match: []
+    container_names: [shop-db]
+  objectstore:
+    label: "Объектное хранилище"
+    kind: store
+    match: []
+    container_names: [shop-objectstore]
+  web-ui:
+    label: "Витрина (SPA)"
+    kind: service
+    match: []
+    container_names: [shop-web]
+
+# Ручная карта интеграций. Это данные проекта, сервер про неё не знает,
+# пока она не названа здесь.
+app_map: app_map.yaml
+
+# Признак UI-теста в отчёте Allure: подстрока полного имени теста.
+tests:
+  ui_markers: ["src.ui"]
+
+# Вкладка «Live» читает снимки, а не стенд: сервер наружу не ходит.
+live:
+  snapshot_dir: live
+  container_logs_dir: logs/containers
+  poll_seconds: 60
+  containers_ttl: 20
+  mrs_ttl: 120
+
+# Куда backend идёт дальше, обслуживая путь.
+depends:
+  - path: "/api/v1/payments*"
+    to: payment-gateway
+    label: "запрашивает авторизацию"
+  - path: "/api/v1/shipments*"
+    to: delivery-provider
+    label: "резервирует доставку"
+  - path: "/api/v1/accounts*"
+    to: identity
+    label: "сверяет учётную запись"
+  - path: "/api/v1/orders/*/confirm"
+    to: checkout-worker
+    label: "отдаёт заказ в оплату"
+  - path: "/api/v1/purchases/*/receive"
+    to: warehouse-worker
+    label: "проводит приёмку"
+  - path: "/api/v1/campaigns/*/launch"
+    to: crm-worker
+    label: "разворачивает аудиторию"
+
+# Домены: как делим площадку API, чтобы она читалась и дышала.
+domains:
+  shop:
+    label: "Витрина"
+    tier: 0
+    services: ["Products", "Categories", "Variants", "Prices", "Promotions", "Carts", "Reviews"]
+  orders:
+    label: "Заказы"
+    tier: 0
+    services: ["Orders", "Payments", "Shipments", "Returns"]
+  warehouse:
+    label: "Склад"
+    tier: 0
+    services: ["Stock", "Warehouses", "Suppliers", "Purchase Orders"]
+  billing:
+    label: "Биллинг"
+    tier: 1
+    services: ["Invoices", "Subscriptions", "Refunds", "Gift Cards"]
+  crm:
+    label: "CRM"
+    tier: 1
+    services: ["Customers", "Segments", "Campaigns", "Loyalty"]
+  platform:
+    label: "Платформа"
+    tier: 1
+    services: ["Accounts", "Roles & Permissions", "Notifications", "Enums", "Audit"]
+
+# Экраны: заглушки, нарисованные генератором. Настоящих снимков нет.
+screens:
+  manifest: screens/manifest.json
+  images_dir: screens
+  featured:
+    - orders_list
+    - order_card
+    - catalog_products
+    - warehouse_stock
+    - billing_invoices
+  paths:
+    order_card: "/#/orders/{id}"
+    product_card: "/#/catalog/products/{id}"
+    purchase_order: "/#/warehouse/purchases/{id}"
+    orders_create_modal: "/#/orders"
+    catalog_filters_open: "/#/catalog/products"
+  alias:
+    catalog_products: catalog_products
+    product_card: product_card
+    orders_list: orders_list
+    order_card: order_card
+    warehouse_stock: warehouse_stock
+    purchase_order: purchase_order
+    billing_invoices: billing_invoices
+    crm_customers: crm_customers
+    crm_campaigns: crm_campaigns
+    admin_accounts: admin_accounts
+    reports_sales: reports_sales
+
+database:
+  label: PostgreSQL «shop»
+  schemas: [public]
+  exclude:
+    - databasechangelog
+    - databasechangeloglock
+  count_rows: true
+
+db_effects:
+  settle_sec: 12
+  per_test_limit: 14
+  include:
+    - "src/api/tests/orders/*"
+    - "src/api/tests/payments/*"
+    - "src/api/tests/stock/*"
+    - "src/api/tests/invoices/*"
+    - "src/api/tests/journeys/*"
+
+bus_flow:
+  topics: []
+  settle_sec: 5
+  per_test_limit: 12
+  include:
+    - "src/api/tests/journeys/*"
+
+runner:
+  history_limit: 10
+  suites:
+    smoke:
+      label: "Дымовой"
+      args: ["src/api/tests/orders", "src/api/tests/products", "-x"]
+      note: "быстрая проверка, что стенд жив"
+    api:
+      label: "API целиком"
+      args: ["src/api/tests"]
+      note: "полный прогон API"
+    ui:
+      label: "UI целиком"
+      args: ["src/ui/tests"]
+      note: "браузерные тесты"
+    rbac:
+      label: "Права доступа"
+      args: ["src/api/tests/rbac"]
+    contract:
+      label: "Контракт OpenAPI"
+      args: ["src/api/tests/contract"]
+    journeys:
+      label: "Пользовательские сценарии"
+      args: ["src/api/tests/journeys"]
+    full:
+      label: "Всё"
+      args: ["src/api/tests", "src/ui/tests"]
+      note: "API и UI подряд"
+      full: true
+
+logs:
+  Прогон pytest: logs/pytest.log
+  Сборщик артефактов: logs/collect.log
+
+container_logs:
+  tail: 2000
+  rules:
+    - kind: table
+      pattern: 'table "(\w+)"'
+      known_only: true
+    - kind: topic
+      pattern: '\b([a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*){1,})\b'
+      known_only: true
+    - kind: listener
+      pattern: '\b(\w+(?:Listener|Consumer))\b'
+
+specs:
+  sources:
+    - file: docs/specs/10-shop-data-model-v2.docx
+      label: "10. Модель данных магазина"
+      prefix: REQ
+    - file: docs/specs/11-orders-and-payments-api.docx
+      label: "11. Заказы и оплаты"
+      prefix: API
+    - file: docs/specs/12-warehouse-operations.docx
+      label: "12. Складские операции"
+      prefix: WMS
+  heading_styles:
+    Heading1: 1
+    Heading2: 2
+    Heading3: 3
+  min_chars: 40
+  api_roots: []
+
+ui_flow:
+  ignore_url:
+    - "*/static/*"
+    - "*.png"
+    - "*.svg"
+    - "*.woff*"
+  ignore_control:
+    - "DEMO*"
+  attribution_window_ms: 2500
+

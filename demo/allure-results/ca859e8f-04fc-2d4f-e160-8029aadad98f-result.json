@@ -1,0 +1,97 @@
+{
+ "name": "test_get_products_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/products → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317600479,
+       "stop": 1789317600480
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317600480,
+       "stop": 1789317600481
+      }
+     ],
+     "start": 1789317600382,
+     "stop": 1789317600481
+    }
+   ],
+   "attachments": [],
+   "start": 1789317600382,
+   "stop": 1789317600481
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317600382,
+ "stop": 1789317600481,
+ "uuid": "ca859e8f-04fc-2d4f-e160-8029aadad98f",
+ "historyId": "716d9640ef180dda5dbf7b580930c913",
+ "testCaseId": "e65183a8512e6106e3b45644acd5cb73",
+ "fullName": "src.api.tests.products.test_products_list.TestProductsList#test_get_products_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Products / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Products"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.products.test_products_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_products_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestProductsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7394-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.products.test_products_list"
+  },
+  {
+   "name": "tag",
+   "value": "products"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

@@ -1,0 +1,108 @@
+{
+ "name": "test_get_prices_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/prices/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317640097,
+       "stop": 1789317640098
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317640098,
+       "stop": 1789317640099
+      }
+     ],
+     "start": 1789317639963,
+     "stop": 1789317640099
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "c0030f40-13de-763c-575e-4010c230412c-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "e873e8e7-cce3-c5db-81cd-4faedcea2471-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317639963,
+   "stop": 1789317640099
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317639963,
+ "stop": 1789317640099,
+ "uuid": "050c691f-7fd8-9fa7-47a3-17c820a7420b",
+ "historyId": "b6067ca41f3e96dd65794a9f3c2a331e",
+ "testCaseId": "f5438a79a7bdbc037c4f287fb37795ba",
+ "fullName": "src.api.tests.prices.test_prices_crud.TestPricesCrud#test_get_prices_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Prices / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Prices"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.prices.test_prices_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_prices_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPricesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8672-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.prices.test_prices_crud"
+  },
+  {
+   "name": "tag",
+   "value": "prices"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

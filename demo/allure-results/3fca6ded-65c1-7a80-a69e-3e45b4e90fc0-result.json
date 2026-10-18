@@ -1,0 +1,108 @@
+{
+ "name": "test_get_invoices_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/invoices → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317757051,
+       "stop": 1789317757052
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317757052,
+       "stop": 1789317757053
+      }
+     ],
+     "start": 1789317756667,
+     "stop": 1789317757053
+    }
+   ],
+   "attachments": [],
+   "start": 1789317756667,
+   "stop": 1789317757053
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317756667,
+ "stop": 1789317757053,
+ "uuid": "3fca6ded-65c1-7a80-a69e-3e45b4e90fc0",
+ "historyId": "08f4bad747059d1e35033bf222e39e65",
+ "testCaseId": "43e9b38876d07068708b6b9a3e5bd87c",
+ "fullName": "src.api.tests.invoices.test_invoices_list.TestInvoicesList#test_get_invoices_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Invoices / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Invoices"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.invoices.test_invoices_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_invoices_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestInvoicesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9064-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.invoices.test_invoices_list"
+  },
+  {
+   "name": "tag",
+   "value": "invoices"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.6"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.6",
+   "url": "spec://API-11.6",
+   "type": "link"
+  }
+ ]
+}

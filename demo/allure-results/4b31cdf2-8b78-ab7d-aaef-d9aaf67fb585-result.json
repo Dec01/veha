@@ -1,0 +1,108 @@
+{
+ "name": "test_get_loyalty_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/loyalty → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317788152,
+       "stop": 1789317788153
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317788153,
+       "stop": 1789317788154
+      }
+     ],
+     "start": 1789317787854,
+     "stop": 1789317788154
+    }
+   ],
+   "attachments": [],
+   "start": 1789317787854,
+   "stop": 1789317788154
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317787854,
+ "stop": 1789317788154,
+ "uuid": "4b31cdf2-8b78-ab7d-aaef-d9aaf67fb585",
+ "historyId": "206d1b1b073c6f91ac4603adf498b061",
+ "testCaseId": "151f63adc62d2fe58e7582cf2af435de",
+ "fullName": "src.api.tests.loyalty.test_loyalty_list.TestLoyaltyList#test_get_loyalty_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Loyalty / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Loyalty"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.loyalty.test_loyalty_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_loyalty_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestLoyaltyList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4924-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.loyalty.test_loyalty_list"
+  },
+  {
+   "name": "tag",
+   "value": "loyalty"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  },
+  {
+   "name": "tag",
+   "value": "REQ-10.6"
+  }
+ ],
+ "links": [
+  {
+   "name": "REQ-10.6",
+   "url": "spec://REQ-10.6",
+   "type": "link"
+  }
+ ]
+}

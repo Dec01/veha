@@ -1,0 +1,4367 @@
+{
+ "version": 2,
+ "kind": "contract.openapi",
+ "scope": {
+  "system": "default",
+  "env": "default"
+ },
+ "collected_at": "2026-09-13T19:55:00+03:00",
+ "collector": "veha-demo/generate",
+ "operations": [
+  {
+   "method": "GET",
+   "path": "/api/v1/products",
+   "rawPath": "/api/v1/products",
+   "operationId": "findProducts",
+   "tags": [
+    "products-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/products",
+   "rawPath": "/api/v1/products",
+   "operationId": "createProducts",
+   "tags": [
+    "products-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "ProductRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/products/{id}",
+   "rawPath": "/api/v1/products/{id}",
+   "operationId": "findById",
+   "tags": [
+    "products-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/products/{id}",
+   "rawPath": "/api/v1/products/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "products-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "ProductRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/products/{id}",
+   "rawPath": "/api/v1/products/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "products-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/products/search",
+   "rawPath": "/api/v1/products/search",
+   "operationId": "findSearch",
+   "tags": [
+    "products-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/products/{id}/variants",
+   "rawPath": "/api/v1/products/{id}/variants",
+   "operationId": "findVariants",
+   "tags": [
+    "products-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/products/{id}/archive",
+   "rawPath": "/api/v1/products/{id}/archive",
+   "operationId": "createArchive",
+   "tags": [
+    "products-controller"
+   ],
+   "deprecated": true,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "ProductRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/categories",
+   "rawPath": "/api/v1/categories",
+   "operationId": "findCategories",
+   "tags": [
+    "categories-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/categories",
+   "rawPath": "/api/v1/categories",
+   "operationId": "createCategories",
+   "tags": [
+    "categories-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "CategorieRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/categories/{id}",
+   "rawPath": "/api/v1/categories/{id}",
+   "operationId": "findById",
+   "tags": [
+    "categories-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/categories/{id}",
+   "rawPath": "/api/v1/categories/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "categories-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "CategorieRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/categories/{id}",
+   "rawPath": "/api/v1/categories/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "categories-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/categories/tree",
+   "rawPath": "/api/v1/categories/tree",
+   "operationId": "findTree",
+   "tags": [
+    "categories-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/variants",
+   "rawPath": "/api/v1/variants",
+   "operationId": "findVariants",
+   "tags": [
+    "variants-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/variants",
+   "rawPath": "/api/v1/variants",
+   "operationId": "createVariants",
+   "tags": [
+    "variants-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "VariantRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/variants/{id}",
+   "rawPath": "/api/v1/variants/{id}",
+   "operationId": "findById",
+   "tags": [
+    "variants-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/variants/{id}",
+   "rawPath": "/api/v1/variants/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "variants-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "VariantRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/variants/{id}",
+   "rawPath": "/api/v1/variants/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "variants-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/variants/product/{id}",
+   "rawPath": "/api/v1/variants/product/{productId}",
+   "operationId": "findById",
+   "tags": [
+    "variants-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "productId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/prices",
+   "rawPath": "/api/v1/prices",
+   "operationId": "findPrices",
+   "tags": [
+    "prices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/prices",
+   "rawPath": "/api/v1/prices",
+   "operationId": "createPrices",
+   "tags": [
+    "prices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "PriceRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/prices/{id}",
+   "rawPath": "/api/v1/prices/{id}",
+   "operationId": "findById",
+   "tags": [
+    "prices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/prices/{id}",
+   "rawPath": "/api/v1/prices/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "prices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "PriceRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/prices/{id}",
+   "rawPath": "/api/v1/prices/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "prices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/prices/product/{id}",
+   "rawPath": "/api/v1/prices/product/{productId}",
+   "operationId": "findById",
+   "tags": [
+    "prices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "productId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/prices/bulk",
+   "rawPath": "/api/v1/prices/bulk",
+   "operationId": "createBulk",
+   "tags": [
+    "prices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "PriceRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/promotions",
+   "rawPath": "/api/v1/promotions",
+   "operationId": "findPromotions",
+   "tags": [
+    "promotions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/promotions",
+   "rawPath": "/api/v1/promotions",
+   "operationId": "createPromotions",
+   "tags": [
+    "promotions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "PromotionRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/promotions/{id}",
+   "rawPath": "/api/v1/promotions/{id}",
+   "operationId": "findById",
+   "tags": [
+    "promotions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/promotions/{id}",
+   "rawPath": "/api/v1/promotions/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "promotions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "PromotionRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/promotions/{id}",
+   "rawPath": "/api/v1/promotions/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "promotions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/promotions/{id}/activate",
+   "rawPath": "/api/v1/promotions/{id}/activate",
+   "operationId": "createActivate",
+   "tags": [
+    "promotions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "PromotionRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/carts",
+   "rawPath": "/api/v1/carts",
+   "operationId": "findCarts",
+   "tags": [
+    "carts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/carts",
+   "rawPath": "/api/v1/carts",
+   "operationId": "createCarts",
+   "tags": [
+    "carts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "CartRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/carts/{id}",
+   "rawPath": "/api/v1/carts/{id}",
+   "operationId": "findById",
+   "tags": [
+    "carts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/carts/{id}",
+   "rawPath": "/api/v1/carts/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "carts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "CartRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/carts/{id}/items",
+   "rawPath": "/api/v1/carts/{id}/items",
+   "operationId": "createItems",
+   "tags": [
+    "carts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "CartRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/carts/{id}/items/{id}",
+   "rawPath": "/api/v1/carts/{id}/items/{itemId}",
+   "operationId": "deleteById",
+   "tags": [
+    "carts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    },
+    {
+     "name": "itemId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/carts/{id}/checkout",
+   "rawPath": "/api/v1/carts/{id}/checkout",
+   "operationId": "createCheckout",
+   "tags": [
+    "carts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "CartRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/reviews",
+   "rawPath": "/api/v1/reviews",
+   "operationId": "findReviews",
+   "tags": [
+    "reviews-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/reviews",
+   "rawPath": "/api/v1/reviews",
+   "operationId": "createReviews",
+   "tags": [
+    "reviews-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "ReviewRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/reviews/{id}",
+   "rawPath": "/api/v1/reviews/{id}",
+   "operationId": "findById",
+   "tags": [
+    "reviews-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/reviews/{id}",
+   "rawPath": "/api/v1/reviews/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "reviews-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "ReviewRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/reviews/{id}",
+   "rawPath": "/api/v1/reviews/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "reviews-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/reviews/product/{id}",
+   "rawPath": "/api/v1/reviews/product/{productId}",
+   "operationId": "findById",
+   "tags": [
+    "reviews-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "productId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/reviews/{id}/publish",
+   "rawPath": "/api/v1/reviews/{id}/publish",
+   "operationId": "createPublish",
+   "tags": [
+    "reviews-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "ReviewRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/orders",
+   "rawPath": "/api/v1/orders",
+   "operationId": "findOrders",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/orders",
+   "rawPath": "/api/v1/orders",
+   "operationId": "createOrders",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "OrderRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/orders/{id}",
+   "rawPath": "/api/v1/orders/{id}",
+   "operationId": "findById",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/orders/{id}",
+   "rawPath": "/api/v1/orders/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "OrderRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/orders/{id}",
+   "rawPath": "/api/v1/orders/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/orders/{id}/lines",
+   "rawPath": "/api/v1/orders/{id}/lines",
+   "operationId": "findLines",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/orders/customer/{id}",
+   "rawPath": "/api/v1/orders/customer/{customerId}",
+   "operationId": "findById",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "customerId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/orders/{id}/confirm",
+   "rawPath": "/api/v1/orders/{id}/confirm",
+   "operationId": "createConfirm",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "OrderRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/orders/{id}/cancel",
+   "rawPath": "/api/v1/orders/{id}/cancel",
+   "operationId": "createCancel",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "OrderRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/orders/export",
+   "rawPath": "/api/v1/orders/export",
+   "operationId": "createExport",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "OrderRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/payments",
+   "rawPath": "/api/v1/payments",
+   "operationId": "findPayments",
+   "tags": [
+    "payments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/payments",
+   "rawPath": "/api/v1/payments",
+   "operationId": "createPayments",
+   "tags": [
+    "payments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "PaymentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/payments/{id}",
+   "rawPath": "/api/v1/payments/{id}",
+   "operationId": "findById",
+   "tags": [
+    "payments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/payments/{id}",
+   "rawPath": "/api/v1/payments/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "payments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "PaymentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/payments/order/{id}",
+   "rawPath": "/api/v1/payments/order/{orderId}",
+   "operationId": "findById",
+   "tags": [
+    "payments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "orderId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/payments/{id}/capture",
+   "rawPath": "/api/v1/payments/{id}/capture",
+   "operationId": "createCapture",
+   "tags": [
+    "payments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "PaymentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/payments/{id}/receipt",
+   "rawPath": "/api/v1/payments/{id}/receipt",
+   "operationId": "findReceipt",
+   "tags": [
+    "payments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/shipments",
+   "rawPath": "/api/v1/shipments",
+   "operationId": "findShipments",
+   "tags": [
+    "shipments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/shipments",
+   "rawPath": "/api/v1/shipments",
+   "operationId": "createShipments",
+   "tags": [
+    "shipments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "ShipmentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/shipments/{id}",
+   "rawPath": "/api/v1/shipments/{id}",
+   "operationId": "findById",
+   "tags": [
+    "shipments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/shipments/{id}",
+   "rawPath": "/api/v1/shipments/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "shipments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "ShipmentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/shipments/{id}",
+   "rawPath": "/api/v1/shipments/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "shipments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/shipments/order/{id}",
+   "rawPath": "/api/v1/shipments/order/{orderId}",
+   "operationId": "findById",
+   "tags": [
+    "shipments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "orderId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/shipments/{id}/dispatch",
+   "rawPath": "/api/v1/shipments/{id}/dispatch",
+   "operationId": "createDispatch",
+   "tags": [
+    "shipments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "ShipmentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/returns",
+   "rawPath": "/api/v1/returns",
+   "operationId": "findReturns",
+   "tags": [
+    "returns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/returns",
+   "rawPath": "/api/v1/returns",
+   "operationId": "createReturns",
+   "tags": [
+    "returns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "ReturnRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/returns/{id}",
+   "rawPath": "/api/v1/returns/{id}",
+   "operationId": "findById",
+   "tags": [
+    "returns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/returns/{id}",
+   "rawPath": "/api/v1/returns/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "returns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "ReturnRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/returns/{id}/approve",
+   "rawPath": "/api/v1/returns/{id}/approve",
+   "operationId": "createApprove",
+   "tags": [
+    "returns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "ReturnRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/returns/order/{id}",
+   "rawPath": "/api/v1/returns/order/{orderId}",
+   "operationId": "findById",
+   "tags": [
+    "returns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "orderId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/stock",
+   "rawPath": "/api/v1/stock",
+   "operationId": "findStock",
+   "tags": [
+    "stock-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/stock",
+   "rawPath": "/api/v1/stock",
+   "operationId": "createStock",
+   "tags": [
+    "stock-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "StockRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/stock/{id}",
+   "rawPath": "/api/v1/stock/{id}",
+   "operationId": "findById",
+   "tags": [
+    "stock-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/stock/product/{id}",
+   "rawPath": "/api/v1/stock/product/{productId}",
+   "operationId": "findById",
+   "tags": [
+    "stock-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "productId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/stock/warehouse/{id}",
+   "rawPath": "/api/v1/stock/warehouse/{warehouseId}",
+   "operationId": "findById",
+   "tags": [
+    "stock-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "warehouseId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/stock/moves",
+   "rawPath": "/api/v1/stock/moves",
+   "operationId": "createMoves",
+   "tags": [
+    "stock-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "StockRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/warehouses",
+   "rawPath": "/api/v1/warehouses",
+   "operationId": "findWarehouses",
+   "tags": [
+    "warehouses-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/warehouses",
+   "rawPath": "/api/v1/warehouses",
+   "operationId": "createWarehouses",
+   "tags": [
+    "warehouses-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "WarehouseRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/warehouses/{id}",
+   "rawPath": "/api/v1/warehouses/{id}",
+   "operationId": "findById",
+   "tags": [
+    "warehouses-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/warehouses/{id}",
+   "rawPath": "/api/v1/warehouses/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "warehouses-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "WarehouseRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/warehouses/{id}",
+   "rawPath": "/api/v1/warehouses/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "warehouses-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/suppliers",
+   "rawPath": "/api/v1/suppliers",
+   "operationId": "findSuppliers",
+   "tags": [
+    "suppliers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/suppliers",
+   "rawPath": "/api/v1/suppliers",
+   "operationId": "createSuppliers",
+   "tags": [
+    "suppliers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "SupplierRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/suppliers/{id}",
+   "rawPath": "/api/v1/suppliers/{id}",
+   "operationId": "findById",
+   "tags": [
+    "suppliers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/suppliers/{id}",
+   "rawPath": "/api/v1/suppliers/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "suppliers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "SupplierRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/suppliers/{id}",
+   "rawPath": "/api/v1/suppliers/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "suppliers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/suppliers/{id}/products",
+   "rawPath": "/api/v1/suppliers/{id}/products",
+   "operationId": "findProducts",
+   "tags": [
+    "suppliers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/purchases",
+   "rawPath": "/api/v1/purchases",
+   "operationId": "findPurchases",
+   "tags": [
+    "purchases-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/purchases",
+   "rawPath": "/api/v1/purchases",
+   "operationId": "createPurchases",
+   "tags": [
+    "purchases-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "PurchaseRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/purchases/{id}",
+   "rawPath": "/api/v1/purchases/{id}",
+   "operationId": "findById",
+   "tags": [
+    "purchases-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/purchases/{id}",
+   "rawPath": "/api/v1/purchases/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "purchases-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "PurchaseRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/purchases/{id}",
+   "rawPath": "/api/v1/purchases/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "purchases-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/purchases/{id}/lines",
+   "rawPath": "/api/v1/purchases/{id}/lines",
+   "operationId": "findLines",
+   "tags": [
+    "purchases-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/purchases/{id}/approve",
+   "rawPath": "/api/v1/purchases/{id}/approve",
+   "operationId": "createApprove",
+   "tags": [
+    "purchases-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "PurchaseRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/purchases/{id}/receive",
+   "rawPath": "/api/v1/purchases/{id}/receive",
+   "operationId": "createReceive",
+   "tags": [
+    "purchases-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "PurchaseRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/invoices",
+   "rawPath": "/api/v1/invoices",
+   "operationId": "findInvoices",
+   "tags": [
+    "invoices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/invoices",
+   "rawPath": "/api/v1/invoices",
+   "operationId": "createInvoices",
+   "tags": [
+    "invoices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "InvoiceRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/invoices/{id}",
+   "rawPath": "/api/v1/invoices/{id}",
+   "operationId": "findById",
+   "tags": [
+    "invoices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/invoices/{id}",
+   "rawPath": "/api/v1/invoices/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "invoices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "InvoiceRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/invoices/{id}/lines",
+   "rawPath": "/api/v1/invoices/{id}/lines",
+   "operationId": "findLines",
+   "tags": [
+    "invoices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/invoices/{id}/send",
+   "rawPath": "/api/v1/invoices/{id}/send",
+   "operationId": "createSend",
+   "tags": [
+    "invoices-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "InvoiceRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/subscriptions",
+   "rawPath": "/api/v1/subscriptions",
+   "operationId": "findSubscriptions",
+   "tags": [
+    "subscriptions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/subscriptions",
+   "rawPath": "/api/v1/subscriptions",
+   "operationId": "createSubscriptions",
+   "tags": [
+    "subscriptions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "SubscriptionRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/subscriptions/{id}",
+   "rawPath": "/api/v1/subscriptions/{id}",
+   "operationId": "findById",
+   "tags": [
+    "subscriptions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/subscriptions/{id}",
+   "rawPath": "/api/v1/subscriptions/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "subscriptions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "SubscriptionRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/subscriptions/{id}",
+   "rawPath": "/api/v1/subscriptions/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "subscriptions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/subscriptions/{id}/pause",
+   "rawPath": "/api/v1/subscriptions/{id}/pause",
+   "operationId": "createPause",
+   "tags": [
+    "subscriptions-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "SubscriptionRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/refunds",
+   "rawPath": "/api/v1/refunds",
+   "operationId": "findRefunds",
+   "tags": [
+    "refunds-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/refunds",
+   "rawPath": "/api/v1/refunds",
+   "operationId": "createRefunds",
+   "tags": [
+    "refunds-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "RefundRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/refunds/{id}",
+   "rawPath": "/api/v1/refunds/{id}",
+   "operationId": "findById",
+   "tags": [
+    "refunds-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/refunds/{id}/confirm",
+   "rawPath": "/api/v1/refunds/{id}/confirm",
+   "operationId": "createConfirm",
+   "tags": [
+    "refunds-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "RefundRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/gift-cards",
+   "rawPath": "/api/v1/gift-cards",
+   "operationId": "findGiftCards",
+   "tags": [
+    "gift-cards-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/gift-cards",
+   "rawPath": "/api/v1/gift-cards",
+   "operationId": "createGiftCards",
+   "tags": [
+    "gift-cards-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "GiftCardRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/gift-cards/{id}",
+   "rawPath": "/api/v1/gift-cards/{id}",
+   "operationId": "findById",
+   "tags": [
+    "gift-cards-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/gift-cards/{id}/redeem",
+   "rawPath": "/api/v1/gift-cards/{id}/redeem",
+   "operationId": "createRedeem",
+   "tags": [
+    "gift-cards-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "GiftCardRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/customers",
+   "rawPath": "/api/v1/customers",
+   "operationId": "findCustomers",
+   "tags": [
+    "customers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/customers",
+   "rawPath": "/api/v1/customers",
+   "operationId": "createCustomers",
+   "tags": [
+    "customers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "CustomerRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/customers/{id}",
+   "rawPath": "/api/v1/customers/{id}",
+   "operationId": "findById",
+   "tags": [
+    "customers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/customers/{id}",
+   "rawPath": "/api/v1/customers/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "customers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "CustomerRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/customers/{id}",
+   "rawPath": "/api/v1/customers/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "customers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/customers/{id}/addresses",
+   "rawPath": "/api/v1/customers/{id}/addresses",
+   "operationId": "findAddresses",
+   "tags": [
+    "customers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400",
+    "404"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/customers/search",
+   "rawPath": "/api/v1/customers/search",
+   "operationId": "findSearch",
+   "tags": [
+    "customers-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200",
+    "400"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/segments",
+   "rawPath": "/api/v1/segments",
+   "operationId": "findSegments",
+   "tags": [
+    "segments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/segments",
+   "rawPath": "/api/v1/segments",
+   "operationId": "createSegments",
+   "tags": [
+    "segments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "SegmentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/segments/{id}",
+   "rawPath": "/api/v1/segments/{id}",
+   "operationId": "findById",
+   "tags": [
+    "segments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/segments/{id}",
+   "rawPath": "/api/v1/segments/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "segments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "SegmentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/segments/{id}",
+   "rawPath": "/api/v1/segments/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "segments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/segments/{id}/recalculate",
+   "rawPath": "/api/v1/segments/{id}/recalculate",
+   "operationId": "createRecalculate",
+   "tags": [
+    "segments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "SegmentRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/campaigns",
+   "rawPath": "/api/v1/campaigns",
+   "operationId": "findCampaigns",
+   "tags": [
+    "campaigns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/campaigns",
+   "rawPath": "/api/v1/campaigns",
+   "operationId": "createCampaigns",
+   "tags": [
+    "campaigns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "CampaignRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/campaigns/{id}",
+   "rawPath": "/api/v1/campaigns/{id}",
+   "operationId": "findById",
+   "tags": [
+    "campaigns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/campaigns/{id}",
+   "rawPath": "/api/v1/campaigns/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "campaigns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "CampaignRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/campaigns/{id}",
+   "rawPath": "/api/v1/campaigns/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "campaigns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/campaigns/{id}/launch",
+   "rawPath": "/api/v1/campaigns/{id}/launch",
+   "operationId": "createLaunch",
+   "tags": [
+    "campaigns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "CampaignRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/campaigns/{id}/targets",
+   "rawPath": "/api/v1/campaigns/{id}/targets",
+   "operationId": "findTargets",
+   "tags": [
+    "campaigns-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/loyalty",
+   "rawPath": "/api/v1/loyalty",
+   "operationId": "findLoyalty",
+   "tags": [
+    "loyalty-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/loyalty",
+   "rawPath": "/api/v1/loyalty",
+   "operationId": "createLoyalty",
+   "tags": [
+    "loyalty-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "LoyaltyRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/loyalty/{id}",
+   "rawPath": "/api/v1/loyalty/{id}",
+   "operationId": "findById",
+   "tags": [
+    "loyalty-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/loyalty/customer/{id}",
+   "rawPath": "/api/v1/loyalty/customer/{customerId}",
+   "operationId": "findById",
+   "tags": [
+    "loyalty-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "customerId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/accounts",
+   "rawPath": "/api/v1/accounts",
+   "operationId": "findAccounts",
+   "tags": [
+    "accounts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/accounts",
+   "rawPath": "/api/v1/accounts",
+   "operationId": "createAccounts",
+   "tags": [
+    "accounts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "AccountRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/accounts/{id}",
+   "rawPath": "/api/v1/accounts/{id}",
+   "operationId": "findById",
+   "tags": [
+    "accounts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/accounts/{id}",
+   "rawPath": "/api/v1/accounts/{id}",
+   "operationId": "updateById",
+   "tags": [
+    "accounts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": {
+    "schema": "AccountRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/accounts/{id}",
+   "rawPath": "/api/v1/accounts/{id}",
+   "operationId": "deleteById",
+   "tags": [
+    "accounts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "204"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/accounts/me",
+   "rawPath": "/api/v1/accounts/me",
+   "operationId": "findMe",
+   "tags": [
+    "accounts-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/roles",
+   "rawPath": "/api/v1/roles",
+   "operationId": "findRoles",
+   "tags": [
+    "roles-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/roles",
+   "rawPath": "/api/v1/roles",
+   "operationId": "createRoles",
+   "tags": [
+    "roles-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "RoleRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/roles/{id}",
+   "rawPath": "/api/v1/roles/{id}",
+   "operationId": "findById",
+   "tags": [
+    "roles-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/roles/{id}/permissions",
+   "rawPath": "/api/v1/roles/{id}/permissions",
+   "operationId": "findPermissions",
+   "tags": [
+    "roles-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/notifications",
+   "rawPath": "/api/v1/notifications",
+   "operationId": "findNotifications",
+   "tags": [
+    "notifications-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/notifications",
+   "rawPath": "/api/v1/notifications",
+   "operationId": "createNotifications",
+   "tags": [
+    "notifications-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": {
+    "schema": "NotificationRequest",
+    "required": true,
+    "requiredFields": [],
+    "fields": []
+   },
+   "responses": [
+    "201"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/notifications/{id}",
+   "rawPath": "/api/v1/notifications/{id}",
+   "operationId": "findById",
+   "tags": [
+    "notifications-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/notifications/templates",
+   "rawPath": "/api/v1/notifications/templates",
+   "operationId": "findTemplates",
+   "tags": [
+    "notifications-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/enums/order-statuses",
+   "rawPath": "/api/v1/enums/order-statuses",
+   "operationId": "findOrderStatuses",
+   "tags": [
+    "enums-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/enums/payment-methods",
+   "rawPath": "/api/v1/enums/payment-methods",
+   "operationId": "findPaymentMethods",
+   "tags": [
+    "enums-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/enums/units",
+   "rawPath": "/api/v1/enums/units",
+   "operationId": "findUnits",
+   "tags": [
+    "enums-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/enums/periods",
+   "rawPath": "/api/v1/enums/periods",
+   "operationId": "findPeriods",
+   "tags": [
+    "enums-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/enums/return-reasons",
+   "rawPath": "/api/v1/enums/return-reasons",
+   "operationId": "findReturnReasons",
+   "tags": [
+    "enums-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/audit",
+   "rawPath": "/api/v1/audit",
+   "operationId": "findAudit",
+   "tags": [
+    "audit-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "page",
+     "in": "query",
+     "required": false
+    },
+    {
+     "name": "size",
+     "in": "query",
+     "required": false
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/audit/{id}",
+   "rawPath": "/api/v1/audit/{id}",
+   "operationId": "findById",
+   "tags": [
+    "audit-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/audit/object/{id}",
+   "rawPath": "/api/v1/audit/object/{objectId}",
+   "operationId": "findById",
+   "tags": [
+    "audit-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "objectId",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/orders/{id}/timeline",
+   "rawPath": "/api/v1/orders/{id}/timeline",
+   "operationId": "api_v1_orders_{id}_timeline",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/orders/{id}/split",
+   "rawPath": "/api/v1/orders/{id}/split",
+   "operationId": "api_v1_orders_{id}_split",
+   "tags": [
+    "orders-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "202"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/stock/alerts",
+   "rawPath": "/api/v1/stock/alerts",
+   "operationId": "api_v1_stock_alerts",
+   "tags": [
+    "stock-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/segments/import",
+   "rawPath": "/api/v1/segments/import",
+   "operationId": "api_v1_segments_import",
+   "tags": [
+    "segments-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "202"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/audit/export",
+   "rawPath": "/api/v1/audit/export",
+   "operationId": "api_v1_audit_export",
+   "tags": [
+    "audit-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [],
+   "body": null,
+   "responses": [
+    "200"
+   ]
+  },
+  {
+   "method": "PUT",
+   "path": "/api/v1/notifications/templates/{id}",
+   "rawPath": "/api/v1/notifications/templates/{id}",
+   "operationId": "api_v1_notifications_templates_{id}",
+   "tags": [
+    "notifications-controller"
+   ],
+   "deprecated": false,
+   "summary": "",
+   "description": "",
+   "params": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true
+    }
+   ],
+   "body": null,
+   "responses": [
+    "202"
+   ]
+  }
+ ],
+ "stats": {
+  "operations": 174,
+  "paths": 112,
+  "tags": [
+   "accounts-controller",
+   "audit-controller",
+   "campaigns-controller",
+   "carts-controller",
+   "categories-controller",
+   "customers-controller",
+   "enums-controller",
+   "gift-cards-controller",
+   "invoices-controller",
+   "loyalty-controller",
+   "notifications-controller",
+   "orders-controller",
+   "payments-controller",
+   "prices-controller",
+   "products-controller",
+   "promotions-controller",
+   "purchases-controller",
+   "refunds-controller",
+   "returns-controller",
+   "reviews-controller",
+   "roles-controller",
+   "segments-controller",
+   "shipments-controller",
+   "stock-controller",
+   "subscriptions-controller",
+   "suppliers-controller",
+   "variants-controller",
+   "warehouses-controller"
+  ],
+  "deprecated": 1,
+  "withDescription": 0
+ }
+}

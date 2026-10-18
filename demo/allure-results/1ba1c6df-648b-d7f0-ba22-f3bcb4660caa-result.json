@@ -1,0 +1,97 @@
+{
+ "name": "test_get_categories_by_id_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/categories/4211 → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317619938,
+       "stop": 1789317619939
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317619939,
+       "stop": 1789317619940
+      }
+     ],
+     "start": 1789317619784,
+     "stop": 1789317619940
+    }
+   ],
+   "attachments": [],
+   "start": 1789317619784,
+   "stop": 1789317619940
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317619784,
+ "stop": 1789317619940,
+ "uuid": "1ba1c6df-648b-d7f0-ba22-f3bcb4660caa",
+ "historyId": "0d7ef9cdb676705f6fe99f8dd06ee197",
+ "testCaseId": "5263dc95677a4318b95908570609f54f",
+ "fullName": "src.api.tests.categories.test_categories_crud.TestCategoriesCrud#test_get_categories_by_id_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Categories / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Categories"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.categories.test_categories_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_categories_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCategoriesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3795-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.categories.test_categories_crud"
+  },
+  {
+   "name": "tag",
+   "value": "categories"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

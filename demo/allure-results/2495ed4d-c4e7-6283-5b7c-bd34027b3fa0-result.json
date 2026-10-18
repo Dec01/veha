@@ -1,0 +1,118 @@
+{
+ "name": "test_put_carts_by_id_incorrect_body",
+ "status": "broken",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/carts/4211 → expect status=400",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 400, got —",
+       "status": "failed",
+       "start": 1789317660607,
+       "stop": 1789317660608
+      },
+      {
+       "name": "Response body validation",
+       "status": "skipped",
+       "start": 1789317660608,
+       "stop": 1789317660609
+      }
+     ],
+     "start": 1789317660222,
+     "stop": 1789317660609
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "5d9e331d-9b07-e1fc-286f-30b97da30c89-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "19b8dd87-25b1-c5f9-d0eb-3e6b7eeed0d0-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317660222,
+   "stop": 1789317660609
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "02283921-6e48-52e9-574f-a3cf8488a33f-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317660222,
+ "stop": 1789317660609,
+ "uuid": "2495ed4d-c4e7-6283-5b7c-bd34027b3fa0",
+ "historyId": "ccd33688ecaedeeb286ce8ea442df8e8",
+ "testCaseId": "4fab0c6ba5746bcc50a9b783241c9d1c",
+ "fullName": "src.api.tests.carts.test_carts_crud.TestCartsCrud#test_put_carts_by_id_incorrect_body",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Carts / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Carts"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.carts.test_carts_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_carts_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCartsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9241-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.carts.test_carts_crud"
+  },
+  {
+   "name": "tag",
+   "value": "carts"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ],
+ "statusDetails": {
+  "message": "TimeoutError: запрос не уложился в 30 с\nExpected: ответ за 30 с\nActual: таймаут\nHint: очередь не разбиралась, консьюмер лежал",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/carts/test_carts_crud.py\", line 40, in test_put_carts_by_id_incorrect_body\n    assert_response(response, expected)\nTimeoutError: запрос не уложился в 30 с"
+ }
+}

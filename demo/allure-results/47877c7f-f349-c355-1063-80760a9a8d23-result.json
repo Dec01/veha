@@ -1,0 +1,97 @@
+{
+ "name": "test_get_reviews_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/reviews/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317667807,
+       "stop": 1789317667808
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317667808,
+       "stop": 1789317667809
+      }
+     ],
+     "start": 1789317667608,
+     "stop": 1789317667809
+    }
+   ],
+   "attachments": [],
+   "start": 1789317667608,
+   "stop": 1789317667809
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317667608,
+ "stop": 1789317667809,
+ "uuid": "47877c7f-f349-c355-1063-80760a9a8d23",
+ "historyId": "aa9397ea1b2f0372c1b6eff95c182610",
+ "testCaseId": "be70440f5c03cc34b0ed4204f5c4b3f3",
+ "fullName": "src.api.tests.reviews.test_reviews_crud.TestReviewsCrud#test_get_reviews_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Reviews / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Reviews"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.reviews.test_reviews_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_reviews_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestReviewsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8436-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.reviews.test_reviews_crud"
+  },
+  {
+   "name": "tag",
+   "value": "reviews"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

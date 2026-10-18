@@ -1,0 +1,171 @@
+{
+ "name": "Добавить товар",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/categories → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317873024,
+       "stop": 1789317873025
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317873025,
+       "stop": 1789317873026
+      }
+     ],
+     "start": 1789317870707,
+     "stop": 1789317873026
+    }
+   ],
+   "attachments": [],
+   "start": 1789317870707,
+   "stop": 1789317873026
+  },
+  {
+   "name": "HTTP POST /api/v1/products → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317875343,
+       "stop": 1789317875344
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317875344,
+       "stop": 1789317875345
+      }
+     ],
+     "start": 1789317873026,
+     "stop": 1789317875345
+    }
+   ],
+   "attachments": [],
+   "start": 1789317873026,
+   "stop": 1789317875345
+  },
+  {
+   "name": "HTTP POST /api/v1/prices → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317877662,
+       "stop": 1789317877663
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317877663,
+       "stop": 1789317877664
+      }
+     ],
+     "start": 1789317875345,
+     "stop": 1789317877664
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "22bccbb6-e2d4-a984-5c21-304e1db41ecf-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "0d5ef45c-244a-73da-d329-2c82718879aa-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317875345,
+   "stop": 1789317877664
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317870707,
+ "stop": 1789317877665,
+ "uuid": "01a27c22-3e04-745e-1fc1-c9a88346119a",
+ "historyId": "e0cd29a7025edd06caca1b1f889db6fc",
+ "testCaseId": "97a2c655042af44d5dc169173f399311",
+ "fullName": "src.ui.tests.catalog.test_catalog_products.TestCatalogProducts#test_catalog_create_product_btn[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Каталог / список товаров"
+  },
+  {
+   "name": "story",
+   "value": "Добавить товар"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.catalog.test_catalog_products"
+  },
+  {
+   "name": "suite",
+   "value": "test_catalog_products"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCatalogProducts"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2819-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.catalog.test_catalog_products"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "catalog"
+  }
+ ]
+}

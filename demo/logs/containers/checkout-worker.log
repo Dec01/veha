@@ -1,0 +1,90 @@
+2026-09-13 19:40:14 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event order.confirmed, offset 1000
+2026-09-13 19:40:20 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 19:40:48 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published payment.failed in 24 ms
+2026-09-13 19:40:55 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:41:20 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 19:41:39 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event payment.failed, offset 1005
+2026-09-13 19:42:09 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 19:42:41 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published payment.authorized in 71 ms
+2026-09-13 19:43:07 WARN  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : slow query on table "payment_attempt" (3562 ms)
+2026-09-13 19:43:35 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:43:52 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event payment.authorized, offset 1010
+2026-09-13 19:44:11 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 19:44:17 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published order.confirmed in 70 ms
+2026-09-13 19:44:38 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:44:51 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 19:45:09 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event order.confirmed, offset 1015
+2026-09-13 19:45:33 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 19:46:04 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published payment.failed in 86 ms
+2026-09-13 19:46:38 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 19:47:13 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:47:39 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event payment.failed, offset 1020
+2026-09-13 19:47:56 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 19:48:21 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published payment.authorized in 74 ms
+2026-09-13 19:48:41 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:48:59 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 19:49:06 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event payment.authorized, offset 1025
+2026-09-13 19:49:16 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 19:49:25 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published order.confirmed in 49 ms
+2026-09-13 19:49:29 WARN  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : slow query on table "payment_attempt" (3311 ms)
+2026-09-13 19:50:09 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:50:45 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event order.confirmed, offset 1030
+2026-09-13 19:51:24 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 19:52:02 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published payment.failed in 10 ms
+2026-09-13 19:52:36 WARN  [checkout-worker] c.e.s.c.OrderConfirmedListener : slow query on table "payment_attempt" (3851 ms)
+2026-09-13 19:53:14 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 19:53:22 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event payment.failed, offset 1035
+2026-09-13 19:53:31 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 19:53:49 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published payment.authorized in 23 ms
+2026-09-13 19:54:11 WARN  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : slow query on table "payment_attempt" (3012 ms)
+2026-09-13 19:54:51 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:55:29 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event payment.authorized, offset 1040
+2026-09-13 19:55:54 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 19:56:00 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published order.confirmed in 41 ms
+2026-09-13 19:56:06 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:56:46 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 19:56:47 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event order.confirmed, offset 1045
+2026-09-13 19:56:51 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 19:57:20 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published payment.failed in 22 ms
+2026-09-13 19:57:52 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 19:58:27 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:58:32 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event payment.failed, offset 1050
+2026-09-13 19:59:00 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 19:59:01 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published payment.authorized in 17 ms
+2026-09-13 19:59:04 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 19:59:13 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 19:59:16 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event payment.authorized, offset 1055
+2026-09-13 19:59:33 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 20:00:12 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published order.confirmed in 35 ms
+2026-09-13 20:00:24 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 20:00:30 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 20:00:35 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event order.confirmed, offset 1060
+2026-09-13 20:00:38 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 20:01:14 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published payment.failed in 52 ms
+2026-09-13 20:01:47 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 20:01:59 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 20:02:30 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event payment.failed, offset 1065
+2026-09-13 20:02:44 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 20:03:19 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published payment.authorized in 75 ms
+2026-09-13 20:03:40 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 20:03:55 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 20:04:08 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event payment.authorized, offset 1070
+2026-09-13 20:04:40 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 20:05:17 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published order.confirmed in 58 ms
+2026-09-13 20:05:54 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 20:06:30 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 20:06:43 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event order.confirmed, offset 1075
+2026-09-13 20:07:09 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 20:07:16 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published payment.failed in 30 ms
+2026-09-13 20:07:56 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 20:08:16 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 20:08:38 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : received event payment.failed, offset 1080
+2026-09-13 20:09:00 DEBUG [checkout-worker] c.e.s.c.OrderConfirmedListener : persisted 1 row into table "payment_attempt"
+2026-09-13 20:09:28 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : published payment.authorized in 27 ms
+2026-09-13 20:10:01 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok
+2026-09-13 20:10:15 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 20:10:32 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : received event payment.authorized, offset 1085
+2026-09-13 20:10:55 DEBUG [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : persisted 1 row into table "payment_attempt"
+2026-09-13 20:11:10 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : published order.confirmed in 23 ms
+2026-09-13 20:11:33 INFO  [checkout-worker] com.example.shop.checkout.PaymentAuthorizationService : health check ok
+2026-09-13 20:11:50 INFO  [checkout-worker] c.e.s.c.OrderConfirmedListener : health check ok

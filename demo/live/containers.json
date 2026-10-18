@@ -1,0 +1,93 @@
+{
+ "scannedAt": 1789318500,
+ "containers": [
+  {
+   "container": "storefront-api",
+   "name": "shop-api",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/storefront-api:2026.09.3",
+   "uptime": "4 days"
+  },
+  {
+   "container": "checkout-worker",
+   "name": "shop-checkout-worker",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/checkout-worker:2026.09.3",
+   "uptime": "4 days"
+  },
+  {
+   "container": "warehouse-worker",
+   "name": "shop-wms-worker",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/warehouse-worker:2026.09.3",
+   "uptime": "4 days"
+  },
+  {
+   "container": "billing-worker",
+   "name": "shop-billing-worker",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/billing-worker:2026.09.3",
+   "uptime": "4 days"
+  },
+  {
+   "container": "crm-worker",
+   "name": "shop-crm-worker",
+   "state": "restarting",
+   "status": "Restarting (1) 12 seconds ago",
+   "image": "registry.example.com/shop/crm-worker:2026.09.3",
+   "uptime": ""
+  },
+  {
+   "container": "notifier",
+   "name": "shop-notifier",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/notifier:2026.09.3",
+   "uptime": "4 days"
+  },
+  {
+   "container": "payment-gateway",
+   "name": "sandbox-payments",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/payment-gateway:2026.09.3",
+   "uptime": "4 days"
+  },
+  {
+   "container": "delivery-provider",
+   "name": "sandbox-delivery",
+   "state": "exited",
+   "status": "Exited (137) 6 hours ago",
+   "image": "registry.example.com/shop/delivery-provider:2026.09.3",
+   "uptime": ""
+  },
+  {
+   "container": "identity",
+   "name": "identity-provider",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/identity:2026.09.3",
+   "uptime": "4 days"
+  },
+  {
+   "container": "broker",
+   "name": "shop-broker",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/broker:2026.09.3",
+   "uptime": "4 days"
+  },
+  {
+   "container": "web-ui",
+   "name": "shop-web",
+   "state": "running",
+   "status": "Up 4 days",
+   "image": "registry.example.com/shop/web-ui:2026.09.3",
+   "uptime": "4 days"
+  }
+ ]
+}

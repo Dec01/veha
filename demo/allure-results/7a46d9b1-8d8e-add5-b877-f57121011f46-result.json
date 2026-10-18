@@ -1,0 +1,108 @@
+{
+ "name": "test_get_carts_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/carts → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317653416,
+       "stop": 1789317653417
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317653417,
+       "stop": 1789317653418
+      }
+     ],
+     "start": 1789317653123,
+     "stop": 1789317653418
+    }
+   ],
+   "attachments": [],
+   "start": 1789317653123,
+   "stop": 1789317653418
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317653123,
+ "stop": 1789317653418,
+ "uuid": "7a46d9b1-8d8e-add5-b877-f57121011f46",
+ "historyId": "8936379ab4a241779b23184dc3d04d98",
+ "testCaseId": "63dca32796148e6c8dbdc23a8fa6a33e",
+ "fullName": "src.api.tests.carts.test_carts_list.TestCartsList#test_get_carts_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Carts / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Carts"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.carts.test_carts_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_carts_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCartsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2780-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.carts.test_carts_list"
+  },
+  {
+   "name": "tag",
+   "value": "carts"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  },
+  {
+   "name": "tag",
+   "value": "REQ-10.4"
+  }
+ ],
+ "links": [
+  {
+   "name": "REQ-10.4",
+   "url": "spec://REQ-10.4",
+   "type": "link"
+  }
+ ]
+}

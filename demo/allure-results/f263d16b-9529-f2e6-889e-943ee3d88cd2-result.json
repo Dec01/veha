@@ -1,0 +1,97 @@
+{
+ "name": "test_get_suppliers_filters",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/suppliers → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317737035,
+       "stop": 1789317737036
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317737036,
+       "stop": 1789317737037
+      }
+     ],
+     "start": 1789317736941,
+     "stop": 1789317737037
+    }
+   ],
+   "attachments": [],
+   "start": 1789317736941,
+   "stop": 1789317737037
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317736941,
+ "stop": 1789317737037,
+ "uuid": "f263d16b-9529-f2e6-889e-943ee3d88cd2",
+ "historyId": "2285da2024079fab15ebd5989b8ea6d1",
+ "testCaseId": "d861e28f8f8847f50c3c31eb95e0cf35",
+ "fullName": "src.api.tests.suppliers.test_suppliers_list.TestSuppliersList#test_get_suppliers_filters",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Suppliers / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Suppliers"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.suppliers.test_suppliers_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_suppliers_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSuppliersList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8235-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.suppliers.test_suppliers_list"
+  },
+  {
+   "name": "tag",
+   "value": "suppliers"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

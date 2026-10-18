@@ -1,0 +1,108 @@
+{
+ "name": "test_get_roles_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/roles → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317797870,
+       "stop": 1789317797871
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317797871,
+       "stop": 1789317797872
+      }
+     ],
+     "start": 1789317797520,
+     "stop": 1789317797872
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "6b10d306-c78e-32b2-a147-86652ac9cfc9-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "19c745f3-d4e0-3af7-f636-9d9efa77a1ee-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317797520,
+   "stop": 1789317797872
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317797520,
+ "stop": 1789317797872,
+ "uuid": "9e5e491b-f532-2095-37be-3b7679cf3fd0",
+ "historyId": "5c811a7a97c96ab7f15d293f52bdfe6a",
+ "testCaseId": "93c1d550c969f25622d351373d059735",
+ "fullName": "src.api.tests.roles.test_roles_list.TestRolesList#test_get_roles_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Roles & Permissions / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Roles & Permissions"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.roles.test_roles_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_roles_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestRolesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3750-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.roles.test_roles_list"
+  },
+  {
+   "name": "tag",
+   "value": "roles"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

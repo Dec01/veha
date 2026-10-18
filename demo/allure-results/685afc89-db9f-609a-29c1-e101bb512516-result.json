@@ -1,0 +1,97 @@
+{
+ "name": "test_delete_accounts_by_id_lifecycle",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP DELETE /api/v1/accounts/4211 → expect status=409",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 409, got 409",
+       "status": "passed",
+       "start": 1789317796386,
+       "stop": 1789317796387
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317796387,
+       "stop": 1789317796388
+      }
+     ],
+     "start": 1789317796016,
+     "stop": 1789317796388
+    }
+   ],
+   "attachments": [],
+   "start": 1789317796016,
+   "stop": 1789317796388
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317796016,
+ "stop": 1789317796388,
+ "uuid": "685afc89-db9f-609a-29c1-e101bb512516",
+ "historyId": "d47718434690f8e93766ec4331778dbd",
+ "testCaseId": "be09c9a428b74ea6fc7b804e627c2256",
+ "fullName": "src.api.tests.accounts.test_accounts_crud.TestAccountsCrud#test_delete_accounts_by_id_lifecycle",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Accounts / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Удаление: Accounts"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.accounts.test_accounts_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_accounts_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestAccountsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7452-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.accounts.test_accounts_crud"
+  },
+  {
+   "name": "tag",
+   "value": "accounts"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

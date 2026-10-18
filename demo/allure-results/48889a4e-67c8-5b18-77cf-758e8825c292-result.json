@@ -1,0 +1,97 @@
+{
+ "name": "test_get_variants_product_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/variants/product/{productId} → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317634519,
+       "stop": 1789317634520
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317634520,
+       "stop": 1789317634521
+      }
+     ],
+     "start": 1789317634167,
+     "stop": 1789317634521
+    }
+   ],
+   "attachments": [],
+   "start": 1789317634167,
+   "stop": 1789317634521
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317634167,
+ "stop": 1789317634521,
+ "uuid": "48889a4e-67c8-5b18-77cf-758e8825c292",
+ "historyId": "e1bc8f0e59b53aa057e6be622f058109",
+ "testCaseId": "2e1d6c5108dbd1e2b7189036727bdaf3",
+ "fullName": "src.api.tests.variants.test_variants_queries.TestVariantsQueries#test_get_variants_product_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Variants / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Варианты по товару"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.variants.test_variants_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_variants_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestVariantsQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7110-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.variants.test_variants_queries"
+  },
+  {
+   "name": "tag",
+   "value": "variants"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ]
+}

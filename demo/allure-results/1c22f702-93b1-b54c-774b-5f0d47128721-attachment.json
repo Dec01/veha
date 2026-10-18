@@ -1,0 +1,11 @@
+{
+ "method": "GET",
+ "url": "https://shop-api.example.com/api/v1/products",
+ "headers": {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer <redacted>"
+ },
+ "body": {
+  "demo": true
+ }
+}

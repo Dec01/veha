@@ -1,0 +1,102 @@
+{
+ "name": "Остатки по складам",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/stock/product/{productId} → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317912848,
+       "stop": 1789317912849
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317912849,
+       "stop": 1789317912850
+      }
+     ],
+     "start": 1789317905954,
+     "stop": 1789317912850
+    }
+   ],
+   "attachments": [],
+   "start": 1789317905954,
+   "stop": 1789317912850
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317905954,
+ "stop": 1789317912850,
+ "uuid": "b8c76bc9-aad1-2030-27fa-b451e3178dad",
+ "historyId": "34156d521b683e7352dbfa9867fb5466",
+ "testCaseId": "024379f3cae4b0c3f6e8cc356826e1a8",
+ "fullName": "src.ui.tests.catalog.test_product_card.TestProductCard#test_product_stock_widget[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Каталог / карточка товара"
+  },
+  {
+   "name": "story",
+   "value": "Остатки по складам"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.catalog.test_product_card"
+  },
+  {
+   "name": "suite",
+   "value": "test_product_card"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestProductCard"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2059-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.catalog.test_product_card"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "catalog"
+  }
+ ]
+}

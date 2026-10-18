@@ -1,0 +1,126 @@
+{
+ "name": "test_delete_purchases_by_id_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/purchases → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317752397,
+       "stop": 1789317752398
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317752398,
+       "stop": 1789317752399
+      }
+     ],
+     "start": 1789317752350,
+     "stop": 1789317752399
+    }
+   ],
+   "attachments": [],
+   "start": 1789317752350,
+   "stop": 1789317752399
+  },
+  {
+   "name": "HTTP DELETE /api/v1/purchases/4211 → expect status=204",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 204, got 204",
+       "status": "passed",
+       "start": 1789317752446,
+       "stop": 1789317752447
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317752447,
+       "stop": 1789317752448
+      }
+     ],
+     "start": 1789317752399,
+     "stop": 1789317752448
+    }
+   ],
+   "attachments": [],
+   "start": 1789317752399,
+   "stop": 1789317752448
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317752350,
+ "stop": 1789317752449,
+ "uuid": "f6ac5b92-6d46-0e72-6cd6-b2823745f9d7",
+ "historyId": "7bff6162407fbd12e1c33239a210c581",
+ "testCaseId": "d4221c0d04a46ea0233b17ca6672328f",
+ "fullName": "src.api.tests.purchases.test_purchases_crud.TestPurchasesCrud#test_delete_purchases_by_id_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Purchase Orders / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Удаление: Purchase Orders"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.purchases.test_purchases_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchases_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchasesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4556-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.purchases.test_purchases_crud"
+  },
+  {
+   "name": "tag",
+   "value": "purchases"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

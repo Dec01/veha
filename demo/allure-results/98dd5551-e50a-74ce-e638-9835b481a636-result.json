@@ -1,0 +1,171 @@
+{
+ "name": "Оплата",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/payments/order/{orderId} → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317964023,
+       "stop": 1789317964024
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317964024,
+       "stop": 1789317964025
+      }
+     ],
+     "start": 1789317962011,
+     "stop": 1789317964025
+    }
+   ],
+   "attachments": [],
+   "start": 1789317962011,
+   "stop": 1789317964025
+  },
+  {
+   "name": "HTTP POST /api/v1/payments → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317966037,
+       "stop": 1789317966038
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317966038,
+       "stop": 1789317966039
+      }
+     ],
+     "start": 1789317964025,
+     "stop": 1789317966039
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "a13f7dfb-d811-0d87-3a9e-ce05094483e2-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "f34960d4-861f-721e-3881-b1a5068c6cd8-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317964025,
+   "stop": 1789317966039
+  },
+  {
+   "name": "HTTP GET /api/v1/enums/payment-methods → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317968051,
+       "stop": 1789317968052
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317968052,
+       "stop": 1789317968053
+      }
+     ],
+     "start": 1789317966039,
+     "stop": 1789317968053
+    }
+   ],
+   "attachments": [],
+   "start": 1789317966039,
+   "stop": 1789317968053
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317962011,
+ "stop": 1789317968054,
+ "uuid": "98dd5551-e50a-74ce-e638-9835b481a636",
+ "historyId": "897d3ed0b4ebfd796114b9aacb416484",
+ "testCaseId": "01ba240c44bb337b8da45c7eeb8c6a72",
+ "fullName": "src.ui.tests.orders.test_order_card.TestOrderCard#test_order_payment_panel[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Заказы / карточка"
+  },
+  {
+   "name": "story",
+   "value": "Оплата"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.orders.test_order_card"
+  },
+  {
+   "name": "suite",
+   "value": "test_order_card"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrderCard"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6034-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.orders.test_order_card"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  }
+ ]
+}

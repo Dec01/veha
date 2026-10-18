@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_stock_replenishment
+[001] шаг прогона: проверка test_stock_replenishment
+[002] шаг прогона: проверка test_stock_replenishment
+[003] шаг прогона: проверка test_stock_replenishment
+[004] шаг прогона: проверка test_stock_replenishment
+[005] шаг прогона: проверка test_stock_replenishment
+[006] шаг прогона: проверка test_stock_replenishment
+[007] шаг прогона: проверка test_stock_replenishment
+[008] шаг прогона: проверка test_stock_replenishment
+[009] шаг прогона: проверка test_stock_replenishment
+[010] шаг прогона: проверка test_stock_replenishment
+[011] шаг прогона: проверка test_stock_replenishment
+AssertionError: Sum of lines does not match order total

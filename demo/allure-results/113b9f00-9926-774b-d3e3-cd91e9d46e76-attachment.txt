@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_post_variants_extra_data
+[001] шаг прогона: проверка test_post_variants_extra_data
+[002] шаг прогона: проверка test_post_variants_extra_data
+[003] шаг прогона: проверка test_post_variants_extra_data
+[004] шаг прогона: проверка test_post_variants_extra_data
+[005] шаг прогона: проверка test_post_variants_extra_data
+[006] шаг прогона: проверка test_post_variants_extra_data
+[007] шаг прогона: проверка test_post_variants_extra_data
+[008] шаг прогона: проверка test_post_variants_extra_data
+[009] шаг прогона: проверка test_post_variants_extra_data
+[010] шаг прогона: проверка test_post_variants_extra_data
+[011] шаг прогона: проверка test_post_variants_extra_data
+AssertionError: Response body validation failed

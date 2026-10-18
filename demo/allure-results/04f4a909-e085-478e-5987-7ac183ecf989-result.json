@@ -1,0 +1,102 @@
+{
+ "name": "Цена товара",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/prices/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317916383,
+       "stop": 1789317916384
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317916384,
+       "stop": 1789317916385
+      }
+     ],
+     "start": 1789317912899,
+     "stop": 1789317916385
+    }
+   ],
+   "attachments": [],
+   "start": 1789317912899,
+   "stop": 1789317916385
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317912899,
+ "stop": 1789317916385,
+ "uuid": "04f4a909-e085-478e-5987-7ac183ecf989",
+ "historyId": "08845739a22ee829b6d37242200a3103",
+ "testCaseId": "555864e6dbb36f1ff6c4330e3c33f157",
+ "fullName": "src.ui.tests.catalog.test_product_card.TestProductCard#test_product_price_input[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Каталог / карточка товара"
+  },
+  {
+   "name": "story",
+   "value": "Цена товара"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.catalog.test_product_card"
+  },
+  {
+   "name": "suite",
+   "value": "test_product_card"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestProductCard"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8426-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.catalog.test_product_card"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "catalog"
+  }
+ ]
+}

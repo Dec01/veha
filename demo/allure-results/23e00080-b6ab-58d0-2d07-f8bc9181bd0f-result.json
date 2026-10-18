@@ -1,0 +1,298 @@
+{
+ "name": "test_stock_replenishment",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/suppliers → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317831371,
+       "stop": 1789317831372
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317831372,
+       "stop": 1789317831373
+      }
+     ],
+     "start": 1789317829571,
+     "stop": 1789317831373
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "48233822-520c-b830-8d96-1fe8b527f561-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "fd76c06b-1bd8-70d5-8fa0-d69e2d69036a-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317829571,
+   "stop": 1789317831373
+  },
+  {
+   "name": "HTTP POST /api/v1/purchases → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317833173,
+       "stop": 1789317833174
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317833174,
+       "stop": 1789317833175
+      }
+     ],
+     "start": 1789317831373,
+     "stop": 1789317833175
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "9ca6042b-24b9-7066-40bd-6f61dc783b7e-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "a9d5c66a-8541-a827-0ce6-0f0777a05131-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317831373,
+   "stop": 1789317833175
+  },
+  {
+   "name": "HTTP POST /api/v1/purchases/4211/approve → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317834975,
+       "stop": 1789317834976
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317834976,
+       "stop": 1789317834977
+      }
+     ],
+     "start": 1789317833175,
+     "stop": 1789317834977
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "aa04737e-a6e3-ef07-ee4a-2b578ef9f067-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "3c783ce6-6dc0-7620-c036-cff8851b830d-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317833175,
+   "stop": 1789317834977
+  },
+  {
+   "name": "HTTP POST /api/v1/purchases/4211/receive → expect status=201",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317836777,
+       "stop": 1789317836778
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317836778,
+       "stop": 1789317836779
+      }
+     ],
+     "start": 1789317834977,
+     "stop": 1789317836779
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "0feb7a16-b11e-6f25-2f54-55b628c9a60f-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "0403b2bb-56b5-319d-5e9a-81b6c6a99444-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317834977,
+   "stop": 1789317836779
+  },
+  {
+   "name": "HTTP GET /api/v1/stock → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317838579,
+       "stop": 1789317838580
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317838580,
+       "stop": 1789317838581
+      }
+     ],
+     "start": 1789317836779,
+     "stop": 1789317838581
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "bd109284-1122-b465-f5f1-c368611a11e3-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "54d22b4f-fc77-f22a-f8aa-1bd436e83c60-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317836779,
+   "stop": 1789317838581
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "cb04e362-d54b-7e73-9da8-24da90651b46-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317829571,
+ "stop": 1789317838581,
+ "uuid": "23e00080-b6ab-58d0-2d07-f8bc9181bd0f",
+ "historyId": "38d3c39ba3c89bff5fb6aa9a45c0abd5",
+ "testCaseId": "cd7062db5eeaff8ae342a492c907de77",
+ "fullName": "src.api.tests.journeys.test_stock_replenishment.TestStockReplenishment#test_stock_replenishment",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Сквозные сценарии"
+  },
+  {
+   "name": "story",
+   "value": "Закупка → приёмка → остатки"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.journeys.test_stock_replenishment"
+  },
+  {
+   "name": "suite",
+   "value": "test_stock_replenishment"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestStockReplenishment"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9311-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.journeys.test_stock_replenishment"
+  },
+  {
+   "name": "tag",
+   "value": "journey"
+  },
+  {
+   "name": "tag",
+   "value": "stock_replenishment"
+  },
+  {
+   "name": "tag",
+   "value": "WMS-12.4"
+  },
+  {
+   "name": "tag",
+   "value": "WMS-12.5"
+  }
+ ],
+ "links": [
+  {
+   "name": "WMS-12.4",
+   "url": "spec://WMS-12.4",
+   "type": "link"
+  },
+  {
+   "name": "WMS-12.5",
+   "url": "spec://WMS-12.5",
+   "type": "link"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Sum of lines does not match order total\nExpected: 18450.00\nActual: 18300.00\nHint: скидка применена дважды",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/journeys/test_stock_replenishment.py\", line 158, in test_stock_replenishment\n    assert_response(response, expected)\nAssertionError: Sum of lines does not match order total"
+ }
+}

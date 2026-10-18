@@ -1,0 +1,97 @@
+{
+ "name": "test_get_customers_search_filters",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/customers/search → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317780359,
+       "stop": 1789317780360
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317780360,
+       "stop": 1789317780361
+      }
+     ],
+     "start": 1789317779981,
+     "stop": 1789317780361
+    }
+   ],
+   "attachments": [],
+   "start": 1789317779981,
+   "stop": 1789317780361
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317779981,
+ "stop": 1789317780361,
+ "uuid": "a9ece999-0149-b708-fce9-abf768aa4c33",
+ "historyId": "f6391241efe674f45636ba01c49d5ad2",
+ "testCaseId": "b200a36d4e3698f08cf4aaa0695d49f7",
+ "fullName": "src.api.tests.customers.test_customers_list.TestCustomersList#test_get_customers_search_filters",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Customers / список"
+  },
+  {
+   "name": "story",
+   "value": "Поиск клиента"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.customers.test_customers_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_customers_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCustomersList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2716-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.customers.test_customers_list"
+  },
+  {
+   "name": "tag",
+   "value": "customers"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

@@ -1,0 +1,118 @@
+{
+ "name": "test_post_stock_by_id_recount_success",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/stock/4211/recount → expect status=201",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got —",
+       "status": "failed",
+       "start": 1789317727090,
+       "stop": 1789317727091
+      },
+      {
+       "name": "Response body validation",
+       "status": "skipped",
+       "start": 1789317727091,
+       "stop": 1789317727092
+      }
+     ],
+     "start": 1789317726916,
+     "stop": 1789317727092
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "ccd15830-ffb0-bb1e-0b6c-c65ee86f1a87-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "607b3c80-1594-8f8c-303d-8d22faa90a4d-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317726916,
+   "stop": 1789317727092
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "9b4e5500-21c5-e676-5a90-8d3d9421330a-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317726916,
+ "stop": 1789317727092,
+ "uuid": "bd59de18-3b3c-7870-bc6c-816c7a4883c8",
+ "historyId": "f92da3fbf1791709fd28e59b60dcd66c",
+ "testCaseId": "1deef47edf6478eccddcbe060ecb3961",
+ "fullName": "src.api.tests.stock.test_stock_actions.TestStockActions#test_post_stock_by_id_recount_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Stock / операции"
+  },
+  {
+   "name": "story",
+   "value": "Пересчитать позицию"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.stock.test_stock_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_stock_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestStockActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8888-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.stock.test_stock_actions"
+  },
+  {
+   "name": "tag",
+   "value": "stock"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  }
+ ],
+ "statusDetails": {
+  "message": "TimeoutError: запрос не уложился в 30 с\nExpected: ответ за 30 с\nActual: таймаут\nHint: очередь не разбиралась, консьюмер лежал",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/stock/test_stock_actions.py\", line 77, in test_post_stock_by_id_recount_success\n    assert_response(response, expected)\nTimeoutError: запрос не уложился в 30 с"
+ }
+}

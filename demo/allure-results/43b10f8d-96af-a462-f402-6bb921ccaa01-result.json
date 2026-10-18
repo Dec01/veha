@@ -1,0 +1,97 @@
+{
+ "name": "test_get_categories_by_id_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/categories/4211 → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317619731,
+       "stop": 1789317619732
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317619732,
+       "stop": 1789317619733
+      }
+     ],
+     "start": 1789317619614,
+     "stop": 1789317619733
+    }
+   ],
+   "attachments": [],
+   "start": 1789317619614,
+   "stop": 1789317619733
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317619614,
+ "stop": 1789317619733,
+ "uuid": "43b10f8d-96af-a462-f402-6bb921ccaa01",
+ "historyId": "a4dd8d8ca284e5ca3f9dad7f58df53af",
+ "testCaseId": "84c9f9d7c92ecff09dcfc3c623b62950",
+ "fullName": "src.api.tests.categories.test_categories_crud.TestCategoriesCrud#test_get_categories_by_id_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Categories / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Categories"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.categories.test_categories_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_categories_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCategoriesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4276-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.categories.test_categories_crud"
+  },
+  {
+   "name": "tag",
+   "value": "categories"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

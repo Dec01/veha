@@ -1,0 +1,97 @@
+{
+ "name": "test_put_subscriptions_by_id_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/subscriptions/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317765900,
+       "stop": 1789317765901
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317765901,
+       "stop": 1789317765902
+      }
+     ],
+     "start": 1789317765789,
+     "stop": 1789317765902
+    }
+   ],
+   "attachments": [],
+   "start": 1789317765789,
+   "stop": 1789317765902
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317765789,
+ "stop": 1789317765902,
+ "uuid": "cf9060b0-eabf-e7b6-ea1e-7c1ce3c77a85",
+ "historyId": "bc0776dff6e6f06f863c70c7cc7cdffa",
+ "testCaseId": "7595f581bd74673cf79b39f5c756b756",
+ "fullName": "src.api.tests.subscriptions.test_subscriptions_crud.TestSubscriptionsCrud#test_put_subscriptions_by_id_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Subscriptions / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Subscriptions"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.subscriptions.test_subscriptions_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_subscriptions_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSubscriptionsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6047-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.subscriptions.test_subscriptions_crud"
+  },
+  {
+   "name": "tag",
+   "value": "subscriptions"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

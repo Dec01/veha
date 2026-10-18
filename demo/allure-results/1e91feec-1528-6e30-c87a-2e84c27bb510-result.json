@@ -1,0 +1,97 @@
+{
+ "name": "test_get_purchases_by_id_lines_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/purchases/4211/lines → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317754381,
+       "stop": 1789317754382
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317754382,
+       "stop": 1789317754383
+      }
+     ],
+     "start": 1789317754182,
+     "stop": 1789317754383
+    }
+   ],
+   "attachments": [],
+   "start": 1789317754182,
+   "stop": 1789317754383
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317754182,
+ "stop": 1789317754383,
+ "uuid": "1e91feec-1528-6e30-c87a-2e84c27bb510",
+ "historyId": "273793617473a0f4e42a8c7e62c32b5e",
+ "testCaseId": "659afcdf027e6d01cacdbb36308b5df9",
+ "fullName": "src.api.tests.purchases.test_purchases_queries.TestPurchasesQueries#test_get_purchases_by_id_lines_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Purchase Orders / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Строки закупки"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.purchases.test_purchases_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchases_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchasesQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2306-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.purchases.test_purchases_queries"
+  },
+  {
+   "name": "tag",
+   "value": "purchases"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ]
+}

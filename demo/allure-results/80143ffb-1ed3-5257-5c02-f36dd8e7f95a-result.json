@@ -1,0 +1,118 @@
+{
+ "name": "test_get_stock_product_by_id_elements",
+ "status": "broken",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/stock/product/{productId} → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317724672,
+       "stop": 1789317724673
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317724673,
+       "stop": 1789317724674
+      }
+     ],
+     "start": 1789317724529,
+     "stop": 1789317724674
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "aac7246a-070f-6f62-e6b6-12075dec06ee-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "2329f62c-6105-0a25-cc69-e70786074469-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317724529,
+   "stop": 1789317724674
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "10c9eb2f-5182-889b-716d-46712aa63571-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317724529,
+ "stop": 1789317724674,
+ "uuid": "80143ffb-1ed3-5257-5c02-f36dd8e7f95a",
+ "historyId": "552e74dcd933d775065d342532190bc9",
+ "testCaseId": "b80f5f6caace573a4534f81823a8a183",
+ "fullName": "src.api.tests.stock.test_stock_queries.TestStockQueries#test_get_stock_product_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Stock / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Остатки по товару"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.stock.test_stock_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_stock_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestStockQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3548-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.stock.test_stock_queries"
+  },
+  {
+   "name": "tag",
+   "value": "stock"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Sum of lines does not match order total\nExpected: 18450.00\nActual: 18300.00\nHint: скидка применена дважды",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/stock/test_stock_queries.py\", line 156, in test_get_stock_product_by_id_elements\n    assert_response(response, expected)\nAssertionError: Sum of lines does not match order total"
+ }
+}

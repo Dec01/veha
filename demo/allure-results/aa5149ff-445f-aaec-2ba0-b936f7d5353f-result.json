@@ -1,0 +1,108 @@
+{
+ "name": "test_get_orders_pagination",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/orders → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317673232,
+       "stop": 1789317673233
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317673233,
+       "stop": 1789317673234
+      }
+     ],
+     "start": 1789317672859,
+     "stop": 1789317673234
+    }
+   ],
+   "attachments": [],
+   "start": 1789317672859,
+   "stop": 1789317673234
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317672859,
+ "stop": 1789317673234,
+ "uuid": "aa5149ff-445f-aaec-2ba0-b936f7d5353f",
+ "historyId": "1c90e2952ce5bfef313e84c83052f42e",
+ "testCaseId": "3ab4e98fe9af389647be12bb2335938c",
+ "fullName": "src.api.tests.orders.test_orders_list.TestOrdersList#test_get_orders_pagination",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Orders / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Orders"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.orders.test_orders_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2636-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.orders.test_orders_list"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.1"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.1",
+   "url": "spec://API-11.1",
+   "type": "link"
+  }
+ ]
+}

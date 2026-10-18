@@ -1,0 +1,102 @@
+{
+ "name": "Вернуть оплату",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/refunds → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318027882,
+       "stop": 1789318027883
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318027883,
+       "stop": 1789318027884
+      }
+     ],
+     "start": 1789318025892,
+     "stop": 1789318027884
+    }
+   ],
+   "attachments": [],
+   "start": 1789318025892,
+   "stop": 1789318027884
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318025892,
+ "stop": 1789318027884,
+ "uuid": "4d87838d-6d3c-7ac4-1854-9d58219d7bd3",
+ "historyId": "f63a5b307acd46e2db502f4f887a5f78",
+ "testCaseId": "09fde364011cede3e88257b81f196c6b",
+ "fullName": "src.ui.tests.billing.test_billing_invoices.TestBillingInvoices#test_invoice_refund_btn[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Биллинг / счета"
+  },
+  {
+   "name": "story",
+   "value": "Вернуть оплату"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.billing.test_billing_invoices"
+  },
+  {
+   "name": "suite",
+   "value": "test_billing_invoices"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestBillingInvoices"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8374-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.billing.test_billing_invoices"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "billing"
+  }
+ ]
+}

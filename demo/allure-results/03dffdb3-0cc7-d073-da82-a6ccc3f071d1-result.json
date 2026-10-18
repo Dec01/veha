@@ -1,0 +1,142 @@
+{
+ "name": "Новая кампания",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/segments → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318052342,
+       "stop": 1789318052343
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318052343,
+       "stop": 1789318052344
+      }
+     ],
+     "start": 1789318050967,
+     "stop": 1789318052344
+    }
+   ],
+   "attachments": [],
+   "start": 1789318050967,
+   "stop": 1789318052344
+  },
+  {
+   "name": "HTTP POST /api/v1/campaigns → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318053719,
+       "stop": 1789318053720
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318053720,
+       "stop": 1789318053721
+      }
+     ],
+     "start": 1789318052344,
+     "stop": 1789318053721
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "bdd56c46-3c77-f998-1820-95fe4595582c-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "334e09ec-a5de-1a62-ea44-be441587778a-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789318052344,
+   "stop": 1789318053721
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318050967,
+ "stop": 1789318053721,
+ "uuid": "03dffdb3-0cc7-d073-da82-a6ccc3f071d1",
+ "historyId": "bbddb968eb84822436ca22494a5c7ae4",
+ "testCaseId": "338273e9cc5f9afdfa330edfce0d82df",
+ "fullName": "src.ui.tests.crm.test_crm_campaigns.TestCrmCampaigns#test_campaign_create_btn[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "CRM / кампании"
+  },
+  {
+   "name": "story",
+   "value": "Новая кампания"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.crm.test_crm_campaigns"
+  },
+  {
+   "name": "suite",
+   "value": "test_crm_campaigns"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCrmCampaigns"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8668-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.crm.test_crm_campaigns"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "crm"
+  }
+ ]
+}

@@ -1,0 +1,137 @@
+{
+ "name": "test_post_orders_by_id_confirm_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/orders → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317684297,
+       "stop": 1789317684298
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317684298,
+       "stop": 1789317684299
+      }
+     ],
+     "start": 1789317684130,
+     "stop": 1789317684299
+    }
+   ],
+   "attachments": [],
+   "start": 1789317684130,
+   "stop": 1789317684299
+  },
+  {
+   "name": "HTTP POST /api/v1/orders/4211/confirm → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317684466,
+       "stop": 1789317684467
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317684467,
+       "stop": 1789317684468
+      }
+     ],
+     "start": 1789317684299,
+     "stop": 1789317684468
+    }
+   ],
+   "attachments": [],
+   "start": 1789317684299,
+   "stop": 1789317684468
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317684130,
+ "stop": 1789317684469,
+ "uuid": "5951085b-c7bb-8de0-63c3-27338fdbb2da",
+ "historyId": "8d1eb99cd4071abaf32b16d005418290",
+ "testCaseId": "bf3a1557b45075a6bcd32780f0594769",
+ "fullName": "src.api.tests.orders.test_orders_actions.TestOrdersActions#test_post_orders_by_id_confirm_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Orders / операции"
+  },
+  {
+   "name": "story",
+   "value": "Подтвердить заказ"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.orders.test_orders_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7958-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.orders.test_orders_actions"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.1"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.1",
+   "url": "spec://API-11.1",
+   "type": "link"
+  }
+ ]
+}

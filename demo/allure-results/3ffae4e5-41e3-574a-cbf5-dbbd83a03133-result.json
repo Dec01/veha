@@ -1,0 +1,97 @@
+{
+ "name": "test_put_categories_by_id_update_object",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/categories/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317621235,
+       "stop": 1789317621236
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317621236,
+       "stop": 1789317621237
+      }
+     ],
+     "start": 1789317620861,
+     "stop": 1789317621237
+    }
+   ],
+   "attachments": [],
+   "start": 1789317620861,
+   "stop": 1789317621237
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317620861,
+ "stop": 1789317621237,
+ "uuid": "3ffae4e5-41e3-574a-cbf5-dbbd83a03133",
+ "historyId": "30677fa1bc9885decf957eb045193171",
+ "testCaseId": "f4692146c5e91fa307762c721156d6ac",
+ "fullName": "src.api.tests.categories.test_categories_crud.TestCategoriesCrud#test_put_categories_by_id_update_object",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Categories / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Categories"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.categories.test_categories_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_categories_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCategoriesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8829-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.categories.test_categories_crud"
+  },
+  {
+   "name": "tag",
+   "value": "categories"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

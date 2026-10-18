@@ -1,0 +1,108 @@
+{
+ "name": "test_post_warehouses_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/warehouses → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317729267,
+       "stop": 1789317729268
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317729268,
+       "stop": 1789317729269
+      }
+     ],
+     "start": 1789317729056,
+     "stop": 1789317729269
+    }
+   ],
+   "attachments": [],
+   "start": 1789317729056,
+   "stop": 1789317729269
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317729056,
+ "stop": 1789317729269,
+ "uuid": "0fb7babd-2891-acef-224d-1c670c9a85a6",
+ "historyId": "e1e951927ddb01a9c9c8750f35b328d7",
+ "testCaseId": "1d5904def4d6cfe4c91c27fb10bf33ff",
+ "fullName": "src.api.tests.warehouses.test_warehouses_crud.TestWarehousesCrud#test_post_warehouses_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Warehouses / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Создание: Warehouses"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.warehouses.test_warehouses_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_warehouses_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestWarehousesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4218-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.warehouses.test_warehouses_crud"
+  },
+  {
+   "name": "tag",
+   "value": "warehouses"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  },
+  {
+   "name": "tag",
+   "value": "WMS-12.8"
+  }
+ ],
+ "links": [
+  {
+   "name": "WMS-12.8",
+   "url": "spec://WMS-12.8",
+   "type": "link"
+  }
+ ]
+}

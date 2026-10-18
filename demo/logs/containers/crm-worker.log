@@ -1,0 +1,90 @@
+2026-09-13 19:40:01 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event campaign.launched, offset 1000
+2026-09-13 19:40:28 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "segment_member"
+2026-09-13 19:40:46 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published campaign.launched in 53 ms
+2026-09-13 19:41:05 WARN  [crm-worker] com.example.shop.crm.SegmentRecalculationService : slow query on table "campaign_target" (3049 ms)
+2026-09-13 19:41:20 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:41:50 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event loyalty.points.awarded, offset 1005
+2026-09-13 19:41:52 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "customer_segment"
+2026-09-13 19:42:19 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published loyalty.points.awarded in 61 ms
+2026-09-13 19:42:46 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:43:10 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:43:13 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event campaign.launched, offset 1010
+2026-09-13 19:43:21 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "loyalty_transaction"
+2026-09-13 19:43:36 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published campaign.launched in 42 ms
+2026-09-13 19:43:40 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:43:47 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:44:07 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event loyalty.points.awarded, offset 1015
+2026-09-13 19:44:26 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "loyalty_account"
+2026-09-13 19:44:33 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published loyalty.points.awarded in 59 ms
+2026-09-13 19:45:01 WARN  [crm-worker] com.example.shop.crm.SegmentRecalculationService : slow query on table "customer_segment" (2666 ms)
+2026-09-13 19:45:22 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:45:27 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event campaign.launched, offset 1020
+2026-09-13 19:45:29 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "campaign_target"
+2026-09-13 19:45:48 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published campaign.launched in 57 ms
+2026-09-13 19:46:09 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:46:28 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:46:48 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event loyalty.points.awarded, offset 1025
+2026-09-13 19:46:50 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "campaign"
+2026-09-13 19:47:10 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published loyalty.points.awarded in 86 ms
+2026-09-13 19:47:28 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:47:41 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:47:43 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event campaign.launched, offset 1030
+2026-09-13 19:48:15 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "segment_member"
+2026-09-13 19:48:48 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published campaign.launched in 63 ms
+2026-09-13 19:48:56 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:49:18 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:49:43 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event loyalty.points.awarded, offset 1035
+2026-09-13 19:49:47 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "customer_segment"
+2026-09-13 19:50:24 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published loyalty.points.awarded in 51 ms
+2026-09-13 19:50:44 WARN  [crm-worker] com.example.shop.crm.SegmentRecalculationService : slow query on table "campaign" (3524 ms)
+2026-09-13 19:51:20 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:51:31 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event campaign.launched, offset 1040
+2026-09-13 19:52:09 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "loyalty_transaction"
+2026-09-13 19:52:24 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published campaign.launched in 4 ms
+2026-09-13 19:52:50 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:53:22 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:53:25 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event loyalty.points.awarded, offset 1045
+2026-09-13 19:53:53 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "loyalty_account"
+2026-09-13 19:54:19 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published loyalty.points.awarded in 50 ms
+2026-09-13 19:54:59 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:55:05 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:55:08 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event campaign.launched, offset 1050
+2026-09-13 19:55:10 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "campaign_target"
+2026-09-13 19:55:45 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published campaign.launched in 32 ms
+2026-09-13 19:56:10 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:56:29 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:56:30 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event loyalty.points.awarded, offset 1055
+2026-09-13 19:56:46 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "campaign"
+2026-09-13 19:57:12 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published loyalty.points.awarded in 50 ms
+2026-09-13 19:57:42 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:58:15 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 19:58:37 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event campaign.launched, offset 1060
+2026-09-13 19:59:03 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "segment_member"
+2026-09-13 19:59:37 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published campaign.launched in 78 ms
+2026-09-13 19:59:39 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 20:00:16 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 20:00:44 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event loyalty.points.awarded, offset 1065
+2026-09-13 20:01:12 DEBUG [crm-worker] com.example.shop.crm.SegmentRecalculationService : persisted 1 row into table "customer_segment"
+2026-09-13 20:01:25 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : published loyalty.points.awarded in 4 ms
+2026-09-13 20:02:04 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 20:02:08 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : health check ok
+2026-09-13 20:02:15 INFO  [crm-worker] com.example.shop.crm.SegmentRecalculationService : received event campaign.launched, offset 1070
+2026-09-13 20:02:21 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:02:52 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:03:11 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:03:24 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:03:46 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:04:08 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:04:26 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:04:41 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:05:11 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:05:47 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:05:59 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:06:21 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:06:30 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:07:06 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:07:30 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:07:53 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:08:32 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:08:36 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s
+2026-09-13 20:08:47 ERROR [crm-worker] com.example.shop.crm.SegmentRecalculationService : Connection refused, retrying in 5s

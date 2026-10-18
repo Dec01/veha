@@ -1,0 +1,722 @@
+# Карта интеграций демонстрационного ландшафта «Сеть N».
+#
+# ВСЁ ВЫМЫШЛЕНО. Файл создаётся generate.py вместе с артефактами —
+# так карта и снятые данные не расходятся.
+#
+# id узлов: screen:<key>, ui:<testid>, api:<METHOD /path>, topic:<name>,
+#           store:<name>, svc:<name>
+
+services:
+  storefront-api:
+    label: "storefront-api"
+    kind: backend
+    note: "основной API витрины"
+  checkout-worker:
+    label: "checkout-worker"
+    kind: backend
+    note: "оплата заказа, общается через шину"
+  warehouse-worker:
+    label: "warehouse-worker"
+    kind: backend
+    note: "остатки и резервы"
+  billing-worker:
+    label: "billing-worker"
+    kind: backend
+    note: "счета и возвраты"
+  crm-worker:
+    label: "crm-worker"
+    kind: backend
+    note: "сегменты и бонусы"
+  notifier:
+    label: "notifier"
+    kind: backend
+    note: "рассылка уведомлений"
+  identity:
+    label: "Провайдер входа"
+    kind: auth
+  db-primary:
+    label: "PostgreSQL «shop»"
+    kind: db
+  broker:
+    label: "Шина сообщений"
+    kind: bus
+  objectstore:
+    label: "Объектное хранилище"
+    kind: storage
+
+screens:
+  catalog_products:
+    label: "Каталог товаров"
+    path: "/#/catalog/products"
+    page_object: src/ui/pages/catalog_products_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 11, label: "Каталог товаров"}
+      - {kind: "toolbar", x: 11, y: 14, w: 46, h: 9}
+      - {kind: "button", x: 78, y: 14, w: 19, h: 9, label: "Добавить товар"}
+      - {kind: "table", x: 11, y: 28, w: 86, h: 66, rows: 8, label: "SKU · Название · Категория · Цена"}
+  product_card:
+    label: "Карточка товара"
+    path: "/#/catalog/products/{productId}"
+    page_object: src/ui/pages/product_card_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "hero", x: 8, y: 0, w: 92, h: 24, label: "Карточка товара"}
+      - {kind: "button", x: 76, y: 5, w: 20, h: 9, label: "Добавить вариант"}
+      - {kind: "panel", x: 11, y: 28, w: 42, h: 34, label: "Параметры товара"}
+      - {kind: "panel", x: 56, y: 28, w: 41, h: 34, label: "Остатки по складам"}
+      - {kind: "table", x: 11, y: 66, w: 86, h: 30, rows: 4, label: "Вариант · Штрихкод · Цена"}
+  orders_list:
+    label: "Заказы"
+    path: "/#/orders"
+    page_object: src/ui/pages/orders_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 11, label: "Заказы"}
+      - {kind: "toolbar", x: 11, y: 14, w: 40, h: 9}
+      - {kind: "button", x: 76, y: 14, w: 21, h: 9, label: "Новый заказ"}
+      - {kind: "table", x: 11, y: 28, w: 86, h: 66, rows: 9, label: "Номер · Клиент · Статус · Сумма"}
+  order_card:
+    label: "Карточка заказа"
+    path: "/#/orders/{orderId}"
+    page_object: src/ui/pages/order_card_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "hero", x: 8, y: 0, w: 92, h: 22, label: "Заказ"}
+      - {kind: "button", x: 76, y: 5, w: 20, h: 9, label: "Подтвердить"}
+      - {kind: "panel", x: 11, y: 26, w: 42, h: 30, label: "Оплата"}
+      - {kind: "panel", x: 56, y: 26, w: 41, h: 30, label: "Отгрузка"}
+      - {kind: "table", x: 11, y: 60, w: 86, h: 36, rows: 5, label: "Товар · Кол-во · Цена · Скидка"}
+  warehouse_stock:
+    label: "Остатки на складе"
+    path: "/#/warehouse/stock"
+    page_object: src/ui/pages/warehouse_stock_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 11, label: "Остатки"}
+      - {kind: "toolbar", x: 11, y: 14, w: 52, h: 9}
+      - {kind: "button", x: 78, y: 14, w: 19, h: 9, label: "Перемещение"}
+      - {kind: "table", x: 11, y: 28, w: 86, h: 66, rows: 8, label: "Склад · Вариант · Остаток · Резерв"}
+  purchase_order:
+    label: "Закупка"
+    path: "/#/warehouse/purchases/{purchaseId}"
+    page_object: src/ui/pages/purchase_order_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 12, label: "Закупка"}
+      - {kind: "panel", x: 11, y: 16, w: 42, h: 36, label: "Поставщик и условия"}
+      - {kind: "panel", x: 56, y: 16, w: 41, h: 36, label: "Приёмка"}
+      - {kind: "table", x: 11, y: 56, w: 86, h: 40, rows: 5, label: "Вариант · Кол-во · Цена"}
+  billing_invoices:
+    label: "Счета"
+    path: "/#/billing/invoices"
+    page_object: src/ui/pages/billing_invoices_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 11, label: "Счета"}
+      - {kind: "toolbar", x: 11, y: 14, w: 46, h: 9}
+      - {kind: "button", x: 78, y: 14, w: 19, h: 9, label: "Выставить счёт"}
+      - {kind: "table", x: 11, y: 28, w: 86, h: 66, rows: 7, label: "Счёт · Заказ · Статус · Сумма"}
+  crm_customers:
+    label: "Клиенты"
+    path: "/#/crm/customers"
+    page_object: src/ui/pages/crm_customers_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 11, label: "Клиенты"}
+      - {kind: "toolbar", x: 11, y: 14, w: 52, h: 9}
+      - {kind: "table", x: 11, y: 28, w: 86, h: 66, rows: 8, label: "Клиент · Сегмент · Бонусы · Статус"}
+  crm_campaigns:
+    label: "Кампании"
+    path: "/#/crm/campaigns"
+    page_object: src/ui/pages/crm_campaigns_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 11, label: "Кампании"}
+      - {kind: "button", x: 76, y: 14, w: 21, h: 9, label: "Новая кампания"}
+      - {kind: "table", x: 11, y: 28, w: 86, h: 66, rows: 6, label: "Кампания · Сегмент · Статус"}
+  admin_accounts:
+    label: "Учётные записи"
+    path: "/#/admin/accounts"
+    page_object: src/ui/pages/admin_accounts_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 11, label: "Учётные записи"}
+      - {kind: "toolbar", x: 11, y: 14, w: 52, h: 9}
+      - {kind: "table", x: 11, y: 28, w: 86, h: 66, rows: 7, label: "Логин · ФИО · Роль · Статус"}
+  reports_sales:
+    label: "Отчёт по продажам"
+    path: "/#/reports/sales"
+    page_object: src/ui/pages/reports_sales_page.py
+    frame:
+      - {kind: "sidebar", x: 0, y: 0, w: 8, h: 100}
+      - {kind: "header", x: 8, y: 0, w: 92, h: 11, label: "Продажи"}
+      - {kind: "toolbar", x: 11, y: 14, w: 40, h: 9}
+      - {kind: "panel", x: 11, y: 26, w: 86, h: 44, label: "Динамика продаж"}
+      - {kind: "table", x: 11, y: 72, w: 86, h: 24, rows: 3, label: "Период · Заказов · Выручка"}
+
+# Элементы UI и эндпоинты, которые они дёргают.
+ui_elements:
+  - testid: catalog-products-table
+    slot: {x: 54, y: 60}
+    screen: catalog_products
+    label: "Таблица товаров"
+    calls:
+      - "GET /api/v1/products"
+    renders: ["таблица товаров"]
+  - testid: catalog-create-product-btn
+    slot: {x: 87, y: 18}
+    screen: catalog_products
+    label: "Добавить товар"
+    calls:
+      - "GET /api/v1/categories"
+      - "POST /api/v1/products"
+      - "POST /api/v1/prices"
+    renders: ["модалка «Новый товар»", "шаг «Цена и остаток»"]
+    note: "визард из двух шагов; цена создаётся отдельным POST"
+  - testid: catalog-filter-category
+    slot: {x: 30, y: 18}
+    screen: catalog_products
+    label: "Фильтр по категории"
+    calls:
+      - "GET /api/v1/categories/tree"
+    renders: ["выпадающее дерево категорий"]
+  - testid: catalog-search-input
+    slot: {x: 18, y: 18}
+    screen: catalog_products
+    label: "Поиск по каталогу"
+    calls:
+      - "GET /api/v1/products/search"
+    renders: ["подсказки поиска"]
+  - testid: product-summary-panel
+    slot: {x: 32, y: 44}
+    screen: product_card
+    label: "Параметры товара"
+    calls:
+      - "GET /api/v1/products/{id}"
+      - "GET /api/v1/enums/units"
+    renders: ["название, категория, единица"]
+  - testid: product-variants-table
+    slot: {x: 54, y: 80}
+    screen: product_card
+    label: "Таблица вариантов"
+    calls:
+      - "GET /api/v1/products/{id}/variants"
+    renders: ["грид вариантов"]
+  - testid: product-add-variant-btn
+    slot: {x: 86, y: 9}
+    screen: product_card
+    label: "Добавить вариант"
+    calls:
+      - "POST /api/v1/variants"
+    renders: ["модалка «Новый вариант»"]
+  - testid: product-stock-widget
+    slot: {x: 76, y: 44}
+    screen: product_card
+    label: "Остатки по складам"
+    calls:
+      - "GET /api/v1/stock/product/{productId}"
+    renders: ["полоски остатка по складам"]
+  - testid: product-price-input
+    slot: {x: 40, y: 50}
+    screen: product_card
+    label: "Цена товара"
+    calls:
+      - "PUT /api/v1/prices/{id}"
+    renders: ["подсказка «цена обновлена»"]
+    note: "отрицательная цена → 400, поле краснеет"
+  - testid: orders-table
+    slot: {x: 54, y: 60}
+    screen: orders_list
+    label: "Список заказов"
+    calls:
+      - "GET /api/v1/orders"
+    renders: ["таблица заказов"]
+  - testid: orders-filter-status
+    slot: {x: 24, y: 18}
+    screen: orders_list
+    label: "Фильтр по статусу"
+    calls:
+      - "GET /api/v1/enums/order-statuses"
+    renders: ["набор чипов статусов"]
+  - testid: orders-create-btn
+    slot: {x: 86, y: 18}
+    screen: orders_list
+    label: "Новый заказ"
+    calls:
+      - "GET /api/v1/customers"
+      - "POST /api/v1/carts"
+      - "POST /api/v1/carts/{id}/items"
+      - "POST /api/v1/orders"
+    renders: ["модалка «Новый заказ»"]
+    note: "каскад Клиент → Корзина → Позиции → Заказ"
+  - testid: orders-export-btn
+    slot: {x: 66, y: 18}
+    screen: orders_list
+    label: "Выгрузить реестр"
+    calls:
+      - "POST /api/v1/orders/export"
+    renders: ["тост «Файл готов»"]
+  - testid: order-header-panel
+    slot: {x: 32, y: 12}
+    screen: order_card
+    label: "Шапка заказа"
+    calls:
+      - "GET /api/v1/orders/{id}"
+    renders: ["номер, клиент, статус"]
+  - testid: order-lines-table
+    slot: {x: 54, y: 78}
+    screen: order_card
+    label: "Строки заказа"
+    calls:
+      - "GET /api/v1/orders/{id}/lines"
+    renders: ["грид строк"]
+  - testid: order-confirm-btn
+    slot: {x: 86, y: 9}
+    screen: order_card
+    label: "Подтвердить заказ"
+    calls:
+      - "POST /api/v1/orders/{id}/confirm"
+    renders: ["статус «Подтверждён»", "плашка «Ожидается оплата»"]
+    note: "после подтверждения событие уходит в шину"
+  - testid: order-cancel-btn
+    slot: {x: 66, y: 9}
+    screen: order_card
+    label: "Отменить заказ"
+    calls:
+      - "POST /api/v1/orders/{id}/cancel"
+    renders: ["модалка подтверждения"]
+  - testid: order-payment-panel
+    slot: {x: 32, y: 40}
+    screen: order_card
+    label: "Оплата"
+    calls:
+      - "GET /api/v1/payments/order/{orderId}"
+      - "POST /api/v1/payments"
+      - "GET /api/v1/enums/payment-methods"
+    renders: ["состояние оплаты", "кнопка «Списать»"]
+  - testid: order-shipment-panel
+    slot: {x: 76, y: 40}
+    screen: order_card
+    label: "Отгрузка"
+    calls:
+      - "GET /api/v1/shipments/order/{orderId}"
+      - "POST /api/v1/shipments"
+    renders: ["трек-номер, перевозчик"]
+  - testid: order-return-btn
+    slot: {x: 46, y: 9}
+    screen: order_card
+    label: "Оформить возврат"
+    calls:
+      - "GET /api/v1/enums/return-reasons"
+      - "POST /api/v1/returns"
+    renders: ["модалка «Возврат»"]
+  - testid: stock-table
+    slot: {x: 54, y: 60}
+    screen: warehouse_stock
+    label: "Таблица остатков"
+    calls:
+      - "GET /api/v1/stock"
+    renders: ["грид остатков"]
+  - testid: stock-warehouse-filter
+    slot: {x: 30, y: 18}
+    screen: warehouse_stock
+    label: "Фильтр по складу"
+    calls:
+      - "GET /api/v1/warehouses"
+    renders: ["выпадающий список складов"]
+  - testid: stock-move-btn
+    slot: {x: 87, y: 18}
+    screen: warehouse_stock
+    label: "Перемещение"
+    calls:
+      - "POST /api/v1/stock/moves"
+    renders: ["модалка «Перемещение»"]
+  - testid: stock-recount-btn
+    slot: {x: 66, y: 18}
+    screen: warehouse_stock
+    label: "Пересчитать позицию"
+    calls:
+      - "POST /api/v1/stock/{id}/recount"
+    renders: ["тост «Позиция пересчитана»"]
+  - testid: purchase-header-panel
+    slot: {x: 32, y: 34}
+    screen: purchase_order
+    label: "Поставщик и условия"
+    calls:
+      - "GET /api/v1/purchases/{id}"
+      - "GET /api/v1/suppliers"
+    renders: ["поставщик, склад, сумма"]
+  - testid: purchase-lines-table
+    slot: {x: 54, y: 76}
+    screen: purchase_order
+    label: "Строки закупки"
+    calls:
+      - "GET /api/v1/purchases/{id}/lines"
+    renders: ["грид строк закупки"]
+  - testid: purchase-approve-btn
+    slot: {x: 76, y: 34}
+    screen: purchase_order
+    label: "Согласовать закупку"
+    calls:
+      - "POST /api/v1/purchases/{id}/approve"
+    renders: ["статус «Согласована»"]
+  - testid: purchase-receive-btn
+    slot: {x: 76, y: 44}
+    screen: purchase_order
+    label: "Принять поставку"
+    calls:
+      - "POST /api/v1/purchases/{id}/receive"
+    renders: ["статус «Принята»", "плашка «Остатки обновлены»"]
+    note: "приёмка публикует событие пополнения"
+  - testid: invoices-table
+    slot: {x: 54, y: 60}
+    screen: billing_invoices
+    label: "Таблица счетов"
+    calls:
+      - "GET /api/v1/invoices"
+    renders: ["таблица счетов"]
+  - testid: invoice-issue-btn
+    slot: {x: 87, y: 18}
+    screen: billing_invoices
+    label: "Выставить счёт"
+    calls:
+      - "POST /api/v1/invoices"
+    renders: ["модалка «Новый счёт»"]
+  - testid: invoice-send-btn
+    slot: {x: 66, y: 18}
+    screen: billing_invoices
+    label: "Отправить счёт"
+    calls:
+      - "POST /api/v1/invoices/{id}/send"
+    renders: ["тост «Счёт отправлен»"]
+  - testid: invoice-refund-btn
+    slot: {x: 46, y: 18}
+    screen: billing_invoices
+    label: "Вернуть оплату"
+    calls:
+      - "POST /api/v1/refunds"
+    renders: ["модалка «Возврат оплаты»"]
+  - testid: customers-table
+    slot: {x: 54, y: 60}
+    screen: crm_customers
+    label: "Таблица клиентов"
+    calls:
+      - "GET /api/v1/customers"
+    renders: ["таблица клиентов"]
+  - testid: customers-create-btn
+    slot: {x: 87, y: 18}
+    screen: crm_customers
+    label: "Добавить клиента"
+    calls:
+      - "POST /api/v1/customers"
+    renders: ["модалка «Новый клиент»"]
+  - testid: customer-segment-chip
+    slot: {x: 30, y: 18}
+    screen: crm_customers
+    label: "Сегмент клиента"
+    calls:
+      - "GET /api/v1/segments"
+    renders: ["чип сегмента"]
+  - testid: customer-loyalty-panel
+    slot: {x: 76, y: 40}
+    screen: crm_customers
+    label: "Бонусный счёт"
+    calls:
+      - "GET /api/v1/loyalty/customer/{customerId}"
+    renders: ["баланс бонусов"]
+  - testid: campaigns-table
+    slot: {x: 54, y: 60}
+    screen: crm_campaigns
+    label: "Таблица кампаний"
+    calls:
+      - "GET /api/v1/campaigns"
+    renders: ["таблица кампаний"]
+  - testid: campaign-create-btn
+    slot: {x: 86, y: 18}
+    screen: crm_campaigns
+    label: "Новая кампания"
+    calls:
+      - "GET /api/v1/segments"
+      - "POST /api/v1/campaigns"
+    renders: ["модалка «Новая кампания»"]
+  - testid: campaign-launch-btn
+    slot: {x: 66, y: 18}
+    screen: crm_campaigns
+    label: "Запустить кампанию"
+    calls:
+      - "POST /api/v1/campaigns/{id}/launch"
+    renders: ["статус «Идёт»"]
+  - testid: accounts-table
+    slot: {x: 54, y: 60}
+    screen: admin_accounts
+    label: "Таблица учётных записей"
+    calls:
+      - "GET /api/v1/accounts"
+    renders: ["таблица записей"]
+  - testid: account-role-select
+    slot: {x: 30, y: 18}
+    screen: admin_accounts
+    label: "Роль"
+    calls:
+      - "GET /api/v1/roles"
+    renders: ["выпадающий список ролей"]
+  - testid: account-toggle-active
+    slot: {x: 92, y: 40}
+    screen: admin_accounts
+    label: "Активировать / отключить"
+    calls:
+      - "PUT /api/v1/accounts/{id}"
+    renders: ["тост «Запись отключена»"]
+  - testid: accounts-audit-link
+    slot: {x: 66, y: 18}
+    screen: admin_accounts
+    label: "История изменений"
+    calls:
+      - "GET /api/v1/audit"
+    renders: ["панель истории"]
+  - testid: sales-report-chart
+    slot: {x: 54, y: 44}
+    screen: reports_sales
+    label: "Динамика продаж"
+    calls:
+      - "GET /api/v1/orders/report/sales"
+    renders: ["график выручки"]
+  - testid: sales-period-picker
+    slot: {x: 24, y: 18}
+    screen: reports_sales
+    label: "Период"
+    calls:
+      - "GET /api/v1/enums/periods"
+    renders: ["выбор периода"]
+  - testid: sales-export-btn
+    slot: {x: 44, y: 18}
+    screen: reports_sales
+    label: "Выгрузить"
+    calls:
+      - "POST /api/v1/orders/export"
+    renders: ["файл выгрузки"]
+
+integrations:
+  - from: "POST /api/v1/orders/{id}/confirm"
+    kind: publish
+    to: topic:order.confirmed
+    label: "публикует подтверждение заказа"
+  - from: "POST /api/v1/orders/{id}/cancel"
+    kind: publish
+    to: topic:order.cancelled
+    label: "публикует отмену"
+  - from: "topic:order.confirmed"
+    kind: consume
+    to: svc:checkout-worker
+    label: "забирает заказ в оплату"
+  - from: "svc:checkout-worker"
+    kind: publish
+    to: topic:payment.authorized
+    label: "результат авторизации"
+  - from: "svc:checkout-worker"
+    kind: publish
+    to: topic:payment.failed
+    label: "отказ платёжного шлюза"
+  - from: "topic:payment.authorized"
+    kind: consume
+    to: svc:billing-worker
+    label: "выписывает счёт"
+  - from: "svc:billing-worker"
+    kind: publish
+    to: topic:invoice.issued
+    label: "счёт выписан"
+  - from: "topic:invoice.issued"
+    kind: consume
+    to: svc:notifier
+    label: "уведомляет клиента"
+  - from: "svc:notifier"
+    kind: publish
+    to: topic:notification.sent
+    label: "факт отправки"
+  - from: "POST /api/v1/shipments"
+    kind: publish
+    to: topic:shipment.created
+    label: "публикует отгрузку"
+  - from: "topic:shipment.created"
+    kind: consume
+    to: svc:warehouse-worker
+    label: "резервирует остаток"
+  - from: "svc:warehouse-worker"
+    kind: publish
+    to: topic:stock.reserved
+    label: "резерв поставлен"
+  - from: "POST /api/v1/purchases/{id}/receive"
+    kind: publish
+    to: topic:stock.replenished
+    label: "приёмка поставки"
+  - from: "topic:stock.replenished"
+    kind: consume
+    to: svc:warehouse-worker
+    label: "приходует остаток"
+  - from: "POST /api/v1/returns"
+    kind: publish
+    to: topic:return.requested
+    label: "публикует заявку на возврат"
+  - from: "topic:return.requested"
+    kind: consume
+    to: svc:billing-worker
+    label: "готовит возврат оплаты"
+  - from: "POST /api/v1/campaigns/{id}/launch"
+    kind: publish
+    to: topic:campaign.launched
+    label: "запуск рассылки"
+  - from: "topic:campaign.launched"
+    kind: consume
+    to: svc:crm-worker
+    label: "разворачивает аудиторию"
+  - from: "svc:crm-worker"
+    kind: publish
+    to: topic:loyalty.points.awarded
+    label: "начисление бонусов"
+  - from: "topic:loyalty.points.awarded"
+    kind: consume
+    to: svc:notifier
+    label: "уведомление о бонусах"
+  - from: "POST /api/v1/orders/export"
+    kind: storage
+    to: store:objectstore
+    label: "кладёт выгрузку в бакет"
+  - from: "POST /api/v1/invoices/{id}/send"
+    kind: storage
+    to: store:objectstore
+    label: "сохраняет PDF счёта"
+
+storage_writes:
+  "POST /api/v1/reviews": [review]
+  "PUT /api/v1/reviews/{id}": [review]
+  "POST /api/v1/reviews/{id}/publish": [review, audit_event]
+  "POST /api/v1/gift-cards": [gift_card]
+  "POST /api/v1/gift-cards/{id}/redeem": [gift_card, audit_event]
+  "POST /api/v1/products": [product, product_attribute]
+  "PUT /api/v1/products/{id}": [product]
+  "DELETE /api/v1/products/{id}": [product, product_media]
+  "POST /api/v1/products/{id}/archive": [product, audit_event]
+  "POST /api/v1/categories": [category]
+  "PUT /api/v1/categories/{id}": [category]
+  "POST /api/v1/variants": [product_variant]
+  "PUT /api/v1/variants/{id}": [product_variant]
+  "POST /api/v1/prices": [price_entry]
+  "PUT /api/v1/prices/{id}": [price_entry]
+  "POST /api/v1/prices/bulk": [price_entry, audit_event]
+  "POST /api/v1/promotions": [promotion, promotion_rule]
+  "POST /api/v1/promotions/{id}/activate": [promotion]
+  "POST /api/v1/carts": [cart]
+  "POST /api/v1/carts/{id}/items": [cart_item, cart]
+  "DELETE /api/v1/carts/{id}/items/{itemId}": [cart_item]
+  "POST /api/v1/carts/{id}/checkout": [cart, order_header, order_line]
+  "POST /api/v1/orders": [order_header, order_line, order_status_history]
+  "PUT /api/v1/orders/{id}": [order_header]
+  "DELETE /api/v1/orders/{id}": [order_header, order_line]
+  "POST /api/v1/orders/{id}/confirm": [order_header, order_status_history]
+  "POST /api/v1/orders/{id}/cancel": [order_header, order_status_history]
+  "POST /api/v1/payments": [payment]
+  "PUT /api/v1/payments/{id}": [payment]
+  "POST /api/v1/payments/{id}/capture": [payment, payment_attempt]
+  "POST /api/v1/shipments": [shipment, shipment_item]
+  "PUT /api/v1/shipments/{id}": [shipment]
+  "DELETE /api/v1/shipments/{id}": [shipment, shipment_item]
+  "POST /api/v1/shipments/{id}/dispatch": [shipment]
+  "POST /api/v1/returns": [return_request, return_line]
+  "POST /api/v1/returns/{id}/approve": [return_request]
+  "POST /api/v1/stock/moves": [stock_move, stock_item]
+  "POST /api/v1/stock/{id}/recount": [stock_item, inventory_count]
+  "POST /api/v1/warehouses": [warehouse]
+  "PUT /api/v1/warehouses/{id}": [warehouse]
+  "DELETE /api/v1/warehouses/{id}": [warehouse]
+  "POST /api/v1/suppliers": [supplier]
+  "PUT /api/v1/suppliers/{id}": [supplier]
+  "DELETE /api/v1/suppliers/{id}": [supplier]
+  "POST /api/v1/purchases": [purchase_order, purchase_order_line]
+  "PUT /api/v1/purchases/{id}": [purchase_order]
+  "POST /api/v1/purchases/{id}/approve": [purchase_order]
+  "POST /api/v1/purchases/{id}/receive": [purchase_order, stock_item]
+  "POST /api/v1/invoices": [invoice, invoice_line]
+  "PUT /api/v1/invoices/{id}": [invoice]
+  "POST /api/v1/invoices/{id}/send": [invoice]
+  "POST /api/v1/refunds": [refund]
+  "POST /api/v1/refunds/{id}/confirm": [refund, invoice]
+  "POST /api/v1/subscriptions": [subscription]
+  "PUT /api/v1/subscriptions/{id}": [subscription]
+  "POST /api/v1/subscriptions/{id}/pause": [subscription]
+  "POST /api/v1/customers": [customer, customer_address]
+  "PUT /api/v1/customers/{id}": [customer]
+  "DELETE /api/v1/customers/{id}": [customer, customer_address]
+  "POST /api/v1/segments": [customer_segment]
+  "POST /api/v1/segments/{id}/recalculate": [customer_segment, segment_member]
+  "POST /api/v1/campaigns": [campaign]
+  "PUT /api/v1/campaigns/{id}": [campaign]
+  "POST /api/v1/campaigns/{id}/launch": [campaign, campaign_target]
+  "POST /api/v1/loyalty/{id}/award": [loyalty_account, loyalty_transaction]
+  "POST /api/v1/accounts": [account, account_role]
+  "PUT /api/v1/accounts/{id}": [account, account_role]
+  "DELETE /api/v1/accounts/{id}": [account, account_role]
+  "POST /api/v1/roles": [role, role_access_right]
+  "POST /api/v1/notifications": [notification]
+
+storage_reads:
+  "GET /api/v1/reviews": [review]
+  "GET /api/v1/reviews/product/{productId}": [review, review_vote]
+  "GET /api/v1/gift-cards/{id}": [gift_card]
+  "GET /api/v1/products": [product, category]
+  "GET /api/v1/products/{id}": [product, product_attribute, product_media]
+  "GET /api/v1/products/search": [product, price_entry]
+  "GET /api/v1/products/{id}/variants": [product_variant]
+  "GET /api/v1/categories": [category]
+  "GET /api/v1/categories/tree": [category]
+  "GET /api/v1/variants": [product_variant]
+  "GET /api/v1/variants/product/{productId}": [product_variant, product]
+  "GET /api/v1/prices": [price_entry, price_list]
+  "GET /api/v1/prices/product/{productId}": [price_entry, product]
+  "GET /api/v1/promotions": [promotion, promotion_rule]
+  "GET /api/v1/carts/{id}": [cart, cart_item]
+  "GET /api/v1/orders": [order_header, customer]
+  "GET /api/v1/orders/{id}": [order_header, order_status_history]
+  "GET /api/v1/orders/{id}/lines": [order_line, product_variant]
+  "GET /api/v1/orders/customer/{customerId}": [order_header, customer]
+  "GET /api/v1/orders/report/sales": [order_header, order_line]
+  "GET /api/v1/payments": [payment]
+  "GET /api/v1/payments/order/{orderId}": [payment, order_header]
+  "GET /api/v1/payments/{id}/receipt": [payment, payment_attempt]
+  "GET /api/v1/shipments": [shipment]
+  "GET /api/v1/shipments/order/{orderId}": [shipment, shipment_item]
+  "GET /api/v1/returns": [return_request]
+  "GET /api/v1/returns/order/{orderId}": [return_request, return_line]
+  "GET /api/v1/stock": [stock_item, warehouse]
+  "GET /api/v1/stock/product/{productId}": [stock_item, product_variant]
+  "GET /api/v1/stock/warehouse/{warehouseId}": [stock_item, warehouse]
+  "GET /api/v1/warehouses": [warehouse]
+  "GET /api/v1/suppliers": [supplier]
+  "GET /api/v1/suppliers/{id}/products": [supplier, product]
+  "GET /api/v1/purchases": [purchase_order, supplier]
+  "GET /api/v1/purchases/{id}": [purchase_order]
+  "GET /api/v1/purchases/{id}/lines": [purchase_order_line, product_variant]
+  "GET /api/v1/invoices": [invoice, customer]
+  "GET /api/v1/invoices/{id}/lines": [invoice_line, tax_rate]
+  "GET /api/v1/refunds": [refund]
+  "GET /api/v1/subscriptions": [subscription, subscription_plan]
+  "GET /api/v1/customers": [customer]
+  "GET /api/v1/customers/search": [customer]
+  "GET /api/v1/customers/{id}/addresses": [customer_address]
+  "GET /api/v1/segments": [customer_segment]
+  "GET /api/v1/campaigns": [campaign, customer_segment]
+  "GET /api/v1/campaigns/{id}/targets": [campaign_target, customer]
+  "GET /api/v1/loyalty": [loyalty_account]
+  "GET /api/v1/loyalty/customer/{customerId}": [loyalty_account, loyalty_transaction]
+  "GET /api/v1/accounts": [account, account_role, role]
+  "GET /api/v1/accounts/me": [account, role_access_right]
+  "GET /api/v1/roles": [role]
+  "GET /api/v1/roles/{id}/permissions": [role_access_right, access_right]
+  "GET /api/v1/notifications": [notification]
+  "GET /api/v1/notifications/templates": [notification_template]
+  "GET /api/v1/audit": [audit_event]
+  "GET /api/v1/audit/object/{objectId}": [audit_event]
+
+auth:
+  provider: svc:identity
+  note: Bearer-токен; без токена 401, отключённая запись 403

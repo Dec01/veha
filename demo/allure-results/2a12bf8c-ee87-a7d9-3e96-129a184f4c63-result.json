@@ -1,0 +1,126 @@
+{
+ "name": "test_post_carts_by_id_items_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/carts → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317661539,
+       "stop": 1789317661540
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317661540,
+       "stop": 1789317661541
+      }
+     ],
+     "start": 1789317661359,
+     "stop": 1789317661541
+    }
+   ],
+   "attachments": [],
+   "start": 1789317661359,
+   "stop": 1789317661541
+  },
+  {
+   "name": "HTTP POST /api/v1/carts/4211/items → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317661721,
+       "stop": 1789317661722
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317661722,
+       "stop": 1789317661723
+      }
+     ],
+     "start": 1789317661541,
+     "stop": 1789317661723
+    }
+   ],
+   "attachments": [],
+   "start": 1789317661541,
+   "stop": 1789317661723
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317661359,
+ "stop": 1789317661723,
+ "uuid": "2a12bf8c-ee87-a7d9-3e96-129a184f4c63",
+ "historyId": "b359a87aec5a7abff4766661900447e9",
+ "testCaseId": "336b9ea1bb3cb0224d0207f894b8c469",
+ "fullName": "src.api.tests.carts.test_carts_actions.TestCartsActions#test_post_carts_by_id_items_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Carts / операции"
+  },
+  {
+   "name": "story",
+   "value": "Положить в корзину"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.carts.test_carts_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_carts_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCartsActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2924-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.carts.test_carts_actions"
+  },
+  {
+   "name": "tag",
+   "value": "carts"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  }
+ ]
+}

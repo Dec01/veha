@@ -1,0 +1,3582 @@
+{
+ "version": 2,
+ "kind": "db.schema",
+ "scope": {
+  "system": "default",
+  "env": "default"
+ },
+ "collected_at": "2026-09-13T19:55:00+03:00",
+ "collector": "veha-demo/generate",
+ "databases": [
+  {
+   "key": "primary",
+   "label": "PostgreSQL «shop»",
+   "schemas": [
+    "public"
+   ],
+   "tables": [
+    {
+     "schema": "public",
+     "name": "access_right",
+     "rows": 96,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(64)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(128)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "account",
+     "rows": 64,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "login",
+       "type": "varchar(128)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "email",
+       "type": "varchar(256)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "full_name",
+       "type": "varchar(256)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "is_active",
+       "type": "bool",
+       "nullable": true,
+       "default": "false",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "external_id",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "account_role",
+     "rows": 142,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "account_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "account",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "role_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "role",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "audit_event",
+     "rows": 148000,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "object_type",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "object_id",
+       "type": "int8",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "action",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "actor",
+       "type": "varchar(128)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "happened_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "campaign",
+     "rows": 61,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(128)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "segment_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer_segment",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "starts_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "campaign_target",
+     "rows": 8700,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "campaign_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "campaign",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "state",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "cart",
+     "rows": 970,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "total",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "cart_item",
+     "rows": 3120,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "cart_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "cart",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "variant_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product_variant",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "price",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "category",
+     "rows": 42,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(64)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(256)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "parent_id",
+       "type": "int8",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "category",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "sort_order",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "is_active",
+       "type": "bool",
+       "nullable": true,
+       "default": "false",
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "customer",
+     "rows": 8900,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "full_name",
+       "type": "varchar(256)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "email",
+       "type": "varchar(256)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "phone",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "is_active",
+       "type": "bool",
+       "nullable": true,
+       "default": "false",
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "customer_address",
+     "rows": 11400,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "kind",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "city",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "street",
+       "type": "varchar(256)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "customer_segment",
+     "rows": 24,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(128)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "size",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "recalculated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "gift_card",
+     "rows": 960,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "balance",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "expires_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "inventory_count",
+     "rows": 120,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "warehouse_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "warehouse",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "counted_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "invoice",
+     "rows": 4020,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "number",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "order_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "order_header",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "total",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "issued_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "invoice_line",
+     "rows": 13800,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "invoice_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "invoice",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "title",
+       "type": "varchar(256)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "amount",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "tax_rate_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "tax_rate",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "loyalty_account",
+     "rows": 8900,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "points",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "tier",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "loyalty_transaction",
+     "rows": 34500,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "loyalty_account_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "loyalty_account",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "kind",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "points",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "document_ref",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "notification",
+     "rows": 51200,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "template_code",
+       "type": "varchar(64)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "delivery_channel",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "sent_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "notification_template",
+     "rows": 18,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(64)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "delivery_channel",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "subject",
+       "type": "varchar(256)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "order_header",
+     "rows": 4380,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "number",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "total",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "placed_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "warehouse_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "warehouse",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "order_line",
+     "rows": 14920,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "order_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "order_header",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "variant_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product_variant",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "price",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "discount",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "order_status_history",
+     "rows": 19800,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "order_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "order_header",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "changed_by",
+       "type": "varchar(128)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "changed_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "payment",
+     "rows": 4110,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "order_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "order_header",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "method",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "amount",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "external_ref",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "payment_attempt",
+     "rows": 6740,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "payment_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "payment",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "attempt_no",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "result",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "response_code",
+       "type": "varchar(16)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "price_entry",
+     "rows": 18400,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "price_list_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "price_list",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "product_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "amount",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "discount_pct",
+       "type": "numeric(5,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "price_list",
+     "rows": 12,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(128)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "currency",
+       "type": "varchar(3)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "valid_from",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "product",
+     "rows": 1840,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "sku",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(256)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "category_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "category",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "unit",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "supplier_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "supplier",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "is_active",
+       "type": "bool",
+       "nullable": true,
+       "default": "false",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "archived_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "product_attribute",
+     "rows": 9330,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "product_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "name",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "value",
+       "type": "varchar(256)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "product_media",
+     "rows": 6120,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "product_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "kind",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "url",
+       "type": "varchar(512)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "sort_order",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "product_variant",
+     "rows": 5210,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "product_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "barcode",
+       "type": "varchar(64)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "size",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "color",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "weight_g",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "promotion",
+     "rows": 34,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(128)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "kind",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "percent",
+       "type": "numeric(5,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "starts_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "ends_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "is_active",
+       "type": "bool",
+       "nullable": true,
+       "default": "false",
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "promotion_rule",
+     "rows": 88,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "promotion_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "promotion",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "field",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "operator",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "value",
+       "type": "varchar(128)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "purchase_order",
+     "rows": 640,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "number",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "supplier_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "supplier",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "warehouse_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "warehouse",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "total",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "purchase_order_line",
+     "rows": 4300,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "purchase_order_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "purchase_order",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "variant_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product_variant",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "price",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "refund",
+     "rows": 380,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "invoice_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "invoice",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "return_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "return_request",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "amount",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "return_line",
+     "rows": 690,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "return_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "return_request",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "order_line_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "order_line",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "return_request",
+     "rows": 410,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "order_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "order_header",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "reason",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "amount",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "review",
+     "rows": 7400,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "product_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "rating",
+       "type": "int2",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "body",
+       "type": "text",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "status",
+       "type": "varchar(16)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "review_vote",
+     "rows": 21300,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "review_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "review",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "is_helpful",
+       "type": "bool",
+       "nullable": true,
+       "default": "false",
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "role",
+     "rows": 11,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(128)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "role_access_right",
+     "rows": 430,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "role_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "role",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "access_right_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "access_right",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "segment_member",
+     "rows": 26400,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "segment_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer_segment",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "added_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "shipment",
+     "rows": 3960,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "order_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "order_header",
+        "column": "id",
+        "onDelete": "CASCADE"
+       }
+      },
+      {
+       "name": "warehouse_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "warehouse",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "carrier",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "tracking_no",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "shipment_item",
+     "rows": 12300,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "shipment_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "shipment",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "order_line_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "order_line",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "stock_item",
+     "rows": 11200,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "warehouse_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "warehouse",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "variant_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "product_variant",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "reserved_qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "min_qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "stock_move",
+     "rows": 47600,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "stock_item_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "stock_item",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "kind",
+       "type": "varchar(32)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "qty",
+       "type": "int4",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "document_ref",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "moved_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "subscription",
+     "rows": 730,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "customer_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "customer",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "plan_id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": {
+        "table": "subscription_plan",
+        "column": "id",
+        "onDelete": "NO ACTION"
+       }
+      },
+      {
+       "name": "status",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "next_charge_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "subscription_plan",
+     "rows": 9,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(128)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "period",
+       "type": "varchar(16)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "amount",
+       "type": "numeric(14,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "supplier",
+     "rows": 58,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(256)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "contact_email",
+       "type": "varchar(256)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "is_active",
+       "type": "bool",
+       "nullable": true,
+       "default": "false",
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "tax_rate",
+     "rows": 5,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(16)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "percent",
+       "type": "numeric(5,2)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      }
+     ]
+    },
+    {
+     "schema": "public",
+     "name": "warehouse",
+     "rows": 7,
+     "columns": [
+      {
+       "name": "id",
+       "type": "int8",
+       "nullable": false,
+       "default": null,
+       "pk": true,
+       "fk": null
+      },
+      {
+       "name": "created_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": "now()",
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "updated_at",
+       "type": "timestamp",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "code",
+       "type": "varchar(32)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "title",
+       "type": "varchar(128)",
+       "nullable": false,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "city",
+       "type": "varchar(64)",
+       "nullable": true,
+       "default": null,
+       "pk": false,
+       "fk": null
+      },
+      {
+       "name": "is_active",
+       "type": "bool",
+       "nullable": true,
+       "default": "false",
+       "pk": false,
+       "fk": null
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "stats": {
+  "tables": 52,
+  "columns": 369,
+  "foreignKeys": 60
+ }
+}

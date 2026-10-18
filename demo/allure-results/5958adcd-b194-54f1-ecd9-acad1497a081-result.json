@@ -1,0 +1,102 @@
+{
+ "name": "Фильтр по категории",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/categories/tree → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317880858,
+       "stop": 1789317880859
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317880859,
+       "stop": 1789317880860
+      }
+     ],
+     "start": 1789317877788,
+     "stop": 1789317880860
+    }
+   ],
+   "attachments": [],
+   "start": 1789317877788,
+   "stop": 1789317880860
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317877788,
+ "stop": 1789317880860,
+ "uuid": "5958adcd-b194-54f1-ecd9-acad1497a081",
+ "historyId": "5c2b22804bc023960e5fa1444d2a2f1d",
+ "testCaseId": "d57c385c307408eaeafefe7d3ff1cf89",
+ "fullName": "src.ui.tests.catalog.test_catalog_products.TestCatalogProducts#test_catalog_filter_category[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Каталог / список товаров"
+  },
+  {
+   "name": "story",
+   "value": "Фильтр по категории"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.catalog.test_catalog_products"
+  },
+  {
+   "name": "suite",
+   "value": "test_catalog_products"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCatalogProducts"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5299-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.catalog.test_catalog_products"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "catalog"
+  }
+ ]
+}

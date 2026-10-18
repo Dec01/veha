@@ -1,0 +1,108 @@
+{
+ "name": "test_delete_warehouses_by_id_lifecycle",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP DELETE /api/v1/warehouses/4211 → expect status=409",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 409, got 409",
+       "status": "passed",
+       "start": 1789317735538,
+       "stop": 1789317735539
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317735539,
+       "stop": 1789317735540
+      }
+     ],
+     "start": 1789317735178,
+     "stop": 1789317735540
+    }
+   ],
+   "attachments": [],
+   "start": 1789317735178,
+   "stop": 1789317735540
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317735178,
+ "stop": 1789317735540,
+ "uuid": "ac9daa6e-7fe4-6564-d151-5869b31acebe",
+ "historyId": "f3e8ed6188f8da045c4d0fc82c732c82",
+ "testCaseId": "85a6dff45de954fa52367f0c547d1b2e",
+ "fullName": "src.api.tests.warehouses.test_warehouses_crud.TestWarehousesCrud#test_delete_warehouses_by_id_lifecycle",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Warehouses / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Удаление: Warehouses"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.warehouses.test_warehouses_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_warehouses_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestWarehousesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2715-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.warehouses.test_warehouses_crud"
+  },
+  {
+   "name": "tag",
+   "value": "warehouses"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  },
+  {
+   "name": "tag",
+   "value": "WMS-12.8"
+  }
+ ],
+ "links": [
+  {
+   "name": "WMS-12.8",
+   "url": "spec://WMS-12.8",
+   "type": "link"
+  }
+ ]
+}

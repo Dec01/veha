@@ -1,0 +1,97 @@
+{
+ "name": "test_get_returns_by_id_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/returns/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317715989,
+       "stop": 1789317715990
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317715990,
+       "stop": 1789317715991
+      }
+     ],
+     "start": 1789317715790,
+     "stop": 1789317715991
+    }
+   ],
+   "attachments": [],
+   "start": 1789317715790,
+   "stop": 1789317715991
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317715790,
+ "stop": 1789317715991,
+ "uuid": "ce5a8336-f835-6b1c-7ecf-ec6add082b2e",
+ "historyId": "046d4da90a9bb3b5257fdcba522b44a9",
+ "testCaseId": "8298b06ab56c7bf688cb633883d74898",
+ "fullName": "src.api.tests.returns.test_returns_crud.TestReturnsCrud#test_get_returns_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Returns / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Returns"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.returns.test_returns_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_returns_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestReturnsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7486-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.returns.test_returns_crud"
+  },
+  {
+   "name": "tag",
+   "value": "returns"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

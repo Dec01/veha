@@ -1,0 +1,102 @@
+{
+ "name": "Роль",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/roles → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318071644,
+       "stop": 1789318071645
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318071645,
+       "stop": 1789318071646
+      }
+     ],
+     "start": 1789318065287,
+     "stop": 1789318071646
+    }
+   ],
+   "attachments": [],
+   "start": 1789318065287,
+   "stop": 1789318071646
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318065287,
+ "stop": 1789318071646,
+ "uuid": "af726419-db50-ab5b-19c8-078c29385544",
+ "historyId": "86bbdd20d8aa2de4628b55bb7d66b041",
+ "testCaseId": "8a18b3dc343972f2d6f50f5aadc8d755",
+ "fullName": "src.ui.tests.admin.test_admin_accounts.TestAdminAccounts#test_account_role_select[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Администрирование / записи"
+  },
+  {
+   "name": "story",
+   "value": "Роль"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.admin.test_admin_accounts"
+  },
+  {
+   "name": "suite",
+   "value": "test_admin_accounts"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestAdminAccounts"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7584-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.admin.test_admin_accounts"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "admin"
+  }
+ ]
+}

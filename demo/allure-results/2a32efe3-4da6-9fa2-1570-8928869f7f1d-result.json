@@ -1,0 +1,102 @@
+{
+ "name": "Шапка заказа",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/orders/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317942644,
+       "stop": 1789317942645
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317942645,
+       "stop": 1789317942646
+      }
+     ],
+     "start": 1789317937217,
+     "stop": 1789317942646
+    }
+   ],
+   "attachments": [],
+   "start": 1789317937217,
+   "stop": 1789317942646
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317937217,
+ "stop": 1789317942646,
+ "uuid": "2a32efe3-4da6-9fa2-1570-8928869f7f1d",
+ "historyId": "433e8924a17dfb9e9e12996c042ad85a",
+ "testCaseId": "1aed1fb7c369f7e5a661b2a8a1f73021",
+ "fullName": "src.ui.tests.orders.test_order_card.TestOrderCard#test_order_header_panel[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Заказы / карточка"
+  },
+  {
+   "name": "story",
+   "value": "Шапка заказа"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.orders.test_order_card"
+  },
+  {
+   "name": "suite",
+   "value": "test_order_card"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrderCard"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3752-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.orders.test_order_card"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  }
+ ]
+}

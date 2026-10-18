@@ -1,0 +1,137 @@
+{
+ "name": "test_post_returns_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/returns → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317714171,
+       "stop": 1789317714172
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317714172,
+       "stop": 1789317714173
+      }
+     ],
+     "start": 1789317713997,
+     "stop": 1789317714173
+    }
+   ],
+   "attachments": [],
+   "start": 1789317713997,
+   "stop": 1789317714173
+  },
+  {
+   "name": "HTTP POST /api/v1/returns → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317714347,
+       "stop": 1789317714348
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317714348,
+       "stop": 1789317714349
+      }
+     ],
+     "start": 1789317714173,
+     "stop": 1789317714349
+    }
+   ],
+   "attachments": [],
+   "start": 1789317714173,
+   "stop": 1789317714349
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317713997,
+ "stop": 1789317714349,
+ "uuid": "16c6ce61-a1f3-5c3e-7d2e-206b005b5514",
+ "historyId": "9941ac16943f3ce02a4b8a8e1f5ede0d",
+ "testCaseId": "545f215e1da81918f5cb21d73e26b225",
+ "fullName": "src.api.tests.returns.test_returns_crud.TestReturnsCrud#test_post_returns_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Returns / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Создание: Returns"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.returns.test_returns_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_returns_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestReturnsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8270-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.returns.test_returns_crud"
+  },
+  {
+   "name": "tag",
+   "value": "returns"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.7"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.7",
+   "url": "spec://API-11.7",
+   "type": "link"
+  }
+ ]
+}

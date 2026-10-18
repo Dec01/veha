@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "veha"
+# Версия не назначена: пакет ещё не выпускался. Номер появляется вместе с решением
+# о выпуске, а не вместе с фичей.
+version = "0.0.0.dev0"
+description = "Веха — сервер карты тестирования: сведение артефактов partest-atlas в граф и вебморда"
+readme = "README.md"
+# Согласовано с partest-atlas: потребитель не может требовать меньше, чем поставщик.
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "dec01" }]
+keywords = ["testing", "coverage", "observability", "pytest", "visualization"]
+classifiers = [
+    # Выпуска на PyPI ещё нет, и он — отдельное решение после первой версии. До него
+    # классификатор не даёт загрузить пакет по ошибке: PyPI отвергает `Private ::`.
+    "Private :: Do Not Upload",
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Testing",
+]
+
+dependencies = [
+    # Владелец формата артефактов. Верхняя граница — до следующей минорной: в 0.x
+    # минорная версия вправе поменять формат, и узнавать об этом на установке поздно.
+    "partest-atlas>=0.1.0,<0.3",
+    # `partest.redact.mask_secret` — маскирование значения; пакет и так приезжает с
+    # partest-atlas, но используется напрямую — значит, объявляется. `<3` защищает только
+    # документированный `mask_secret`. Наборы чувствительных ключей `partest.redact`
+    # публичными не объявлены, и partest вправе убрать их в любой версии — их держит
+    # тест (`tests/test_redact.py`), а не эта граница.
+    # `meta.selection.optin` (partest 2.5.0) пол не поднимает: его пишет partest
+    # проекта в coverage.json, а не пакет, установленный рядом с сервером; сервер
+    # читает JSON и кода partest для этого не вызывает.
+    # Пол 2.6.0 — красная линия «ноль исходящего трафика»: до 2.6.0 `import partest`
+    # (а `partest.redact` тянет пакет целиком) читал `confpartest` с `sys.path` и
+    # загружал спецификации из `swagger_files`, в том числе по URL. Сервер, запущенный
+    # из корня набора тестов проекта, ходил бы в сеть при импорте. Держит тест
+    # `tests/test_import_egress.py`.
+    "partest>=2.6.0,<3",
+    # 0.132.0 — первая версия со `strict_content_type`: тело без Content-Type не
+    # разбирается как JSON, и форма с чужой страницы не обходит CORS. Сверено по
+    # колёсам: в 0.131.0 параметра нет.
+    "fastapi>=0.132.0",
+    "uvicorn>=0.27",
+    # 2.7 — нижняя граница, которую требует fastapi 0.132.0 (Requires-Dist).
+    "pydantic>=2.7",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    # разбор вывода раннера проверяется настоящим прогоном `pytest -n 2`
+    "pytest-xdist>=3",
+    # строки `RERUN` и итог `N rerun` сверяются с настоящим pytest-rerunfailures
+    "pytest-rerunfailures>=14",
+    # серии тренда по opt-in сверяются с `partest.reports.compare.compare_payloads`
+    # (`tests/test_optin.py`); правило о `meta.selection.optin` в нём — с 2.5.0, и
+    # отдельной строки не нужно: пол основной зависимости (2.6.0) выше
+    "httpx>=0.27",
+]
+
+[project.scripts]
+veha = "veha.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["veha*"]
+
+[tool.setuptools.package-data]
+"veha.viz" = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
+# starlette предупреждает о смене транспорта TestClient — к проверкам не относится
+filterwarnings = ["ignore:Using .httpx. with .starlette.testclient. is deprecated"]

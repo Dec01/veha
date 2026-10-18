@@ -1,0 +1,97 @@
+{
+ "name": "test_get_gift_cards_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/gift-cards → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317767920,
+       "stop": 1789317767921
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317767921,
+       "stop": 1789317767922
+      }
+     ],
+     "start": 1789317767681,
+     "stop": 1789317767922
+    }
+   ],
+   "attachments": [],
+   "start": 1789317767681,
+   "stop": 1789317767922
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317767681,
+ "stop": 1789317767922,
+ "uuid": "0865f3de-aa25-b75b-67d5-60fa3ded4447",
+ "historyId": "62e243874bcabe49dbf5cba6e8eb65c4",
+ "testCaseId": "df26e606847fcb4d64348f25484898f5",
+ "fullName": "src.api.tests.gift-cards.test_gift-cards_list.TestGiftCardsList#test_get_gift_cards_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Gift Cards / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Gift Cards"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.gift-cards.test_gift-cards_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_gift-cards_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestGiftCardsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5496-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.gift-cards.test_gift-cards_list"
+  },
+  {
+   "name": "tag",
+   "value": "gift-cards"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_get_stock_elements
+[001] шаг прогона: проверка test_get_stock_elements
+[002] шаг прогона: проверка test_get_stock_elements
+[003] шаг прогона: проверка test_get_stock_elements
+[004] шаг прогона: проверка test_get_stock_elements
+[005] шаг прогона: проверка test_get_stock_elements
+[006] шаг прогона: проверка test_get_stock_elements
+[007] шаг прогона: проверка test_get_stock_elements
+[008] шаг прогона: проверка test_get_stock_elements
+[009] шаг прогона: проверка test_get_stock_elements
+[010] шаг прогона: проверка test_get_stock_elements
+[011] шаг прогона: проверка test_get_stock_elements
+AssertionError: Sum of lines does not match order total

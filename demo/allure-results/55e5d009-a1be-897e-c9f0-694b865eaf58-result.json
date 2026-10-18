@@ -1,0 +1,108 @@
+{
+ "name": "test_get_purchases_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/purchases → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317745968,
+       "stop": 1789317745969
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317745969,
+       "stop": 1789317745970
+      }
+     ],
+     "start": 1789317745656,
+     "stop": 1789317745970
+    }
+   ],
+   "attachments": [],
+   "start": 1789317745656,
+   "stop": 1789317745970
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317745656,
+ "stop": 1789317745970,
+ "uuid": "55e5d009-a1be-897e-c9f0-694b865eaf58",
+ "historyId": "3d3e6ba7ee22c93658cee60e61eae727",
+ "testCaseId": "466d2b05efbc42e49d219f446ae4dcaf",
+ "fullName": "src.api.tests.purchases.test_purchases_list.TestPurchasesList#test_get_purchases_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Purchase Orders / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Purchase Orders"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.purchases.test_purchases_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchases_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchasesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9676-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.purchases.test_purchases_list"
+  },
+  {
+   "name": "tag",
+   "value": "purchases"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  },
+  {
+   "name": "tag",
+   "value": "WMS-12.4"
+  }
+ ],
+ "links": [
+  {
+   "name": "WMS-12.4",
+   "url": "spec://WMS-12.4",
+   "type": "link"
+  }
+ ]
+}

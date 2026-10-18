@@ -1,0 +1,108 @@
+{
+ "name": "test_post_products_by_id_archive_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/products/4211/archive → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317614541,
+       "stop": 1789317614542
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317614542,
+       "stop": 1789317614543
+      }
+     ],
+     "start": 1789317614257,
+     "stop": 1789317614543
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "11e9a6aa-155e-35a5-b4f3-6d39f33a0fdd-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "0e67bd71-1881-a26c-98a1-c102d5f68cfb-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317614257,
+   "stop": 1789317614543
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317614257,
+ "stop": 1789317614543,
+ "uuid": "95bc39c4-179c-7508-718f-6a27deca2f6b",
+ "historyId": "781792ba706a28cd6bae0b8c748d91eb",
+ "testCaseId": "ec3331cc3f2f1253364b6fdd0c2f1989",
+ "fullName": "src.api.tests.products.test_products_actions.TestProductsActions#test_post_products_by_id_archive_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Products / операции"
+  },
+  {
+   "name": "story",
+   "value": "Снять с продажи"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.products.test_products_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_products_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestProductsActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "1811-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.products.test_products_actions"
+  },
+  {
+   "name": "tag",
+   "value": "products"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  }
+ ]
+}

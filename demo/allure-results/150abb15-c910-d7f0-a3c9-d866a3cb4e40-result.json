@@ -1,0 +1,97 @@
+{
+ "name": "test_delete_promotions_by_id_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP DELETE /api/v1/promotions/4211 → expect status=204",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 204, got 204",
+       "status": "passed",
+       "start": 1789317651723,
+       "stop": 1789317651724
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317651724,
+       "stop": 1789317651725
+      }
+     ],
+     "start": 1789317651422,
+     "stop": 1789317651725
+    }
+   ],
+   "attachments": [],
+   "start": 1789317651422,
+   "stop": 1789317651725
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317651422,
+ "stop": 1789317651725,
+ "uuid": "150abb15-c910-d7f0-a3c9-d866a3cb4e40",
+ "historyId": "f4d1f3c4a39a3a6b3374078c9f96be2c",
+ "testCaseId": "72ff58232b773b49be721644a70699d5",
+ "fullName": "src.api.tests.promotions.test_promotions_crud.TestPromotionsCrud#test_delete_promotions_by_id_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Promotions / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Удаление: Promotions"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.promotions.test_promotions_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_promotions_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPromotionsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8956-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.promotions.test_promotions_crud"
+  },
+  {
+   "name": "tag",
+   "value": "promotions"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

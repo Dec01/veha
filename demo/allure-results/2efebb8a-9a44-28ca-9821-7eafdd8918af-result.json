@@ -1,0 +1,97 @@
+{
+ "name": "test_put_suppliers_by_id_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/suppliers/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317741293,
+       "stop": 1789317741294
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317741294,
+       "stop": 1789317741295
+      }
+     ],
+     "start": 1789317741069,
+     "stop": 1789317741295
+    }
+   ],
+   "attachments": [],
+   "start": 1789317741069,
+   "stop": 1789317741295
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317741069,
+ "stop": 1789317741295,
+ "uuid": "2efebb8a-9a44-28ca-9821-7eafdd8918af",
+ "historyId": "dbc70e18da18af0f6b75c63a2519ad77",
+ "testCaseId": "a551b4df4aef80b80f3fb8499a24cff8",
+ "fullName": "src.api.tests.suppliers.test_suppliers_crud.TestSuppliersCrud#test_put_suppliers_by_id_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Suppliers / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Suppliers"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.suppliers.test_suppliers_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_suppliers_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSuppliersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8783-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.suppliers.test_suppliers_crud"
+  },
+  {
+   "name": "tag",
+   "value": "suppliers"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

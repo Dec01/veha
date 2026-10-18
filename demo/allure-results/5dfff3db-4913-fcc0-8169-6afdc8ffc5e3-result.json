@@ -1,0 +1,126 @@
+{
+ "name": "test_get_payments_order_by_id_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/payments → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317699587,
+       "stop": 1789317699588
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317699588,
+       "stop": 1789317699589
+      }
+     ],
+     "start": 1789317699497,
+     "stop": 1789317699589
+    }
+   ],
+   "attachments": [],
+   "start": 1789317699497,
+   "stop": 1789317699589
+  },
+  {
+   "name": "HTTP GET /api/v1/payments/order/{orderId} → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317699679,
+       "stop": 1789317699680
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317699680,
+       "stop": 1789317699681
+      }
+     ],
+     "start": 1789317699589,
+     "stop": 1789317699681
+    }
+   ],
+   "attachments": [],
+   "start": 1789317699589,
+   "stop": 1789317699681
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317699497,
+ "stop": 1789317699682,
+ "uuid": "5dfff3db-4913-fcc0-8169-6afdc8ffc5e3",
+ "historyId": "09815dcdc32c015edc68a668bf560576",
+ "testCaseId": "561cb87c32998112e2621e42b7ddac2e",
+ "fullName": "src.api.tests.payments.test_payments_queries.TestPaymentsQueries#test_get_payments_order_by_id_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Payments / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Оплаты заказа"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.payments.test_payments_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_payments_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPaymentsQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6646-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.payments.test_payments_queries"
+  },
+  {
+   "name": "tag",
+   "value": "payments"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ]
+}

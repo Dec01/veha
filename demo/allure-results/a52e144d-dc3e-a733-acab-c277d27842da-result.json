@@ -1,0 +1,137 @@
+{
+ "name": "test_put_carts_by_id_update_object",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/carts → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317660039,
+       "stop": 1789317660040
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317660040,
+       "stop": 1789317660041
+      }
+     ],
+     "start": 1789317659983,
+     "stop": 1789317660041
+    }
+   ],
+   "attachments": [],
+   "start": 1789317659983,
+   "stop": 1789317660041
+  },
+  {
+   "name": "HTTP PUT /api/v1/carts/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317660097,
+       "stop": 1789317660098
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317660098,
+       "stop": 1789317660099
+      }
+     ],
+     "start": 1789317660041,
+     "stop": 1789317660099
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "26bb20da-e5c9-d7df-08f7-4bbf98944807-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "0bd32862-c546-53af-dcb2-da87f9029ffd-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317660041,
+   "stop": 1789317660099
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317659983,
+ "stop": 1789317660100,
+ "uuid": "a52e144d-dc3e-a733-acab-c277d27842da",
+ "historyId": "84f5e72bb7db7057c6a5fcd3eb8c9c44",
+ "testCaseId": "03b45c6d79aa08a8535612aa472fe290",
+ "fullName": "src.api.tests.carts.test_carts_crud.TestCartsCrud#test_put_carts_by_id_update_object",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Carts / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Carts"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.carts.test_carts_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_carts_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCartsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7729-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.carts.test_carts_crud"
+  },
+  {
+   "name": "tag",
+   "value": "carts"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

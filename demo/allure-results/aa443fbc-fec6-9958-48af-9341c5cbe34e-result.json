@@ -1,0 +1,97 @@
+{
+ "name": "test_post_orders_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/orders → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317674134,
+       "stop": 1789317674135
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317674135,
+       "stop": 1789317674136
+      }
+     ],
+     "start": 1789317673837,
+     "stop": 1789317674136
+    }
+   ],
+   "attachments": [],
+   "start": 1789317673837,
+   "stop": 1789317674136
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317673837,
+ "stop": 1789317674136,
+ "uuid": "aa443fbc-fec6-9958-48af-9341c5cbe34e",
+ "historyId": "474f527a9f97cd6a7f11c10f91b6dbfc",
+ "testCaseId": "d5c14059d736601e88c2d46fd2d71d62",
+ "fullName": "src.api.tests.orders.test_orders_crud.TestOrdersCrud#test_post_orders_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Orders / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Создание: Orders"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.orders.test_orders_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "1848-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.orders.test_orders_crud"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

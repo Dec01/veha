@@ -1,0 +1,97 @@
+{
+ "name": "test_put_purchases_by_id_incorrect_body",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/purchases/4211 → expect status=400",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 400, got 400",
+       "status": "passed",
+       "start": 1789317751346,
+       "stop": 1789317751347
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317751347,
+       "stop": 1789317751348
+      }
+     ],
+     "start": 1789317751239,
+     "stop": 1789317751348
+    }
+   ],
+   "attachments": [],
+   "start": 1789317751239,
+   "stop": 1789317751348
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317751239,
+ "stop": 1789317751348,
+ "uuid": "bd108ef7-fa47-1d34-33f4-e1b225674731",
+ "historyId": "ad6a3a85a382f9cd70904d73045ed37d",
+ "testCaseId": "51205e25891f0a283cb6df69889d51bb",
+ "fullName": "src.api.tests.purchases.test_purchases_crud.TestPurchasesCrud#test_put_purchases_by_id_incorrect_body",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Purchase Orders / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Purchase Orders"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.purchases.test_purchases_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchases_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchasesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7446-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.purchases.test_purchases_crud"
+  },
+  {
+   "name": "tag",
+   "value": "purchases"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

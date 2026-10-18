@@ -1,0 +1,108 @@
+{
+ "name": "test_get_orders_report_sales_filters",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/orders/report/sales → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317689474,
+       "stop": 1789317689475
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317689475,
+       "stop": 1789317689476
+      }
+     ],
+     "start": 1789317689147,
+     "stop": 1789317689476
+    }
+   ],
+   "attachments": [],
+   "start": 1789317689147,
+   "stop": 1789317689476
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317689147,
+ "stop": 1789317689476,
+ "uuid": "bab74d89-709b-edc2-1891-6d64156c5b84",
+ "historyId": "68289ecde81c3d987e4ec7fa91ac3b19",
+ "testCaseId": "1ac7f9f979f496b26110dd9bc9a758a3",
+ "fullName": "src.api.tests.orders.test_orders_list.TestOrdersList#test_get_orders_report_sales_filters",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Orders / список"
+  },
+  {
+   "name": "story",
+   "value": "Отчёт по продажам"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.orders.test_orders_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9904-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.orders.test_orders_list"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.9"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.9",
+   "url": "spec://API-11.9",
+   "type": "link"
+  }
+ ]
+}

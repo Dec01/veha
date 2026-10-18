@@ -1,0 +1,97 @@
+{
+ "name": "test_get_accounts_filters",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/accounts → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317791472,
+       "stop": 1789317791473
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317791473,
+       "stop": 1789317791474
+      }
+     ],
+     "start": 1789317791355,
+     "stop": 1789317791474
+    }
+   ],
+   "attachments": [],
+   "start": 1789317791355,
+   "stop": 1789317791474
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317791355,
+ "stop": 1789317791474,
+ "uuid": "249ef47c-0b65-0b8c-beae-5bab347c6edb",
+ "historyId": "9b4d42cf90a8342391ee8bdac0008000",
+ "testCaseId": "3ad8f270bf7661446be01034254c56fa",
+ "fullName": "src.api.tests.accounts.test_accounts_list.TestAccountsList#test_get_accounts_filters",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Accounts / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Accounts"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.accounts.test_accounts_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_accounts_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestAccountsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8293-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.accounts.test_accounts_list"
+  },
+  {
+   "name": "tag",
+   "value": "accounts"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

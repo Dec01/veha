@@ -1,0 +1,108 @@
+{
+ "name": "test_get_products_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/products/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317603944,
+       "stop": 1789317603945
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317603945,
+       "stop": 1789317603946
+      }
+     ],
+     "start": 1789317603656,
+     "stop": 1789317603946
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "f353c7b8-2de4-2801-86ac-142ce3246a12-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "c229b661-02e0-4e75-470f-01b60f2743ea-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317603656,
+   "stop": 1789317603946
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317603656,
+ "stop": 1789317603946,
+ "uuid": "829f23d1-363c-1201-0196-7ee10ddbe0dc",
+ "historyId": "f5b0c9e4de119f8ef4ce05d13d26293e",
+ "testCaseId": "9d8df56ce83955d57ab74836dd3f111e",
+ "fullName": "src.api.tests.products.test_products_crud.TestProductsCrud#test_get_products_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Products / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Products"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.products.test_products_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_products_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestProductsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9466-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.products.test_products_crud"
+  },
+  {
+   "name": "tag",
+   "value": "products"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

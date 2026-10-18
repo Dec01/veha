@@ -1,0 +1,129 @@
+{
+ "name": "test_get_invoices_by_id_lines_default",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/invoices/4211/lines → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317762031,
+       "stop": 1789317762032
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317762032,
+       "stop": 1789317762033
+      }
+     ],
+     "start": 1789317761691,
+     "stop": 1789317762033
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "7507e943-4b42-3161-a534-024bb8e772fc-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "650e0ede-d802-a605-dfa7-9cefdf0cb73c-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317761691,
+   "stop": 1789317762033
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "ca985bea-0309-e89a-fa79-9e091418626d-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317761691,
+ "stop": 1789317762033,
+ "uuid": "21a4893c-778b-6bd6-3d75-b23c1f283484",
+ "historyId": "1b9078fb3cb318caf12fc6ad02d3a900",
+ "testCaseId": "f3fa2e3d141f4ebf8823479a51198a9b",
+ "fullName": "src.api.tests.invoices.test_invoices_queries.TestInvoicesQueries#test_get_invoices_by_id_lines_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Invoices / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Строки счёта"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.invoices.test_invoices_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_invoices_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestInvoicesQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3383-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.invoices.test_invoices_queries"
+  },
+  {
+   "name": "tag",
+   "value": "invoices"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.6"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.6",
+   "url": "spec://API-11.6",
+   "type": "link"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Sum of lines does not match order total\nExpected: 18450.00\nActual: 18300.00\nHint: скидка применена дважды",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/invoices/test_invoices_queries.py\", line 207, in test_get_invoices_by_id_lines_default\n    assert_response(response, expected)\nAssertionError: Sum of lines does not match order total"
+ }
+}

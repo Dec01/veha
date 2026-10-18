@@ -1,0 +1,7 @@
+{
+ "status": 500,
+ "elapsedMs": 4644,
+ "body": {
+  "message": "Internal Server Error"
+ }
+}

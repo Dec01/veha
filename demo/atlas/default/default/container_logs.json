@@ -1,0 +1,139 @@
+{
+ "version": 2,
+ "kind": "containers.logs",
+ "scope": {
+  "system": "default",
+  "env": "default"
+ },
+ "collected_at": "2026-09-13T19:55:00+03:00",
+ "collector": "veha-demo/generate",
+ "containers": [
+  {
+   "name": "shop-api",
+   "found": {
+    "table": {
+     "category": 207,
+     "product": 67,
+     "product_variant": 86,
+     "product_media": 53,
+     "product_attribute": 64,
+     "price_list": 52,
+     "price_entry": 213,
+     "promotion": 32
+    },
+    "topic": {
+     "order.confirmed": 161,
+     "order.cancelled": 255,
+     "shipment.created": 297,
+     "return.requested": 325
+    },
+    "class": {
+     "com.example.shop.orders.service.OrderService": 258,
+     "com.example.shop.catalog.service.ProductService": 163,
+     "c.e.s.p.PaymentController": 584
+    }
+   }
+  },
+  {
+   "name": "shop-billing-worker",
+   "found": {
+    "table": {
+     "invoice": 96,
+     "invoice_line": 192,
+     "tax_rate": 83,
+     "refund": 61,
+     "subscription_plan": 234,
+     "subscription": 207,
+     "gift_card": 10
+    },
+    "topic": {
+     "payment.authorized": 34,
+     "invoice.issued": 25,
+     "return.requested": 297
+    },
+    "listener": {
+     "PaymentAuthorizedListener": 136,
+     "ReturnRequestedListener": 21
+    },
+    "class": {
+     "com.example.shop.billing.InvoiceService": 448,
+     "c.e.s.b.PaymentAuthorizedListener": 108
+    }
+   }
+  },
+  {
+   "name": "shop-checkout-worker",
+   "found": {
+    "table": {
+     "payment_attempt": 7
+    },
+    "topic": {
+     "order.confirmed": 388,
+     "payment.authorized": 84,
+     "payment.failed": 16
+    },
+    "listener": {
+     "OrderConfirmedListener": 55
+    },
+    "class": {
+     "com.example.shop.checkout.PaymentAuthorizationService": 126,
+     "c.e.s.c.OrderConfirmedListener": 537
+    }
+   }
+  },
+  {
+   "name": "shop-notifier",
+   "found": {
+    "table": {
+     "notification": 110,
+     "notification_template": 37
+    },
+    "topic": {
+     "invoice.issued": 228,
+     "campaign.launched": 206,
+     "notification.sent": 426,
+     "loyalty.points.awarded": 218
+    },
+    "listener": {
+     "InvoiceIssuedListener": 104,
+     "LoyaltyAwardedConsumer": 29
+    },
+    "class": {
+     "com.example.shop.notify.NotificationDispatcher": 613
+    }
+   }
+  },
+  {
+   "name": "shop-wms-worker",
+   "found": {
+    "table": {
+     "warehouse": 137,
+     "stock_item": 117,
+     "stock_move": 77,
+     "inventory_count": 80,
+     "supplier": 129,
+     "purchase_order": 64,
+     "purchase_order_line": 181
+    },
+    "topic": {
+     "shipment.created": 60,
+     "stock.reserved": 257,
+     "stock.replenished": 312
+    },
+    "listener": {
+     "ShipmentCreatedListener": 43,
+     "StockReplenishedConsumer": 151
+    },
+    "class": {
+     "com.example.shop.wms.StockMoveService": 311,
+     "c.e.s.w.ShipmentCreatedListener": 192
+    }
+   }
+  }
+ ],
+ "stats": {
+  "containers": 5,
+  "tables": 25,
+  "topics": 12
+ }
+}

@@ -1,0 +1,137 @@
+{
+ "name": "test_post_products_cross_field",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/products → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317603359,
+       "stop": 1789317603360
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317603360,
+       "stop": 1789317603361
+      }
+     ],
+     "start": 1789317603232,
+     "stop": 1789317603361
+    }
+   ],
+   "attachments": [],
+   "start": 1789317603232,
+   "stop": 1789317603361
+  },
+  {
+   "name": "HTTP POST /api/v1/products → expect status=400",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 400, got 400",
+       "status": "passed",
+       "start": 1789317603488,
+       "stop": 1789317603489
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317603489,
+       "stop": 1789317603490
+      }
+     ],
+     "start": 1789317603361,
+     "stop": 1789317603490
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "c5042e22-e0df-a18e-f211-9b069a75b6dd-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "aea101a2-8726-d872-e621-603a29eac897-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317603361,
+   "stop": 1789317603490
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317603232,
+ "stop": 1789317603490,
+ "uuid": "e8799429-1e7e-949e-a7e2-593d3fbdfc53",
+ "historyId": "d611ff933ff70ee575357b6b9f0ce374",
+ "testCaseId": "de62d32cc92495c5378d007371ecfd4e",
+ "fullName": "src.api.tests.products.test_products_crud.TestProductsCrud#test_post_products_cross_field",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Products / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Создание: Products"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.products.test_products_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_products_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestProductsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6512-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.products.test_products_crud"
+  },
+  {
+   "name": "tag",
+   "value": "products"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

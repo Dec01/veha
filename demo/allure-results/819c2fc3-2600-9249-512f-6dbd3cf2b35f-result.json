@@ -1,0 +1,206 @@
+{
+ "name": "test_loyalty_award",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/orders → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317845805,
+       "stop": 1789317845806
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317845806,
+       "stop": 1789317845807
+      }
+     ],
+     "start": 1789317843506,
+     "stop": 1789317845807
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "a96399ce-3105-f07d-4b11-9ef3deb3ff59-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "5fc36542-dd52-0368-6118-43cb2acbac68-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317843506,
+   "stop": 1789317845807
+  },
+  {
+   "name": "HTTP POST /api/v1/orders/4211/confirm → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317848106,
+       "stop": 1789317848107
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317848107,
+       "stop": 1789317848108
+      }
+     ],
+     "start": 1789317845807,
+     "stop": 1789317848108
+    }
+   ],
+   "attachments": [],
+   "start": 1789317845807,
+   "stop": 1789317848108
+  },
+  {
+   "name": "HTTP POST /api/v1/payments → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317850407,
+       "stop": 1789317850408
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317850408,
+       "stop": 1789317850409
+      }
+     ],
+     "start": 1789317848108,
+     "stop": 1789317850409
+    }
+   ],
+   "attachments": [],
+   "start": 1789317848108,
+   "stop": 1789317850409
+  },
+  {
+   "name": "HTTP GET /api/v1/loyalty/customer/{customerId} → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317852708,
+       "stop": 1789317852709
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317852709,
+       "stop": 1789317852710
+      }
+     ],
+     "start": 1789317850409,
+     "stop": 1789317852710
+    }
+   ],
+   "attachments": [],
+   "start": 1789317850409,
+   "stop": 1789317852710
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317843506,
+ "stop": 1789317852713,
+ "uuid": "819c2fc3-2600-9249-512f-6dbd3cf2b35f",
+ "historyId": "92b40c2371a1df388e9a61392231e1cc",
+ "testCaseId": "d54cea53467550688d8c3ae7f1b853d3",
+ "fullName": "src.api.tests.journeys.test_loyalty_award.TestLoyaltyAward#test_loyalty_award",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Сквозные сценарии"
+  },
+  {
+   "name": "story",
+   "value": "Бонусы за оплаченный заказ"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.journeys.test_loyalty_award"
+  },
+  {
+   "name": "suite",
+   "value": "test_loyalty_award"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestLoyaltyAward"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2589-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.journeys.test_loyalty_award"
+  },
+  {
+   "name": "tag",
+   "value": "journey"
+  },
+  {
+   "name": "tag",
+   "value": "loyalty_award"
+  },
+  {
+   "name": "tag",
+   "value": "REQ-10.6"
+  }
+ ],
+ "links": [
+  {
+   "name": "REQ-10.6",
+   "url": "spec://REQ-10.6",
+   "type": "link"
+  }
+ ]
+}

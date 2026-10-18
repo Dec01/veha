@@ -1,0 +1,97 @@
+{
+ "name": "test_get_prices_product_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/prices/product/{productId} → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317645303,
+       "stop": 1789317645304
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317645304,
+       "stop": 1789317645305
+      }
+     ],
+     "start": 1789317644906,
+     "stop": 1789317645305
+    }
+   ],
+   "attachments": [],
+   "start": 1789317644906,
+   "stop": 1789317645305
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317644906,
+ "stop": 1789317645305,
+ "uuid": "fe752688-a630-ec4c-6818-3478e1f31ae9",
+ "historyId": "c61b5d48572af01d7db034f9d7dc5d81",
+ "testCaseId": "db8c220ecd7ef776b6fdf8531a6dc735",
+ "fullName": "src.api.tests.prices.test_prices_queries.TestPricesQueries#test_get_prices_product_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Prices / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Цены по товару"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.prices.test_prices_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_prices_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPricesQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8359-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.prices.test_prices_queries"
+  },
+  {
+   "name": "tag",
+   "value": "prices"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ]
+}

@@ -1,0 +1,108 @@
+{
+ "name": "test_get_orders_by_id_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/orders/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317676308,
+       "stop": 1789317676309
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317676309,
+       "stop": 1789317676310
+      }
+     ],
+     "start": 1789317676055,
+     "stop": 1789317676310
+    }
+   ],
+   "attachments": [],
+   "start": 1789317676055,
+   "stop": 1789317676310
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317676055,
+ "stop": 1789317676310,
+ "uuid": "0d8c4f8e-3697-6dfe-7ef4-7d63f617ad13",
+ "historyId": "c38dc7f81ef9230f80b9a72248f8a9cf",
+ "testCaseId": "d77007ae1fdd2730d7848715fd4966e0",
+ "fullName": "src.api.tests.orders.test_orders_crud.TestOrdersCrud#test_get_orders_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Orders / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Orders"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.orders.test_orders_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4007-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.orders.test_orders_crud"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.1"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.1",
+   "url": "spec://API-11.1",
+   "type": "link"
+  }
+ ]
+}

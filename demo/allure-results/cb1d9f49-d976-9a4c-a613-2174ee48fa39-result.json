@@ -1,0 +1,126 @@
+{
+ "name": "test_post_orders_by_id_cancel_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/orders → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317685939,
+       "stop": 1789317685940
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317685940,
+       "stop": 1789317685941
+      }
+     ],
+     "start": 1789317685821,
+     "stop": 1789317685941
+    }
+   ],
+   "attachments": [],
+   "start": 1789317685821,
+   "stop": 1789317685941
+  },
+  {
+   "name": "HTTP POST /api/v1/orders/4211/cancel → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317686059,
+       "stop": 1789317686060
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317686060,
+       "stop": 1789317686061
+      }
+     ],
+     "start": 1789317685941,
+     "stop": 1789317686061
+    }
+   ],
+   "attachments": [],
+   "start": 1789317685941,
+   "stop": 1789317686061
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317685821,
+ "stop": 1789317686062,
+ "uuid": "cb1d9f49-d976-9a4c-a613-2174ee48fa39",
+ "historyId": "72ccb2c10108d8d366b77c8009a9e5c9",
+ "testCaseId": "3f8b76731b29c8b158053543d783e1a1",
+ "fullName": "src.api.tests.orders.test_orders_actions.TestOrdersActions#test_post_orders_by_id_cancel_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Orders / операции"
+  },
+  {
+   "name": "story",
+   "value": "Отменить заказ"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.orders.test_orders_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9494-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.orders.test_orders_actions"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  }
+ ]
+}

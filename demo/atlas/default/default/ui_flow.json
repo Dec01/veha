@@ -1,0 +1,693 @@
+{
+ "version": 2,
+ "kind": "ui.flow",
+ "scope": {
+  "system": "default",
+  "env": "default"
+ },
+ "collected_at": "2026-09-13T19:55:00+03:00",
+ "collector": "veha-demo/generate",
+ "links": [
+  {
+   "screen": "#/admin/accounts",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/accounts/me",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/admin/accounts",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/roles/{id}/permissions",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/admin/accounts",
+   "control": "account-role-select",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/roles",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/admin/accounts",
+   "control": "account-toggle-active",
+   "action": "click",
+   "method": "PUT",
+   "path": "/api/v1/accounts/{id}",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/admin/accounts",
+   "control": "accounts-audit-link",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/audit",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/admin/accounts",
+   "control": "accounts-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/accounts",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/billing/invoices",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/invoices/{id}/lines",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/billing/invoices",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/subscriptions",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/billing/invoices",
+   "control": "invoice-issue-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/invoices",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/billing/invoices",
+   "control": "invoice-refund-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/refunds",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/billing/invoices",
+   "control": "invoice-send-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/invoices/{id}/send",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/billing/invoices",
+   "control": "invoices-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/invoices",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/catalog/products",
+   "control": null,
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/prices/bulk",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/catalog/products",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/products/{id}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/catalog/products",
+   "control": "catalog-create-product-btn",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/categories",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/catalog/products",
+   "control": "catalog-create-product-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/prices",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/catalog/products",
+   "control": "catalog-create-product-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/products",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/catalog/products",
+   "control": "catalog-filter-category",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/categories/tree",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/catalog/products",
+   "control": "catalog-products-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/products",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/catalog/products",
+   "control": "catalog-search-input",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/products/search",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/catalog/products/51",
+   "control": null,
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/products/{id}/archive",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/catalog/products/51",
+   "control": "product-add-variant-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/variants",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/catalog/products/51",
+   "control": "product-price-input",
+   "action": "click",
+   "method": "PUT",
+   "path": "/api/v1/prices/{id}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/catalog/products/51",
+   "control": "product-stock-widget",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/stock/product/{productId}",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/catalog/products/51",
+   "control": "product-summary-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/enums/units",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/catalog/products/51",
+   "control": "product-summary-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/products/{id}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/catalog/products/51",
+   "control": "product-variants-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/products/{id}/variants",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/crm/campaigns",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/campaigns/{id}/targets",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/crm/campaigns",
+   "control": "campaign-create-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/campaigns",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/crm/campaigns",
+   "control": "campaign-create-btn",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/segments",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/crm/campaigns",
+   "control": "campaign-launch-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/campaigns/{id}/launch",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/crm/campaigns",
+   "control": "campaigns-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/campaigns",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/crm/customers",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/customers/search",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/crm/customers",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/customers/{id}/addresses",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/crm/customers",
+   "control": "customer-loyalty-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/loyalty/customer/{customerId}",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/crm/customers",
+   "control": "customer-segment-chip",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/segments",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/crm/customers",
+   "control": "customers-create-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/customers",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/crm/customers",
+   "control": "customers-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/customers",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/orders",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/orders/{id}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders",
+   "control": "orders-create-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/carts",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders",
+   "control": "orders-create-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/carts/{id}/items",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders",
+   "control": "orders-create-btn",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/customers",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders",
+   "control": "orders-create-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/orders",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders",
+   "control": "orders-export-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/orders/export",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders",
+   "control": "orders-filter-status",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/enums/order-statuses",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders",
+   "control": "orders-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/orders",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/audit/object/{objectId}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/payments/{id}/receipt",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-cancel-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/orders/{id}/cancel",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-confirm-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/orders/{id}/confirm",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-header-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/orders/{id}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-lines-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/orders/{id}/lines",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-payment-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/enums/payment-methods",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-payment-panel",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/payments",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-payment-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/payments/order/{orderId}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-return-btn",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/enums/return-reasons",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-return-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/returns",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-shipment-panel",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/shipments",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/orders/49",
+   "control": "order-shipment-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/shipments/order/{orderId}",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/reports/sales",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/enums/periods",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/reports/sales",
+   "control": "sales-export-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/orders/export",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/reports/sales",
+   "control": "sales-period-picker",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/enums/periods",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/reports/sales",
+   "control": "sales-report-chart",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/orders/report/sales",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/warehouse/purchases/52",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/suppliers/{id}/products",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/warehouse/purchases/52",
+   "control": "purchase-approve-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/purchases/{id}/approve",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/warehouse/purchases/52",
+   "control": "purchase-header-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/purchases/{id}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/warehouse/purchases/52",
+   "control": "purchase-header-panel",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/suppliers",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/warehouse/purchases/52",
+   "control": "purchase-lines-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/purchases/{id}/lines",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/warehouse/purchases/52",
+   "control": "purchase-receive-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/purchases/{id}/receive",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/warehouse/stock",
+   "control": null,
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/stock/warehouse/{warehouseId}",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/warehouse/stock",
+   "control": "stock-move-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/stock/moves",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/warehouse/stock",
+   "control": "stock-recount-btn",
+   "action": "click",
+   "method": "POST",
+   "path": "/api/v1/stock/{id}/recount",
+   "count": 1,
+   "confidence": "direct"
+  },
+  {
+   "screen": "#/warehouse/stock",
+   "control": "stock-table",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/stock",
+   "count": 1,
+   "confidence": "window"
+  },
+  {
+   "screen": "#/warehouse/stock",
+   "control": "stock-warehouse-filter",
+   "action": "click",
+   "method": "GET",
+   "path": "/api/v1/warehouses",
+   "count": 1,
+   "confidence": "direct"
+  }
+ ],
+ "stats": {
+  "links": 75,
+  "screens": 11,
+  "endpoints": 68,
+  "direct": 41
+ }
+}

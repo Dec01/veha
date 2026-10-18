@@ -1,0 +1,97 @@
+{
+ "name": "test_get_prices_by_id_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/prices/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317640598,
+       "stop": 1789317640599
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317640599,
+       "stop": 1789317640600
+      }
+     ],
+     "start": 1789317640235,
+     "stop": 1789317640600
+    }
+   ],
+   "attachments": [],
+   "start": 1789317640235,
+   "stop": 1789317640600
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317640235,
+ "stop": 1789317640600,
+ "uuid": "433cb854-64b0-fc5d-ba99-8504ee8d8928",
+ "historyId": "c524ccef36dd645e943166ada9732ef4",
+ "testCaseId": "b1c6825ae67657d0e20a87ff005482fc",
+ "fullName": "src.api.tests.prices.test_prices_crud.TestPricesCrud#test_get_prices_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Prices / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Prices"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.prices.test_prices_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_prices_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPricesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8475-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.prices.test_prices_crud"
+  },
+  {
+   "name": "tag",
+   "value": "prices"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

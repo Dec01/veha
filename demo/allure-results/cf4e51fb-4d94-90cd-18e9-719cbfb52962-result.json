@@ -1,0 +1,97 @@
+{
+ "name": "test_post_subscriptions_by_id_pause_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/subscriptions/4211/pause → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317766982,
+       "stop": 1789317766983
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317766983,
+       "stop": 1789317766984
+      }
+     ],
+     "start": 1789317766805,
+     "stop": 1789317766984
+    }
+   ],
+   "attachments": [],
+   "start": 1789317766805,
+   "stop": 1789317766984
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317766805,
+ "stop": 1789317766984,
+ "uuid": "cf4e51fb-4d94-90cd-18e9-719cbfb52962",
+ "historyId": "4b0007c080425fa61f7a88ba708b45b1",
+ "testCaseId": "8aa71fcccd154f4ec49ab76233e06987",
+ "fullName": "src.api.tests.subscriptions.test_subscriptions_actions.TestSubscriptionsActions#test_post_subscriptions_by_id_pause_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Subscriptions / операции"
+  },
+  {
+   "name": "story",
+   "value": "Приостановить"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.subscriptions.test_subscriptions_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_subscriptions_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSubscriptionsActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6454-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.subscriptions.test_subscriptions_actions"
+  },
+  {
+   "name": "tag",
+   "value": "subscriptions"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  }
+ ]
+}

@@ -1,0 +1,97 @@
+{
+ "name": "test_delete_suppliers_by_id_success",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP DELETE /api/v1/suppliers/4211 → expect status=204",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 204, got 204",
+       "status": "passed",
+       "start": 1789317742579,
+       "stop": 1789317742580
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317742580,
+       "stop": 1789317742581
+      }
+     ],
+     "start": 1789317742231,
+     "stop": 1789317742581
+    }
+   ],
+   "attachments": [],
+   "start": 1789317742231,
+   "stop": 1789317742581
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317742231,
+ "stop": 1789317742581,
+ "uuid": "8bb3e1ea-f765-daa6-70a2-6660009b6c96",
+ "historyId": "e0b4c6e28d479b5b3e3b2c62caf5839f",
+ "testCaseId": "412360345e63616eba556ab7adc507fe",
+ "fullName": "src.api.tests.suppliers.test_suppliers_crud.TestSuppliersCrud#test_delete_suppliers_by_id_success",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Suppliers / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Удаление: Suppliers"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.suppliers.test_suppliers_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_suppliers_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSuppliersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3193-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.suppliers.test_suppliers_crud"
+  },
+  {
+   "name": "tag",
+   "value": "suppliers"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

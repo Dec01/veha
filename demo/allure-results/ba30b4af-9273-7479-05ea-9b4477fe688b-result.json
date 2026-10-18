@@ -1,0 +1,97 @@
+{
+ "name": "test_get_purchases_by_id_lines_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/purchases/4211/lines → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317754009,
+       "stop": 1789317754010
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317754010,
+       "stop": 1789317754011
+      }
+     ],
+     "start": 1789317753694,
+     "stop": 1789317754011
+    }
+   ],
+   "attachments": [],
+   "start": 1789317753694,
+   "stop": 1789317754011
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317753694,
+ "stop": 1789317754011,
+ "uuid": "ba30b4af-9273-7479-05ea-9b4477fe688b",
+ "historyId": "3f27d86951f65162cee57bb07b6c89e3",
+ "testCaseId": "a7ed551f5f5c3a76d64723b975048186",
+ "fullName": "src.api.tests.purchases.test_purchases_queries.TestPurchasesQueries#test_get_purchases_by_id_lines_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Purchase Orders / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Строки закупки"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.purchases.test_purchases_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchases_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchasesQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6366-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.purchases.test_purchases_queries"
+  },
+  {
+   "name": "tag",
+   "value": "purchases"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ]
+}

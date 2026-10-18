@@ -1,0 +1,102 @@
+{
+ "name": "Таблица остатков",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/stock → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317980101,
+       "stop": 1789317980102
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317980102,
+       "stop": 1789317980103
+      }
+     ],
+     "start": 1789317977512,
+     "stop": 1789317980103
+    }
+   ],
+   "attachments": [],
+   "start": 1789317977512,
+   "stop": 1789317980103
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317977512,
+ "stop": 1789317980103,
+ "uuid": "0f9f7628-3e0a-6b30-fa61-be31af513850",
+ "historyId": "63dd7f9e27849ed37f8ba384bef5ee46",
+ "testCaseId": "88994c506b90e351c3db697a38a932f0",
+ "fullName": "src.ui.tests.warehouse.test_warehouse_stock.TestWarehouseStock#test_stock_table[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Склад / остатки"
+  },
+  {
+   "name": "story",
+   "value": "Таблица остатков"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.warehouse.test_warehouse_stock"
+  },
+  {
+   "name": "suite",
+   "value": "test_warehouse_stock"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestWarehouseStock"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7902-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.warehouse.test_warehouse_stock"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "warehouse"
+  }
+ ]
+}

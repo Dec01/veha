@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Веха — карта тестирования</title>
+<link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+<header>
+  <h1><span class="dot"></span> Веха</h1>
+
+  <div class="seg hdr" title="Вид сцены (1 / 2)">
+    <button data-view="map" class="on">Карта</button>
+    <button data-view="ring">Кольцо</button>
+  </div>
+
+  <div class="seg hdr accent" title="Чем красим узлы: покрытием по методике или результатом прогона (q / w)">
+    <button data-data="coverage" class="on">Покрытие</button>
+    <button data-data="tests">Тесты</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div class="spacer"></div>
+
+  <div class="search">
+    <input type="search" id="q" placeholder="Найти эндпоинт, таблицу, экран…  /" autocomplete="off">
+    <div class="ac" id="ac"></div>
+  </div>
+
+  <button class="act" id="palette-btn" title="Палитра команд (Ctrl+K)">⌘K</button>
+  <button class="act" id="flat" title="Развернуть сцену фасадом">В лоб</button>
+  <button class="act" id="reset" title="Сбросить камеру">Сброс</button>
+  <button class="act primary" id="refresh">Обновить данные</button>
+</header>
+
+<canvas id="scene"></canvas>
+
+<!-- Быстрые фильтры прямо на сцене: искать нужный узел в панели неудобно -->
+<div class="scene-bar" id="scene-bar">
+  <div class="seg sm" title="Что оставить видимым на сцене">
+    <button data-scope="all" class="on">Всё</button>
+    <button data-scope="chain">Цепочка</button>
+    <button data-scope="domain">Домен</button>
+    <button data-scope="layer">Слой</button>
+  </div>
+  <span class="vr"></span>
+  <div class="chips" id="scope-chips"></div>
+  <span class="vr"></span>
+  <div class="chips" id="quick-chips"></div>
+  <button class="chip ghost" id="scene-clear" title="Снять фильтры сцены">сброс</button>
+</div>
+
+<!-- Подсказка вынесена из полосы фильтров: иначе полоса меняет ширину на
+     каждое наведение и прыгает под курсором -->
+<div class="scene-hint" id="scene-hint"></div>
+
+<!-- Закладки: каждая раскрывает свою панель, а не вкладку внутри общей -->
+<nav class="rail" id="rail">
+  <button data-panel="screens" title="Экраны (1 клик — открыть)">
+    <span class="ic">▤</span><span class="tx">Экраны</span></button>
+  <button data-panel="view" title="Вид сцены">
+    <span class="ic">◫</span><span class="tx">Вид</span></button>
+  <button data-panel="filters" title="Фильтры">
+    <span class="ic">⌗</span><span class="tx">Фильтры</span></button>
+  <button data-panel="legend" title="Легенда">
+    <span class="ic">◑</span><span class="tx">Легенда</span></button>
+</nav>
+
+<aside class="side" data-side="screens" hidden>
+  <div class="sh"><h2>Экраны</h2><button class="close" data-close>×</button></div>
+  <div class="sb"><div id="screens"></div></div>
+</aside>
+
+<aside class="side" data-side="view" hidden>
+  <div class="sh"><h2>Вид сцены</h2><button class="close" data-close>×</button></div>
+  <div class="sb">
+    <h3>Слои</h3>
+    <div id="layers"></div>
+    <div class="divider"></div>
+    <h3>Слои связей</h3>
+    <div class="hint-row">Структура — правда об интеграциях. Покрытие и тесты
+      выведены из данных: это сходство, а не связь.</div>
+    <div class="chips" id="edge-layers"></div>
+    <div class="divider"></div>
+    <h3>Плотность связей</h3>
+    <label class="slider">
+      <span>показываем <b id="density-val">75%</b></span>
+      <input type="range" id="density" min="0" max="100" step="5" value="75">
+    </label>
+    <label class="check"><input type="checkbox" id="dim-edges"> прятать связи вне цепочки</label>
+    <div class="divider"></div>
+    <h3>Камера</h3>
+    <label class="check"><input type="checkbox" id="spin"> вращение</label>
+  </div>
+</aside>
+
+<aside class="side wide" data-side="filters" hidden>
+  <div class="sh"><h2>Фильтры</h2><button class="close" data-close>×</button></div>
+  <div class="sb" id="filters-pane"></div>
+</aside>
+
+<aside class="side" data-side="legend" hidden>
+  <div class="sh"><h2>Легенда</h2><button class="close" data-close>×</button></div>
+  <div class="sb">
+    <h3>Цвет узла</h3>
+    <div class="legend" id="legend"></div>
+    <div class="divider"></div>
+    <h3>Связи</h3>
+    <div class="legend" id="edge-legend"></div>
+    <div class="divider"></div>
+    <h3>Формы объектов</h3>
+    <div class="legend shapes" id="shape-legend"></div>
+  </div>
+</aside>
+
+<aside class="right" id="panel">
+  <div class="rh">
+    <button class="close" id="close">×</button>
+    <div class="kind" id="p-kind"></div>
+    <div class="title" id="p-title"></div>
+  </div>
+  <div class="rb" id="p-body"></div>
+</aside>
+
+<section class="dock" id="dock">
+  <div class="dock-grip" id="dock-grip"></div>
+  <div class="dock-head">
+    <button class="act sm" id="dock-back" hidden title="Вернуться на предыдущую вкладку">← назад</button>
+    <div class="dock-tabs" id="dock-tabs"></div>
+    <div class="spacer"></div>
+    <button class="act sm" id="dock-deselect" hidden
+      title="Снять выделение узла">снять выделение</button>
+    <span class="muted" id="dock-note"></span>
+    <button class="act" id="dock-toggle">Свернуть</button>
+  </div>
+  <div class="dock-body" id="dock-body"></div>
+</section>
+
+<div class="palette" id="palette">
+  <input type="search" id="pal-q" placeholder="Куда перейти: эндпоинт, таблица, экран, вкладка…" autocomplete="off">
+  <div class="pal-list" id="pal-list"></div>
+</div>
+
+<div id="tip"></div>
+
+<!-- Пути относительные: статический снимок (`veha export-static`) кладут в подкаталог
+     сайта, а у сервера страница отдаётся с корня — и там, и там это `static/…`. -->
+<script src="static/api.js"></script>
+<script src="static/scene3d.js"></script>
+<script src="static/atlas.js"></script>
+<script src="static/dock.js"></script>
+</body>
+</html>

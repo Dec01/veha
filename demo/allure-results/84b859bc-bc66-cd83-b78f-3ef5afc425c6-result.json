@@ -1,0 +1,108 @@
+{
+ "name": "test_get_suppliers_by_id_products_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/suppliers/4211/products → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317745013,
+       "stop": 1789317745014
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317745014,
+       "stop": 1789317745015
+      }
+     ],
+     "start": 1789317744633,
+     "stop": 1789317745015
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "ac3a4a83-a060-2916-7ad0-093c6e074903-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "4c3b7d9c-f24e-cf8d-03e8-c901ff5b1ff5-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317744633,
+   "stop": 1789317745015
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317744633,
+ "stop": 1789317745015,
+ "uuid": "84b859bc-bc66-cd83-b78f-3ef5afc425c6",
+ "historyId": "993401971a411b9c095dc4c6283244da",
+ "testCaseId": "3e351c84318533b9def6aeb3a087995d",
+ "fullName": "src.api.tests.suppliers.test_suppliers_queries.TestSuppliersQueries#test_get_suppliers_by_id_products_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Suppliers / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Товары поставщика"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.suppliers.test_suppliers_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_suppliers_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSuppliersQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4855-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.suppliers.test_suppliers_queries"
+  },
+  {
+   "name": "tag",
+   "value": "suppliers"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ]
+}

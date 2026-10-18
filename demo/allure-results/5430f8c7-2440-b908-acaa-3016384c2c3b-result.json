@@ -1,0 +1,97 @@
+{
+ "name": "test_get_products_by_id_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/products/4211 → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317604848,
+       "stop": 1789317604849
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317604849,
+       "stop": 1789317604850
+      }
+     ],
+     "start": 1789317604554,
+     "stop": 1789317604850
+    }
+   ],
+   "attachments": [],
+   "start": 1789317604554,
+   "stop": 1789317604850
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317604554,
+ "stop": 1789317604850,
+ "uuid": "5430f8c7-2440-b908-acaa-3016384c2c3b",
+ "historyId": "27ac93d9db944cb7de6f6e60744ec00a",
+ "testCaseId": "d86d6b10ffaf78f7a602720256055e9d",
+ "fullName": "src.api.tests.products.test_products_crud.TestProductsCrud#test_get_products_by_id_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Products / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Products"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.products.test_products_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_products_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestProductsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8944-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.products.test_products_crud"
+  },
+  {
+   "name": "tag",
+   "value": "products"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

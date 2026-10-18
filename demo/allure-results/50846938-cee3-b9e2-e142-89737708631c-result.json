@@ -1,0 +1,97 @@
+{
+ "name": "test_get_segments_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/segments/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317782916,
+       "stop": 1789317782917
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317782917,
+       "stop": 1789317782918
+      }
+     ],
+     "start": 1789317782761,
+     "stop": 1789317782918
+    }
+   ],
+   "attachments": [],
+   "start": 1789317782761,
+   "stop": 1789317782918
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317782761,
+ "stop": 1789317782918,
+ "uuid": "50846938-cee3-b9e2-e142-89737708631c",
+ "historyId": "10510e669abdcb17ec93a0766a9ca236",
+ "testCaseId": "b55308914626a31fc688ea7f892b834a",
+ "fullName": "src.api.tests.segments.test_segments_crud.TestSegmentsCrud#test_get_segments_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Segments / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Segments"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.segments.test_segments_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_segments_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSegmentsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6478-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.segments.test_segments_crud"
+  },
+  {
+   "name": "tag",
+   "value": "segments"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

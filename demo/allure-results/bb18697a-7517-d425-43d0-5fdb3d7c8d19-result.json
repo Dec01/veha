@@ -1,0 +1,108 @@
+{
+ "name": "test_post_prices_extra_data",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/prices → expect status=400",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 400, got 400",
+       "status": "passed",
+       "start": 1789317639560,
+       "stop": 1789317639561
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317639561,
+       "stop": 1789317639562
+      }
+     ],
+     "start": 1789317639387,
+     "stop": 1789317639562
+    }
+   ],
+   "attachments": [],
+   "start": 1789317639387,
+   "stop": 1789317639562
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317639387,
+ "stop": 1789317639562,
+ "uuid": "bb18697a-7517-d425-43d0-5fdb3d7c8d19",
+ "historyId": "903341670e2c4c3e512c79908049bf3a",
+ "testCaseId": "ff92edc110a9694f0ff6288c0966d4c4",
+ "fullName": "src.api.tests.prices.test_prices_crud.TestPricesCrud#test_post_prices_extra_data",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Prices / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Создание: Prices"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.prices.test_prices_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_prices_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPricesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2711-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.prices.test_prices_crud"
+  },
+  {
+   "name": "tag",
+   "value": "prices"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  },
+  {
+   "name": "tag",
+   "value": "REQ-10.2"
+  }
+ ],
+ "links": [
+  {
+   "name": "REQ-10.2",
+   "url": "spec://REQ-10.2",
+   "type": "link"
+  }
+ ]
+}

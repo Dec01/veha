@@ -1,0 +1,90 @@
+2026-09-13 19:40:05 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1000
+2026-09-13 19:40:12 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:40:31 INFO  [identity] com.example.shop.App : published order.confirmed in 59 ms
+2026-09-13 19:40:32 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:40:56 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:41:22 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1005
+2026-09-13 19:41:40 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:42:08 INFO  [identity] com.example.shop.App : published order.confirmed in 86 ms
+2026-09-13 19:42:35 WARN  [identity] com.example.shop.App : slow query on table "order_header" (2982 ms)
+2026-09-13 19:42:37 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:43:12 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1010
+2026-09-13 19:43:51 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:43:52 INFO  [identity] com.example.shop.App : published order.confirmed in 65 ms
+2026-09-13 19:43:54 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:43:56 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:43:59 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1015
+2026-09-13 19:44:07 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:44:16 INFO  [identity] com.example.shop.App : published order.confirmed in 63 ms
+2026-09-13 19:44:50 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:44:53 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:45:04 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1020
+2026-09-13 19:45:18 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:45:49 INFO  [identity] com.example.shop.App : published order.confirmed in 6 ms
+2026-09-13 19:46:00 WARN  [identity] com.example.shop.App : slow query on table "order_header" (1719 ms)
+2026-09-13 19:46:17 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:46:42 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1025
+2026-09-13 19:47:12 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:47:41 INFO  [identity] com.example.shop.App : published order.confirmed in 80 ms
+2026-09-13 19:47:44 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:47:50 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:48:27 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1030
+2026-09-13 19:48:37 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:48:42 INFO  [identity] com.example.shop.App : published order.confirmed in 46 ms
+2026-09-13 19:49:04 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:49:37 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:50:17 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1035
+2026-09-13 19:50:26 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:51:05 INFO  [identity] com.example.shop.App : published order.confirmed in 86 ms
+2026-09-13 19:51:07 WARN  [identity] com.example.shop.App : slow query on table "order_header" (1781 ms)
+2026-09-13 19:51:09 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:51:21 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1040
+2026-09-13 19:51:51 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:52:25 INFO  [identity] com.example.shop.App : published order.confirmed in 36 ms
+2026-09-13 19:52:43 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:52:47 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:53:26 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1045
+2026-09-13 19:54:04 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:54:11 INFO  [identity] com.example.shop.App : published order.confirmed in 8 ms
+2026-09-13 19:54:17 WARN  [identity] com.example.shop.App : slow query on table "order_header" (4011 ms)
+2026-09-13 19:54:50 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:55:06 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1050
+2026-09-13 19:55:32 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:55:50 INFO  [identity] com.example.shop.App : published order.confirmed in 39 ms
+2026-09-13 19:56:12 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:56:42 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:57:09 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1055
+2026-09-13 19:57:35 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:57:52 INFO  [identity] com.example.shop.App : published order.confirmed in 76 ms
+2026-09-13 19:58:18 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:58:19 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 19:58:37 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1060
+2026-09-13 19:59:07 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 19:59:08 INFO  [identity] com.example.shop.App : published order.confirmed in 12 ms
+2026-09-13 19:59:46 WARN  [identity] com.example.shop.App : slow query on table "order_header" (1986 ms)
+2026-09-13 20:00:10 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:00:50 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1065
+2026-09-13 20:01:27 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 20:01:33 INFO  [identity] com.example.shop.App : published order.confirmed in 50 ms
+2026-09-13 20:01:54 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:02:12 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:02:33 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1070
+2026-09-13 20:03:01 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 20:03:12 INFO  [identity] com.example.shop.App : published order.confirmed in 60 ms
+2026-09-13 20:03:52 WARN  [identity] com.example.shop.App : slow query on table "order_header" (3397 ms)
+2026-09-13 20:04:01 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:04:30 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1075
+2026-09-13 20:05:09 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 20:05:49 INFO  [identity] com.example.shop.App : published order.confirmed in 58 ms
+2026-09-13 20:06:13 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:06:14 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:06:40 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1080
+2026-09-13 20:07:18 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 20:07:35 INFO  [identity] com.example.shop.App : published order.confirmed in 7 ms
+2026-09-13 20:07:38 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:08:04 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:08:29 INFO  [identity] com.example.shop.App : received event order.confirmed, offset 1085
+2026-09-13 20:08:33 DEBUG [identity] com.example.shop.App : persisted 1 row into table "order_header"
+2026-09-13 20:08:34 INFO  [identity] com.example.shop.App : published order.confirmed in 40 ms
+2026-09-13 20:08:42 INFO  [identity] com.example.shop.App : health check ok
+2026-09-13 20:09:06 INFO  [identity] com.example.shop.App : health check ok

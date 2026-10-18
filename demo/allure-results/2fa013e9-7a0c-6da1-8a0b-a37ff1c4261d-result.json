@@ -1,0 +1,137 @@
+{
+ "name": "test_post_orders_export_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/orders → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317687223,
+       "stop": 1789317687224
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317687224,
+       "stop": 1789317687225
+      }
+     ],
+     "start": 1789317687140,
+     "stop": 1789317687225
+    }
+   ],
+   "attachments": [],
+   "start": 1789317687140,
+   "stop": 1789317687225
+  },
+  {
+   "name": "HTTP POST /api/v1/orders/export → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317687308,
+       "stop": 1789317687309
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317687309,
+       "stop": 1789317687310
+      }
+     ],
+     "start": 1789317687225,
+     "stop": 1789317687310
+    }
+   ],
+   "attachments": [],
+   "start": 1789317687225,
+   "stop": 1789317687310
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317687140,
+ "stop": 1789317687311,
+ "uuid": "2fa013e9-7a0c-6da1-8a0b-a37ff1c4261d",
+ "historyId": "0907d2e969c0c496b4ebf8891e04cd17",
+ "testCaseId": "5ea324ba2344ffa363cb554973f57bf0",
+ "fullName": "src.api.tests.orders.test_orders_actions.TestOrdersActions#test_post_orders_export_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Orders / операции"
+  },
+  {
+   "name": "story",
+   "value": "Выгрузить реестр"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.orders.test_orders_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7268-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.orders.test_orders_actions"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.9"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.9",
+   "url": "spec://API-11.9",
+   "type": "link"
+  }
+ ]
+}

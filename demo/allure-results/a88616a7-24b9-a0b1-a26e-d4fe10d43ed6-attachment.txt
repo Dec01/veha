@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[001] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[002] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[003] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[004] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[005] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[006] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[007] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[008] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[009] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[010] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+[011] шаг прогона: проверка test_post_invoices_by_id_send_cross_field
+TimeoutError: запрос не уложился в 30 с

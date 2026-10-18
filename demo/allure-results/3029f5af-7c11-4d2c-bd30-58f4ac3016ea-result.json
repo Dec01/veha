@@ -1,0 +1,113 @@
+{
+ "name": "Бонусный счёт",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/loyalty/customer/{customerId} → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318045009,
+       "stop": 1789318045010
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318045010,
+       "stop": 1789318045011
+      }
+     ],
+     "start": 1789318042936,
+     "stop": 1789318045011
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "51834118-e069-890a-648b-fdd729a3332d-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "85bebc60-7379-e155-d7f3-19c57ada0537-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789318042936,
+   "stop": 1789318045011
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318042936,
+ "stop": 1789318045011,
+ "uuid": "3029f5af-7c11-4d2c-bd30-58f4ac3016ea",
+ "historyId": "a0bae229a236d58ac28daf9bf14b0b06",
+ "testCaseId": "8528c36ebb57b05991154b8b9c4c6d5d",
+ "fullName": "src.ui.tests.crm.test_crm_customers.TestCrmCustomers#test_customer_loyalty_panel[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "CRM / клиенты"
+  },
+  {
+   "name": "story",
+   "value": "Бонусный счёт"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.crm.test_crm_customers"
+  },
+  {
+   "name": "suite",
+   "value": "test_crm_customers"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCrmCustomers"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7318-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.crm.test_crm_customers"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "crm"
+  }
+ ]
+}

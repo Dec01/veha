@@ -1,0 +1,97 @@
+{
+ "name": "test_get_roles_filters",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/roles → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317798563,
+       "stop": 1789317798564
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317798564,
+       "stop": 1789317798565
+      }
+     ],
+     "start": 1789317798288,
+     "stop": 1789317798565
+    }
+   ],
+   "attachments": [],
+   "start": 1789317798288,
+   "stop": 1789317798565
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317798288,
+ "stop": 1789317798565,
+ "uuid": "09e00a99-31c2-a8bf-6781-9665572753a1",
+ "historyId": "314606ec8e37845dde651fd811dd5c81",
+ "testCaseId": "74649753c957dbdb2c1a81021f6abef5",
+ "fullName": "src.api.tests.roles.test_roles_list.TestRolesList#test_get_roles_filters",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Roles & Permissions / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Roles & Permissions"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.roles.test_roles_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_roles_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestRolesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7679-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.roles.test_roles_list"
+  },
+  {
+   "name": "tag",
+   "value": "roles"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

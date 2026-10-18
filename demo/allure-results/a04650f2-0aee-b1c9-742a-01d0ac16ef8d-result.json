@@ -1,0 +1,131 @@
+{
+ "name": "Оформить возврат",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/enums/return-reasons → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317975393,
+       "stop": 1789317975394
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317975394,
+       "stop": 1789317975395
+      }
+     ],
+     "start": 1789317973403,
+     "stop": 1789317975395
+    }
+   ],
+   "attachments": [],
+   "start": 1789317973403,
+   "stop": 1789317975395
+  },
+  {
+   "name": "HTTP POST /api/v1/returns → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317977385,
+       "stop": 1789317977386
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317977386,
+       "stop": 1789317977387
+      }
+     ],
+     "start": 1789317975395,
+     "stop": 1789317977387
+    }
+   ],
+   "attachments": [],
+   "start": 1789317975395,
+   "stop": 1789317977387
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317973403,
+ "stop": 1789317977388,
+ "uuid": "a04650f2-0aee-b1c9-742a-01d0ac16ef8d",
+ "historyId": "68b2ba877f49e8b9c2c28a3d0897691b",
+ "testCaseId": "46a4cf51d82e54463363bcaf680b6de7",
+ "fullName": "src.ui.tests.orders.test_order_card.TestOrderCard#test_order_return_btn[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Заказы / карточка"
+  },
+  {
+   "name": "story",
+   "value": "Оформить возврат"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.orders.test_order_card"
+  },
+  {
+   "name": "suite",
+   "value": "test_order_card"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrderCard"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7178-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.orders.test_order_card"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  }
+ ]
+}

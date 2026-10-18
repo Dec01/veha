@@ -1,0 +1,118 @@
+{
+ "name": "test_get_shipments_order_by_id_default",
+ "status": "broken",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/shipments/order/{orderId} → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got —",
+       "status": "failed",
+       "start": 1789317710670,
+       "stop": 1789317710671
+      },
+      {
+       "name": "Response body validation",
+       "status": "skipped",
+       "start": 1789317710671,
+       "stop": 1789317710672
+      }
+     ],
+     "start": 1789317710435,
+     "stop": 1789317710672
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "2a520c31-8ff4-cd88-b1ad-2558fd03229d-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "cca968bf-8b6e-e29a-515e-31ed1ba64d22-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317710435,
+   "stop": 1789317710672
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "21160c5a-a5fb-df19-62ef-04d7cdb0666d-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317710435,
+ "stop": 1789317710672,
+ "uuid": "8e78d551-d873-17f5-ffa8-c90803e8cffa",
+ "historyId": "df0169f2c02cd1c9b979e67b79bb3c3f",
+ "testCaseId": "028fc2f106a07f2b6daec48ffb757222",
+ "fullName": "src.api.tests.shipments.test_shipments_queries.TestShipmentsQueries#test_get_shipments_order_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Shipments / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Отгрузки заказа"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.shipments.test_shipments_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_shipments_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestShipmentsQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6901-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.shipments.test_shipments_queries"
+  },
+  {
+   "name": "tag",
+   "value": "shipments"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ],
+ "statusDetails": {
+  "message": "TimeoutError: запрос не уложился в 30 с\nExpected: ответ за 30 с\nActual: таймаут\nHint: очередь не разбиралась, консьюмер лежал",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/shipments/test_shipments_queries.py\", line 162, in test_get_shipments_order_by_id_default\n    assert_response(response, expected)\nTimeoutError: запрос не уложился в 30 с"
+ }
+}

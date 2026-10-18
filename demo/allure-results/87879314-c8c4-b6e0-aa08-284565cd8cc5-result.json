@@ -1,0 +1,126 @@
+{
+ "name": "test_delete_orders_by_id_lifecycle",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/orders → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317679704,
+       "stop": 1789317679705
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317679705,
+       "stop": 1789317679706
+      }
+     ],
+     "start": 1789317679573,
+     "stop": 1789317679706
+    }
+   ],
+   "attachments": [],
+   "start": 1789317679573,
+   "stop": 1789317679706
+  },
+  {
+   "name": "HTTP DELETE /api/v1/orders/4211 → expect status=409",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 409, got 409",
+       "status": "passed",
+       "start": 1789317679837,
+       "stop": 1789317679838
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317679838,
+       "stop": 1789317679839
+      }
+     ],
+     "start": 1789317679706,
+     "stop": 1789317679839
+    }
+   ],
+   "attachments": [],
+   "start": 1789317679706,
+   "stop": 1789317679839
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317679573,
+ "stop": 1789317679839,
+ "uuid": "87879314-c8c4-b6e0-aa08-284565cd8cc5",
+ "historyId": "6f974d3b164d59ae4743f516e6b7cded",
+ "testCaseId": "1c8d50e8d546984f5cdfdc70f4938b5c",
+ "fullName": "src.api.tests.orders.test_orders_crud.TestOrdersCrud#test_delete_orders_by_id_lifecycle",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Orders / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Удаление: Orders"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.orders.test_orders_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4392-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.orders.test_orders_crud"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

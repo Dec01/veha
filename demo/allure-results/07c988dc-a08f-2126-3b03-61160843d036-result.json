@@ -1,0 +1,118 @@
+{
+ "name": "test_get_categories_sorting",
+ "status": "broken",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/categories → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317616157,
+       "stop": 1789317616158
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317616158,
+       "stop": 1789317616159
+      }
+     ],
+     "start": 1789317616009,
+     "stop": 1789317616159
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "7e253efc-7d55-72f7-8f15-a2b058748be0-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "26d60285-d283-8023-0bd6-a3c8174ddce8-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317616009,
+   "stop": 1789317616159
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "fd3e45d6-2094-f869-90dd-683718b69612-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317616009,
+ "stop": 1789317616159,
+ "uuid": "07c988dc-a08f-2126-3b03-61160843d036",
+ "historyId": "f67fd78cccb716c81728f3f01062c383",
+ "testCaseId": "3cbfa91f73e1bb55f2796c9182915ed8",
+ "fullName": "src.api.tests.categories.test_categories_list.TestCategoriesList#test_get_categories_sorting",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Categories / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Categories"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.categories.test_categories_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_categories_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCategoriesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "1261-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.categories.test_categories_list"
+  },
+  {
+   "name": "tag",
+   "value": "categories"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Sum of lines does not match order total\nExpected: 18450.00\nActual: 18300.00\nHint: скидка применена дважды",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/categories/test_categories_list.py\", line 93, in test_get_categories_sorting\n    assert_response(response, expected)\nAssertionError: Sum of lines does not match order total"
+ }
+}

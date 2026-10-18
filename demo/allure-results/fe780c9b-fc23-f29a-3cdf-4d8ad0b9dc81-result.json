@@ -1,0 +1,119 @@
+{
+ "name": "test_get_invoices_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/invoices → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317757438,
+       "stop": 1789317757439
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317757439,
+       "stop": 1789317757440
+      }
+     ],
+     "start": 1789317757123,
+     "stop": 1789317757440
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "a274dc8a-35a4-89c1-026a-3aeacd5feff2-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "540de286-19d3-88e3-66d5-51e4e4a128d6-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317757123,
+   "stop": 1789317757440
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317757123,
+ "stop": 1789317757440,
+ "uuid": "fe780c9b-fc23-f29a-3cdf-4d8ad0b9dc81",
+ "historyId": "e67ee4b819a5011e492724bb79720b25",
+ "testCaseId": "b8886843ed44f79bc58490012609dbb3",
+ "fullName": "src.api.tests.invoices.test_invoices_list.TestInvoicesList#test_get_invoices_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Invoices / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Invoices"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.invoices.test_invoices_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_invoices_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestInvoicesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6398-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.invoices.test_invoices_list"
+  },
+  {
+   "name": "tag",
+   "value": "invoices"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  },
+  {
+   "name": "tag",
+   "value": "API-11.6"
+  }
+ ],
+ "links": [
+  {
+   "name": "API-11.6",
+   "url": "spec://API-11.6",
+   "type": "link"
+  }
+ ]
+}

@@ -1,0 +1,158 @@
+{
+ "name": "test_get_variants_product_by_id_not_found",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/variants → expect status=201",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 500",
+       "status": "failed",
+       "start": 1789317635207,
+       "stop": 1789317635208
+      },
+      {
+       "name": "Response body validation",
+       "status": "skipped",
+       "start": 1789317635208,
+       "stop": 1789317635209
+      }
+     ],
+     "start": 1789317635037,
+     "stop": 1789317635209
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "7e88e02e-0d64-cd9f-cbcc-a63b74b8dc6c-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "8b12d79b-5717-c2fc-d06a-ed1b2f9de3b9-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317635037,
+   "stop": 1789317635209
+  },
+  {
+   "name": "HTTP GET /api/v1/variants/product/{productId} → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317635379,
+       "stop": 1789317635380
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317635380,
+       "stop": 1789317635381
+      }
+     ],
+     "start": 1789317635209,
+     "stop": 1789317635381
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "c1175680-0821-9a41-25c3-05b6cb4c3f68-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "1393b008-c40b-744c-2143-51fc54e0bcc5-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317635209,
+   "stop": 1789317635381
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "85a40ef6-8e7e-48d0-5b54-e16a8bd16d28-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317635037,
+ "stop": 1789317635381,
+ "uuid": "5f8fc270-2577-10e5-5fe4-5d7bd2874ca7",
+ "historyId": "39be86e65d741938e46519a7a88ea288",
+ "testCaseId": "7cbd04dfdf5e74a105fa422e1a77b715",
+ "fullName": "src.api.tests.variants.test_variants_queries.TestVariantsQueries#test_get_variants_product_by_id_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Variants / выборки"
+  },
+  {
+   "name": "story",
+   "value": "Варианты по товару"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.variants.test_variants_queries"
+  },
+  {
+   "name": "suite",
+   "value": "test_variants_queries"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestVariantsQueries"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5958-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.variants.test_variants_queries"
+  },
+  {
+   "name": "tag",
+   "value": "variants"
+  },
+  {
+   "name": "tag",
+   "value": "выборки"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Status code: expected 201, got 500\nExpected: 201\nActual: 500\nHint: контейнер отвечал ошибкой — см. вкладку Live, состояние стенда на момент прогона",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/variants/test_variants_queries.py\", line 135, in test_get_variants_product_by_id_not_found\n    assert_response(response, expected)\nAssertionError: Status code: expected 201, got 500"
+ }
+}

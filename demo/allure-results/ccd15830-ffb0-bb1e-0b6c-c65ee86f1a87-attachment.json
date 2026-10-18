@@ -1,0 +1,11 @@
+{
+ "method": "POST",
+ "url": "https://shop-api.example.com/api/v1/stock/{id}/recount",
+ "headers": {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer <redacted>"
+ },
+ "body": {
+  "demo": true
+ }
+}

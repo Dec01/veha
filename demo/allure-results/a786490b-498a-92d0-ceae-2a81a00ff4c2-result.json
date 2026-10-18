@@ -1,0 +1,97 @@
+{
+ "name": "test_get_campaigns_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/campaigns → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317784317,
+       "stop": 1789317784318
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317784318,
+       "stop": 1789317784319
+      }
+     ],
+     "start": 1789317784012,
+     "stop": 1789317784319
+    }
+   ],
+   "attachments": [],
+   "start": 1789317784012,
+   "stop": 1789317784319
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317784012,
+ "stop": 1789317784319,
+ "uuid": "a786490b-498a-92d0-ceae-2a81a00ff4c2",
+ "historyId": "48510a75ac979bd49168b525bcf55453",
+ "testCaseId": "a3245fa02830c7fd2a69d4e0e22995f7",
+ "fullName": "src.api.tests.campaigns.test_campaigns_list.TestCampaignsList#test_get_campaigns_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Campaigns / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Campaigns"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.campaigns.test_campaigns_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_campaigns_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCampaignsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5221-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.campaigns.test_campaigns_list"
+  },
+  {
+   "name": "tag",
+   "value": "campaigns"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

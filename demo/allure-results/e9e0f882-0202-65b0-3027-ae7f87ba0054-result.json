@@ -1,0 +1,102 @@
+{
+ "name": "Выгрузить реестр",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/orders/export → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317937137,
+       "stop": 1789317937138
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317937138,
+       "stop": 1789317937139
+      }
+     ],
+     "start": 1789317930826,
+     "stop": 1789317937139
+    }
+   ],
+   "attachments": [],
+   "start": 1789317930826,
+   "stop": 1789317937139
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317930826,
+ "stop": 1789317937139,
+ "uuid": "e9e0f882-0202-65b0-3027-ae7f87ba0054",
+ "historyId": "64a4448ea8182c194a74a0fa111098f8",
+ "testCaseId": "db8cf1f395682c4a87d321420d481413",
+ "fullName": "src.ui.tests.orders.test_orders_list.TestOrdersList#test_orders_export_btn[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Заказы / реестр"
+  },
+  {
+   "name": "story",
+   "value": "Выгрузить реестр"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.orders.test_orders_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9216-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.orders.test_orders_list"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  }
+ ]
+}

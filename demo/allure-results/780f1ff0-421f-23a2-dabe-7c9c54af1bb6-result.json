@@ -1,0 +1,97 @@
+{
+ "name": "test_get_accounts_me_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/accounts/me → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317797012,
+       "stop": 1789317797013
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317797013,
+       "stop": 1789317797014
+      }
+     ],
+     "start": 1789317796685,
+     "stop": 1789317797014
+    }
+   ],
+   "attachments": [],
+   "start": 1789317796685,
+   "stop": 1789317797014
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317796685,
+ "stop": 1789317797014,
+ "uuid": "780f1ff0-421f-23a2-dabe-7c9c54af1bb6",
+ "historyId": "f62fba6c9e04fba7bfddd8ad6b8698d5",
+ "testCaseId": "d7a379598d968af608f62571d10f80a8",
+ "fullName": "src.api.tests.accounts.test_accounts_scope.TestAccountsScope#test_get_accounts_me_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Accounts / область видимости"
+  },
+  {
+   "name": "story",
+   "value": "Текущая учётная запись"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.accounts.test_accounts_scope"
+  },
+  {
+   "name": "suite",
+   "value": "test_accounts_scope"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestAccountsScope"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9438-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.accounts.test_accounts_scope"
+  },
+  {
+   "name": "tag",
+   "value": "accounts"
+  },
+  {
+   "name": "tag",
+   "value": "область видимости"
+  }
+ ]
+}

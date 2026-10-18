@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_get_prices_by_id_permissions
+[001] шаг прогона: проверка test_get_prices_by_id_permissions
+[002] шаг прогона: проверка test_get_prices_by_id_permissions
+[003] шаг прогона: проверка test_get_prices_by_id_permissions
+[004] шаг прогона: проверка test_get_prices_by_id_permissions
+[005] шаг прогона: проверка test_get_prices_by_id_permissions
+[006] шаг прогона: проверка test_get_prices_by_id_permissions
+[007] шаг прогона: проверка test_get_prices_by_id_permissions
+[008] шаг прогона: проверка test_get_prices_by_id_permissions
+[009] шаг прогона: проверка test_get_prices_by_id_permissions
+[010] шаг прогона: проверка test_get_prices_by_id_permissions
+[011] шаг прогона: проверка test_get_prices_by_id_permissions
+TimeoutError: запрос не уложился в 30 с

@@ -1,0 +1,195 @@
+{
+ "name": "test_price_update",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/products → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317863720,
+       "stop": 1789317863721
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317863721,
+       "stop": 1789317863722
+      }
+     ],
+     "start": 1789317862263,
+     "stop": 1789317863722
+    }
+   ],
+   "attachments": [],
+   "start": 1789317862263,
+   "stop": 1789317863722
+  },
+  {
+   "name": "HTTP POST /api/v1/prices → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317865179,
+       "stop": 1789317865180
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317865180,
+       "stop": 1789317865181
+      }
+     ],
+     "start": 1789317863722,
+     "stop": 1789317865181
+    }
+   ],
+   "attachments": [],
+   "start": 1789317863722,
+   "stop": 1789317865181
+  },
+  {
+   "name": "HTTP POST /api/v1/prices/bulk → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317866638,
+       "stop": 1789317866639
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317866639,
+       "stop": 1789317866640
+      }
+     ],
+     "start": 1789317865181,
+     "stop": 1789317866640
+    }
+   ],
+   "attachments": [],
+   "start": 1789317865181,
+   "stop": 1789317866640
+  },
+  {
+   "name": "HTTP GET /api/v1/products/search → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317868097,
+       "stop": 1789317868098
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317868098,
+       "stop": 1789317868099
+      }
+     ],
+     "start": 1789317866640,
+     "stop": 1789317868099
+    }
+   ],
+   "attachments": [],
+   "start": 1789317866640,
+   "stop": 1789317868099
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317862263,
+ "stop": 1789317868101,
+ "uuid": "67a15f5e-3333-3764-1e7e-69721ecc46d4",
+ "historyId": "a220ea791796f6dbe7cb87ef3e574dff",
+ "testCaseId": "1fe190cf008fc8defe8b16d9c961d2a4",
+ "fullName": "src.api.tests.journeys.test_price_update.TestPriceUpdate#test_price_update",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Сквозные сценарии"
+  },
+  {
+   "name": "story",
+   "value": "Переоценка каталога"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.journeys.test_price_update"
+  },
+  {
+   "name": "suite",
+   "value": "test_price_update"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPriceUpdate"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4461-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.journeys.test_price_update"
+  },
+  {
+   "name": "tag",
+   "value": "journey"
+  },
+  {
+   "name": "tag",
+   "value": "price_update"
+  },
+  {
+   "name": "tag",
+   "value": "REQ-10.2"
+  }
+ ],
+ "links": [
+  {
+   "name": "REQ-10.2",
+   "url": "spec://REQ-10.2",
+   "type": "link"
+  }
+ ]
+}

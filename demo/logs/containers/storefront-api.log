@@ -1,0 +1,90 @@
+2026-09-13 19:40:33 INFO  [storefront-api] com.example.shop.orders.service.OrderService : received event order.confirmed, offset 1000
+2026-09-13 19:40:34 DEBUG [storefront-api] com.example.shop.catalog.service.ProductService : persisted 1 row into table "product"
+2026-09-13 19:40:52 INFO  [storefront-api] c.e.s.p.PaymentController : published shipment.created in 6 ms
+2026-09-13 19:41:24 WARN  [storefront-api] com.example.shop.orders.service.OrderService : slow query on table "product_media" (1683 ms)
+2026-09-13 19:41:57 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 19:42:22 INFO  [storefront-api] c.e.s.p.PaymentController : received event order.cancelled, offset 1005
+2026-09-13 19:42:34 DEBUG [storefront-api] com.example.shop.orders.service.OrderService : persisted 1 row into table "price_entry"
+2026-09-13 19:42:56 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : published return.requested in 44 ms
+2026-09-13 19:43:04 WARN  [storefront-api] c.e.s.p.PaymentController : slow query on table "category" (4089 ms)
+2026-09-13 19:43:21 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 19:43:56 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : received event shipment.created, offset 1010
+2026-09-13 19:44:27 DEBUG [storefront-api] c.e.s.p.PaymentController : persisted 1 row into table "product_media"
+2026-09-13 19:44:41 INFO  [storefront-api] com.example.shop.orders.service.OrderService : published order.confirmed in 31 ms
+2026-09-13 19:44:54 WARN  [storefront-api] com.example.shop.catalog.service.ProductService : slow query on table "price_list" (1719 ms)
+2026-09-13 19:45:30 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 19:45:59 INFO  [storefront-api] com.example.shop.orders.service.OrderService : received event return.requested, offset 1015
+2026-09-13 19:46:38 DEBUG [storefront-api] com.example.shop.catalog.service.ProductService : persisted 1 row into table "category"
+2026-09-13 19:47:13 INFO  [storefront-api] c.e.s.p.PaymentController : published order.cancelled in 12 ms
+2026-09-13 19:47:20 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 19:47:34 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 19:47:56 INFO  [storefront-api] c.e.s.p.PaymentController : received event order.confirmed, offset 1020
+2026-09-13 19:48:02 DEBUG [storefront-api] com.example.shop.orders.service.OrderService : persisted 1 row into table "price_list"
+2026-09-13 19:48:09 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : published shipment.created in 76 ms
+2026-09-13 19:48:39 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 19:49:14 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 19:49:21 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : received event order.cancelled, offset 1025
+2026-09-13 19:49:39 DEBUG [storefront-api] c.e.s.p.PaymentController : persisted 1 row into table "product_variant"
+2026-09-13 19:50:08 INFO  [storefront-api] com.example.shop.orders.service.OrderService : published return.requested in 83 ms
+2026-09-13 19:50:44 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 19:51:07 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 19:51:41 INFO  [storefront-api] com.example.shop.orders.service.OrderService : received event shipment.created, offset 1030
+2026-09-13 19:51:45 DEBUG [storefront-api] com.example.shop.catalog.service.ProductService : persisted 1 row into table "promotion"
+2026-09-13 19:52:11 INFO  [storefront-api] c.e.s.p.PaymentController : published order.confirmed in 77 ms
+2026-09-13 19:52:50 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 19:53:05 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 19:53:42 INFO  [storefront-api] c.e.s.p.PaymentController : received event return.requested, offset 1035
+2026-09-13 19:54:13 DEBUG [storefront-api] com.example.shop.orders.service.OrderService : persisted 1 row into table "product_attribute"
+2026-09-13 19:54:39 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : published order.cancelled in 20 ms
+2026-09-13 19:55:04 WARN  [storefront-api] c.e.s.p.PaymentController : slow query on table "price_entry" (1043 ms)
+2026-09-13 19:55:08 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 19:55:40 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : received event order.confirmed, offset 1040
+2026-09-13 19:55:43 DEBUG [storefront-api] c.e.s.p.PaymentController : persisted 1 row into table "product"
+2026-09-13 19:56:06 INFO  [storefront-api] com.example.shop.orders.service.OrderService : published shipment.created in 58 ms
+2026-09-13 19:56:14 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 19:56:47 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 19:57:24 INFO  [storefront-api] com.example.shop.orders.service.OrderService : received event order.cancelled, offset 1045
+2026-09-13 19:57:56 DEBUG [storefront-api] com.example.shop.catalog.service.ProductService : persisted 1 row into table "price_entry"
+2026-09-13 19:58:00 INFO  [storefront-api] c.e.s.p.PaymentController : published return.requested in 86 ms
+2026-09-13 19:58:31 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 19:58:38 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 19:58:48 INFO  [storefront-api] c.e.s.p.PaymentController : received event shipment.created, offset 1050
+2026-09-13 19:59:08 DEBUG [storefront-api] com.example.shop.orders.service.OrderService : persisted 1 row into table "product_media"
+2026-09-13 19:59:42 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : published order.confirmed in 14 ms
+2026-09-13 19:59:44 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 20:00:07 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 20:00:34 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : received event return.requested, offset 1055
+2026-09-13 20:01:11 DEBUG [storefront-api] c.e.s.p.PaymentController : persisted 1 row into table "category"
+2026-09-13 20:01:12 INFO  [storefront-api] com.example.shop.orders.service.OrderService : published order.cancelled in 10 ms
+2026-09-13 20:01:43 WARN  [storefront-api] com.example.shop.catalog.service.ProductService : slow query on table "product_variant" (3996 ms)
+2026-09-13 20:01:45 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 20:01:46 INFO  [storefront-api] com.example.shop.orders.service.OrderService : received event order.confirmed, offset 1060
+2026-09-13 20:02:02 DEBUG [storefront-api] com.example.shop.catalog.service.ProductService : persisted 1 row into table "price_list"
+2026-09-13 20:02:08 INFO  [storefront-api] c.e.s.p.PaymentController : published shipment.created in 88 ms
+2026-09-13 20:02:38 WARN  [storefront-api] com.example.shop.orders.service.OrderService : slow query on table "promotion" (2498 ms)
+2026-09-13 20:03:09 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 20:03:16 INFO  [storefront-api] c.e.s.p.PaymentController : received event order.cancelled, offset 1065
+2026-09-13 20:03:25 DEBUG [storefront-api] com.example.shop.orders.service.OrderService : persisted 1 row into table "product_variant"
+2026-09-13 20:03:41 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : published return.requested in 36 ms
+2026-09-13 20:03:55 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 20:04:01 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 20:04:12 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : received event shipment.created, offset 1070
+2026-09-13 20:04:23 DEBUG [storefront-api] c.e.s.p.PaymentController : persisted 1 row into table "promotion"
+2026-09-13 20:04:33 INFO  [storefront-api] com.example.shop.orders.service.OrderService : published order.confirmed in 6 ms
+2026-09-13 20:04:37 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 20:04:52 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 20:05:25 INFO  [storefront-api] com.example.shop.orders.service.OrderService : received event return.requested, offset 1075
+2026-09-13 20:05:50 DEBUG [storefront-api] com.example.shop.catalog.service.ProductService : persisted 1 row into table "product_attribute"
+2026-09-13 20:06:27 INFO  [storefront-api] c.e.s.p.PaymentController : published order.cancelled in 79 ms
+2026-09-13 20:06:54 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 20:07:12 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 20:07:51 INFO  [storefront-api] c.e.s.p.PaymentController : received event order.confirmed, offset 1080
+2026-09-13 20:07:58 DEBUG [storefront-api] com.example.shop.orders.service.OrderService : persisted 1 row into table "product"
+2026-09-13 20:08:29 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : published shipment.created in 82 ms
+2026-09-13 20:08:56 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok
+2026-09-13 20:09:14 INFO  [storefront-api] com.example.shop.orders.service.OrderService : health check ok
+2026-09-13 20:09:33 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : received event order.cancelled, offset 1085
+2026-09-13 20:10:03 DEBUG [storefront-api] c.e.s.p.PaymentController : persisted 1 row into table "price_entry"
+2026-09-13 20:10:16 INFO  [storefront-api] com.example.shop.orders.service.OrderService : published return.requested in 5 ms
+2026-09-13 20:10:54 INFO  [storefront-api] com.example.shop.catalog.service.ProductService : health check ok
+2026-09-13 20:10:57 INFO  [storefront-api] c.e.s.p.PaymentController : health check ok

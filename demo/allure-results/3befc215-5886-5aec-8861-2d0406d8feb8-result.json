@@ -1,0 +1,108 @@
+{
+ "name": "test_get_enums_periods_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/enums/periods → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317804164,
+       "stop": 1789317804165
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317804165,
+       "stop": 1789317804166
+      }
+     ],
+     "start": 1789317803749,
+     "stop": 1789317804166
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "7517a1df-9931-7800-139b-24da7e9661a2-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "a93a0596-52d1-9a43-59e8-92e563c15133-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317803749,
+   "stop": 1789317804166
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317803749,
+ "stop": 1789317804166,
+ "uuid": "3befc215-5886-5aec-8861-2d0406d8feb8",
+ "historyId": "6ac684855764ed35438d6f8680c98202",
+ "testCaseId": "9bd4a18acb15cb85ab56ed63dce47cb8",
+ "fullName": "src.api.tests.enums.test_enums_dict.TestEnumsDict#test_get_enums_periods_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Enums / справочник"
+  },
+  {
+   "name": "story",
+   "value": "Периоды отчётов"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.enums.test_enums_dict"
+  },
+  {
+   "name": "suite",
+   "value": "test_enums_dict"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestEnumsDict"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6359-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.enums.test_enums_dict"
+  },
+  {
+   "name": "tag",
+   "value": "enums"
+  },
+  {
+   "name": "tag",
+   "value": "справочник"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[001] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[002] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[003] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[004] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[005] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[006] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[007] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[008] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[009] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[010] шаг прогона: проверка test_purchase_receive_btn[chromium]
+[011] шаг прогона: проверка test_purchase_receive_btn[chromium]
+AssertionError: Status code: expected 200, got 500

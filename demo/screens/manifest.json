@@ -1,0 +1,140 @@
+{
+ "captured_at": "2026-09-13T19:40:00+03:00",
+ "frontend_url": "https://shop.example.com",
+ "viewport": {
+  "width": 1280,
+  "height": 800
+ },
+ "role": "demo",
+ "scenes": [
+  {
+   "id": "catalog_products",
+   "title": "Каталог товаров",
+   "path": "/#/catalog/products",
+   "file": "catalog_products.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "product_card",
+   "title": "Карточка товара",
+   "path": "/#/catalog/products/{productId}",
+   "file": "product_card.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "orders_list",
+   "title": "Заказы",
+   "path": "/#/orders",
+   "file": "orders_list.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "order_card",
+   "title": "Карточка заказа",
+   "path": "/#/orders/{orderId}",
+   "file": "order_card.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "warehouse_stock",
+   "title": "Остатки на складе",
+   "path": "/#/warehouse/stock",
+   "file": "warehouse_stock.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "purchase_order",
+   "title": "Закупка",
+   "path": "/#/warehouse/purchases/{purchaseId}",
+   "file": "purchase_order.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "billing_invoices",
+   "title": "Счета",
+   "path": "/#/billing/invoices",
+   "file": "billing_invoices.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "crm_customers",
+   "title": "Клиенты",
+   "path": "/#/crm/customers",
+   "file": "crm_customers.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "crm_campaigns",
+   "title": "Кампании",
+   "path": "/#/crm/campaigns",
+   "file": "crm_campaigns.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "admin_accounts",
+   "title": "Учётные записи",
+   "path": "/#/admin/accounts",
+   "file": "admin_accounts.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "reports_sales",
+   "title": "Отчёт по продажам",
+   "path": "/#/reports/sales",
+   "file": "reports_sales.png",
+   "full_page": true,
+   "optional": false
+  },
+  {
+   "id": "orders_create_modal",
+   "title": "Заказы — модалка создания",
+   "path": "/#/orders",
+   "file": "orders_create_modal.png",
+   "full_page": false,
+   "optional": true
+  },
+  {
+   "id": "catalog_filters_open",
+   "title": "Каталог — панель фильтров",
+   "path": "/#/catalog/products",
+   "file": "catalog_filters_open.png",
+   "full_page": false,
+   "optional": true
+  },
+  {
+   "id": "order_confirm_modal",
+   "title": "Заказ — подтверждение",
+   "path": "/#/orders",
+   "file": "order_confirm_modal.png",
+   "full_page": false,
+   "optional": true
+  },
+  {
+   "id": "warehouse_move_modal",
+   "title": "Склад — перемещение",
+   "path": "/#/warehouse/stock",
+   "file": "warehouse_move_modal.png",
+   "full_page": false,
+   "optional": true
+  },
+  {
+   "id": "crm_segment_panel",
+   "title": "CRM — панель сегмента",
+   "path": "/#/crm/customers",
+   "file": "crm_segment_panel.png",
+   "full_page": false,
+   "optional": true
+  }
+ ],
+ "skipped": []
+}

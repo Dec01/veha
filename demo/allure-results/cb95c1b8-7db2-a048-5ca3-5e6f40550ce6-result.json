@@ -1,0 +1,102 @@
+{
+ "name": "Строки закупки",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/purchases/4211/lines → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318004901,
+       "stop": 1789318004902
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318004902,
+       "stop": 1789318004903
+      }
+     ],
+     "start": 1789318002133,
+     "stop": 1789318004903
+    }
+   ],
+   "attachments": [],
+   "start": 1789318002133,
+   "stop": 1789318004903
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318002133,
+ "stop": 1789318004903,
+ "uuid": "cb95c1b8-7db2-a048-5ca3-5e6f40550ce6",
+ "historyId": "04b6e85c455136b82af0520bb18e1593",
+ "testCaseId": "7f0b047f00ec1267ae57315745d9ad37",
+ "fullName": "src.ui.tests.warehouse.test_purchase_order.TestPurchaseOrder#test_purchase_lines_table[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Склад / закупка"
+  },
+  {
+   "name": "story",
+   "value": "Строки закупки"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.warehouse.test_purchase_order"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchase_order"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchaseOrder"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8940-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.warehouse.test_purchase_order"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "warehouse"
+  }
+ ]
+}

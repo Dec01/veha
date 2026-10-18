@@ -1,0 +1,189 @@
+{
+ "name": "Новый заказ",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/customers → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317926467,
+       "stop": 1789317926468
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317926468,
+       "stop": 1789317926469
+      }
+     ],
+     "start": 1789317925030,
+     "stop": 1789317926469
+    }
+   ],
+   "attachments": [],
+   "start": 1789317925030,
+   "stop": 1789317926469
+  },
+  {
+   "name": "HTTP POST /api/v1/carts → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317927906,
+       "stop": 1789317927907
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317927907,
+       "stop": 1789317927908
+      }
+     ],
+     "start": 1789317926469,
+     "stop": 1789317927908
+    }
+   ],
+   "attachments": [],
+   "start": 1789317926469,
+   "stop": 1789317927908
+  },
+  {
+   "name": "HTTP POST /api/v1/carts/4211/items → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317929345,
+       "stop": 1789317929346
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317929346,
+       "stop": 1789317929347
+      }
+     ],
+     "start": 1789317927908,
+     "stop": 1789317929347
+    }
+   ],
+   "attachments": [],
+   "start": 1789317927908,
+   "stop": 1789317929347
+  },
+  {
+   "name": "HTTP POST /api/v1/orders → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317930784,
+       "stop": 1789317930785
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317930785,
+       "stop": 1789317930786
+      }
+     ],
+     "start": 1789317929347,
+     "stop": 1789317930786
+    }
+   ],
+   "attachments": [],
+   "start": 1789317929347,
+   "stop": 1789317930786
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317925030,
+ "stop": 1789317930788,
+ "uuid": "5c626618-7612-2136-d7cd-bea45551203a",
+ "historyId": "15e3277aeb3d76a8828a05026a932fad",
+ "testCaseId": "9f70a7b15505675545c791fcb153107a",
+ "fullName": "src.ui.tests.orders.test_orders_list.TestOrdersList#test_orders_create_btn[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Заказы / реестр"
+  },
+  {
+   "name": "story",
+   "value": "Новый заказ"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.orders.test_orders_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_orders_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestOrdersList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6051-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.orders.test_orders_list"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "orders"
+  }
+ ]
+}

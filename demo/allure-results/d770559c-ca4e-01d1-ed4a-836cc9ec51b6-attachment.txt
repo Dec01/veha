@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_catalog_search_input[chromium]
+[001] шаг прогона: проверка test_catalog_search_input[chromium]
+[002] шаг прогона: проверка test_catalog_search_input[chromium]
+[003] шаг прогона: проверка test_catalog_search_input[chromium]
+[004] шаг прогона: проверка test_catalog_search_input[chromium]
+[005] шаг прогона: проверка test_catalog_search_input[chromium]
+[006] шаг прогона: проверка test_catalog_search_input[chromium]
+[007] шаг прогона: проверка test_catalog_search_input[chromium]
+[008] шаг прогона: проверка test_catalog_search_input[chromium]
+[009] шаг прогона: проверка test_catalog_search_input[chromium]
+[010] шаг прогона: проверка test_catalog_search_input[chromium]
+[011] шаг прогона: проверка test_catalog_search_input[chromium]
+AssertionError: Sum of lines does not match order total

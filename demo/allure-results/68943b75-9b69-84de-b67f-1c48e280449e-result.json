@@ -1,0 +1,118 @@
+{
+ "name": "test_get_shipments_elements",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/shipments → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317703659,
+       "stop": 1789317703660
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317703660,
+       "stop": 1789317703661
+      }
+     ],
+     "start": 1789317703568,
+     "stop": 1789317703661
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "6e887999-0fcb-2b75-f203-815af35f9c26-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "5072b597-94c6-3456-a38d-e59e1a559ee8-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317703568,
+   "stop": 1789317703661
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "0ff38024-7353-7d37-cee7-f075cb7eda4a-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317703568,
+ "stop": 1789317703661,
+ "uuid": "68943b75-9b69-84de-b67f-1c48e280449e",
+ "historyId": "d61122a7497b08e2406197eae021d711",
+ "testCaseId": "e63a1e31a68051b83c85b8305ab6ee7c",
+ "fullName": "src.api.tests.shipments.test_shipments_list.TestShipmentsList#test_get_shipments_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Shipments / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Shipments"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.shipments.test_shipments_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_shipments_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestShipmentsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8782-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.shipments.test_shipments_list"
+  },
+  {
+   "name": "tag",
+   "value": "shipments"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Response body validation failed\nExpected: поле «total» присутствует и не пусто\nActual: поля нет\nHint: контракт объявляет total обязательным",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/shipments/test_shipments_list.py\", line 84, in test_get_shipments_elements\n    assert_response(response, expected)\nAssertionError: Response body validation failed"
+ }
+}

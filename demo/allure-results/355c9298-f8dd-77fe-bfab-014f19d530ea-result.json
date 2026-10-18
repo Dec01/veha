@@ -1,0 +1,126 @@
+{
+ "name": "test_post_returns_by_id_approve_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/returns → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317718469,
+       "stop": 1789317718470
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317718470,
+       "stop": 1789317718471
+      }
+     ],
+     "start": 1789317718318,
+     "stop": 1789317718471
+    }
+   ],
+   "attachments": [],
+   "start": 1789317718318,
+   "stop": 1789317718471
+  },
+  {
+   "name": "HTTP POST /api/v1/returns/4211/approve → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317718622,
+       "stop": 1789317718623
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317718623,
+       "stop": 1789317718624
+      }
+     ],
+     "start": 1789317718471,
+     "stop": 1789317718624
+    }
+   ],
+   "attachments": [],
+   "start": 1789317718471,
+   "stop": 1789317718624
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317718318,
+ "stop": 1789317718625,
+ "uuid": "355c9298-f8dd-77fe-bfab-014f19d530ea",
+ "historyId": "637ab3ba7b5c1931f711bcd0bf4dac5e",
+ "testCaseId": "9d7b58322aece40751a9fa0d42ec7418",
+ "fullName": "src.api.tests.returns.test_returns_actions.TestReturnsActions#test_post_returns_by_id_approve_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Returns / операции"
+  },
+  {
+   "name": "story",
+   "value": "Согласовать возврат"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.returns.test_returns_actions"
+  },
+  {
+   "name": "suite",
+   "value": "test_returns_actions"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestReturnsActions"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7476-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.returns.test_returns_actions"
+  },
+  {
+   "name": "tag",
+   "value": "returns"
+  },
+  {
+   "name": "tag",
+   "value": "операции"
+  }
+ ]
+}

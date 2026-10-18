@@ -1,0 +1,108 @@
+{
+ "name": "test_post_carts_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/carts → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317657260,
+       "stop": 1789317657261
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317657261,
+       "stop": 1789317657262
+      }
+     ],
+     "start": 1789317657087,
+     "stop": 1789317657262
+    }
+   ],
+   "attachments": [],
+   "start": 1789317657087,
+   "stop": 1789317657262
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317657087,
+ "stop": 1789317657262,
+ "uuid": "bf0bd65a-3f9f-fc9a-c2c9-df11ac7848eb",
+ "historyId": "a470a5c220f2f520ca06e8d23fa8e94c",
+ "testCaseId": "dc0dbd6c69163b73a70fdb0633448008",
+ "fullName": "src.api.tests.carts.test_carts_crud.TestCartsCrud#test_post_carts_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Carts / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Создание: Carts"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.carts.test_carts_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_carts_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCartsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8260-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.carts.test_carts_crud"
+  },
+  {
+   "name": "tag",
+   "value": "carts"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  },
+  {
+   "name": "tag",
+   "value": "REQ-10.4"
+  }
+ ],
+ "links": [
+  {
+   "name": "REQ-10.4",
+   "url": "spec://REQ-10.4",
+   "type": "link"
+  }
+ ]
+}

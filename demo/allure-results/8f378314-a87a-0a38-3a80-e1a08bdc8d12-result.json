@@ -1,0 +1,118 @@
+{
+ "name": "test_get_subscriptions_by_id_default",
+ "status": "broken",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/subscriptions/4211 → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got —",
+       "status": "failed",
+       "start": 1789317765732,
+       "stop": 1789317765733
+      },
+      {
+       "name": "Response body validation",
+       "status": "skipped",
+       "start": 1789317765733,
+       "stop": 1789317765734
+      }
+     ],
+     "start": 1789317765518,
+     "stop": 1789317765734
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "7d601832-223f-cfbe-8714-fe29e2b57582-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "298b520f-e2b1-16a2-c1ae-479a50c7155a-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317765518,
+   "stop": 1789317765734
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "ec7a09ea-890c-6174-6652-86640e346af3-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [],
+ "start": 1789317765518,
+ "stop": 1789317765734,
+ "uuid": "8f378314-a87a-0a38-3a80-e1a08bdc8d12",
+ "historyId": "c3d635c8b566230c5a58f2b154a9d740",
+ "testCaseId": "3418ce2f57b9f92c9aeb7d4d036bdf98",
+ "fullName": "src.api.tests.subscriptions.test_subscriptions_crud.TestSubscriptionsCrud#test_get_subscriptions_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Subscriptions / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Subscriptions"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.subscriptions.test_subscriptions_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_subscriptions_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSubscriptionsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "7577-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.subscriptions.test_subscriptions_crud"
+  },
+  {
+   "name": "tag",
+   "value": "subscriptions"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ],
+ "statusDetails": {
+  "message": "TimeoutError: запрос не уложился в 30 с\nExpected: ответ за 30 с\nActual: таймаут\nHint: очередь не разбиралась, консьюмер лежал",
+  "trace": "Traceback (most recent call last):\n  File \"src/api/tests/subscriptions/test_subscriptions_crud.py\", line 22, in test_get_subscriptions_by_id_default\n    assert_response(response, expected)\nTimeoutError: запрос не уложился в 30 с"
+ }
+}

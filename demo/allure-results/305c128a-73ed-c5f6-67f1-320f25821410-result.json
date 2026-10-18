@@ -1,0 +1,97 @@
+{
+ "name": "test_get_promotions_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/promotions → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317648801,
+       "stop": 1789317648802
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317648802,
+       "stop": 1789317648803
+      }
+     ],
+     "start": 1789317648513,
+     "stop": 1789317648803
+    }
+   ],
+   "attachments": [],
+   "start": 1789317648513,
+   "stop": 1789317648803
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317648513,
+ "stop": 1789317648803,
+ "uuid": "305c128a-73ed-c5f6-67f1-320f25821410",
+ "historyId": "1944f762a5cab5924d771f85fb125abd",
+ "testCaseId": "4617373a0bb3aeb802b87633a8882fb1",
+ "fullName": "src.api.tests.promotions.test_promotions_list.TestPromotionsList#test_get_promotions_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Promotions / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Promotions"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.promotions.test_promotions_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_promotions_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPromotionsList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8428-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.promotions.test_promotions_list"
+  },
+  {
+   "name": "tag",
+   "value": "promotions"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  }
+ ]
+}

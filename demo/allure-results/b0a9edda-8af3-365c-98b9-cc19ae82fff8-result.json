@@ -1,0 +1,97 @@
+{
+ "name": "test_put_purchases_by_id_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/purchases/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317750800,
+       "stop": 1789317750801
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317750801,
+       "stop": 1789317750802
+      }
+     ],
+     "start": 1789317750422,
+     "stop": 1789317750802
+    }
+   ],
+   "attachments": [],
+   "start": 1789317750422,
+   "stop": 1789317750802
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317750422,
+ "stop": 1789317750802,
+ "uuid": "b0a9edda-8af3-365c-98b9-cc19ae82fff8",
+ "historyId": "e5d9556407fbf393601ac17e0ea392a8",
+ "testCaseId": "a1ff1d29aea77c0a32266280998cca0c",
+ "fullName": "src.api.tests.purchases.test_purchases_crud.TestPurchasesCrud#test_put_purchases_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Purchase Orders / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Purchase Orders"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.purchases.test_purchases_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_purchases_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPurchasesCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "8308-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.purchases.test_purchases_crud"
+  },
+  {
+   "name": "tag",
+   "value": "purchases"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

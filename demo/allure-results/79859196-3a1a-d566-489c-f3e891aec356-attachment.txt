@@ -1,0 +1,13 @@
+[000] шаг прогона: проверка test_get_carts_by_id_not_found
+[001] шаг прогона: проверка test_get_carts_by_id_not_found
+[002] шаг прогона: проверка test_get_carts_by_id_not_found
+[003] шаг прогона: проверка test_get_carts_by_id_not_found
+[004] шаг прогона: проверка test_get_carts_by_id_not_found
+[005] шаг прогона: проверка test_get_carts_by_id_not_found
+[006] шаг прогона: проверка test_get_carts_by_id_not_found
+[007] шаг прогона: проверка test_get_carts_by_id_not_found
+[008] шаг прогона: проверка test_get_carts_by_id_not_found
+[009] шаг прогона: проверка test_get_carts_by_id_not_found
+[010] шаг прогона: проверка test_get_carts_by_id_not_found
+[011] шаг прогона: проверка test_get_carts_by_id_not_found
+AssertionError: Status code: expected 404, got 500

@@ -1,0 +1,108 @@
+{
+ "name": "test_get_prices_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/prices → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317638087,
+       "stop": 1789317638088
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317638088,
+       "stop": 1789317638089
+      }
+     ],
+     "start": 1789317637724,
+     "stop": 1789317638089
+    }
+   ],
+   "attachments": [],
+   "start": 1789317637724,
+   "stop": 1789317638089
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317637724,
+ "stop": 1789317638089,
+ "uuid": "3d42aea0-a6c9-47e1-1f88-57b0dccc3ea3",
+ "historyId": "6b6b558736e791c0cf66404f5d9e15e3",
+ "testCaseId": "a43800b1fea13539aa8577dd078dd41e",
+ "fullName": "src.api.tests.prices.test_prices_list.TestPricesList#test_get_prices_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Prices / список"
+  },
+  {
+   "name": "story",
+   "value": "Список: Prices"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.prices.test_prices_list"
+  },
+  {
+   "name": "suite",
+   "value": "test_prices_list"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestPricesList"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9680-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.prices.test_prices_list"
+  },
+  {
+   "name": "tag",
+   "value": "prices"
+  },
+  {
+   "name": "tag",
+   "value": "список"
+  },
+  {
+   "name": "tag",
+   "value": "REQ-10.2"
+  }
+ ],
+ "links": [
+  {
+   "name": "REQ-10.2",
+   "url": "spec://REQ-10.2",
+   "type": "link"
+  }
+ ]
+}

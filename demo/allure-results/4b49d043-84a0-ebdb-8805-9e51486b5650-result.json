@@ -1,0 +1,102 @@
+{
+ "name": "Активировать / отключить",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/accounts/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318076356,
+       "stop": 1789318076357
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318076357,
+       "stop": 1789318076358
+      }
+     ],
+     "start": 1789318071805,
+     "stop": 1789318076358
+    }
+   ],
+   "attachments": [],
+   "start": 1789318071805,
+   "stop": 1789318076358
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318071805,
+ "stop": 1789318076358,
+ "uuid": "4b49d043-84a0-ebdb-8805-9e51486b5650",
+ "historyId": "e30af45814fe8cc58aef6402ba3f4771",
+ "testCaseId": "2b75a06ac8ce3e511b31dc2303b91735",
+ "fullName": "src.ui.tests.admin.test_admin_accounts.TestAdminAccounts#test_account_toggle_active[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Администрирование / записи"
+  },
+  {
+   "name": "story",
+   "value": "Активировать / отключить"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.admin.test_admin_accounts"
+  },
+  {
+   "name": "suite",
+   "value": "test_admin_accounts"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestAdminAccounts"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2772-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.admin.test_admin_accounts"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "admin"
+  }
+ ]
+}

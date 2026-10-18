@@ -1,0 +1,97 @@
+{
+ "name": "test_put_variants_by_id_elements",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP PUT /api/v1/variants/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317631091,
+       "stop": 1789317631092
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317631092,
+       "stop": 1789317631093
+      }
+     ],
+     "start": 1789317630834,
+     "stop": 1789317631093
+    }
+   ],
+   "attachments": [],
+   "start": 1789317630834,
+   "stop": 1789317631093
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317630834,
+ "stop": 1789317631093,
+ "uuid": "b226b38c-fc92-fed1-8f9c-904fb9332761",
+ "historyId": "02fb7184fafe39eae6e3bbcb2ae0b278",
+ "testCaseId": "8d3767c4c4c6e292277323052844e239",
+ "fullName": "src.api.tests.variants.test_variants_crud.TestVariantsCrud#test_put_variants_by_id_elements",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Variants / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Изменение: Variants"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.variants.test_variants_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_variants_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestVariantsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "2442-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.variants.test_variants_crud"
+  },
+  {
+   "name": "tag",
+   "value": "variants"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

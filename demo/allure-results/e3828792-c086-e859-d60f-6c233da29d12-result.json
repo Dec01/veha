@@ -1,0 +1,97 @@
+{
+ "name": "test_get_suppliers_by_id_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/suppliers/4211 → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317740862,
+       "stop": 1789317740863
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317740863,
+       "stop": 1789317740864
+      }
+     ],
+     "start": 1789317740478,
+     "stop": 1789317740864
+    }
+   ],
+   "attachments": [],
+   "start": 1789317740478,
+   "stop": 1789317740864
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317740478,
+ "stop": 1789317740864,
+ "uuid": "e3828792-c086-e859-d60f-6c233da29d12",
+ "historyId": "6b01ba8b3b1e35698f18ecc9688e8307",
+ "testCaseId": "f3990731d3d79a40044a93c99b41d04e",
+ "fullName": "src.api.tests.suppliers.test_suppliers_crud.TestSuppliersCrud#test_get_suppliers_by_id_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Suppliers / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Suppliers"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.suppliers.test_suppliers_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_suppliers_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestSuppliersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3405-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.suppliers.test_suppliers_crud"
+  },
+  {
+   "name": "tag",
+   "value": "suppliers"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "name": "Таблица счетов",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/invoices → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318018085,
+       "stop": 1789318018086
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318018086,
+       "stop": 1789318018087
+      }
+     ],
+     "start": 1789318013690,
+     "stop": 1789318018087
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "3fc09b20-f68d-ec88-a3a1-8e757b491cbf-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "b3fba555-e5ac-cbf7-48a2-ada3081a0ed2-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789318013690,
+   "stop": 1789318018087
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318013690,
+ "stop": 1789318018087,
+ "uuid": "da599daf-601d-6c1b-ac47-cc6bd0fd4a6a",
+ "historyId": "42ff6ba6c561ec9045170c7e0cffd2cd",
+ "testCaseId": "25fa2889ea9116a87aa2a153d21b63dc",
+ "fullName": "src.ui.tests.billing.test_billing_invoices.TestBillingInvoices#test_invoices_table[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Биллинг / счета"
+  },
+  {
+   "name": "story",
+   "value": "Таблица счетов"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.billing.test_billing_invoices"
+  },
+  {
+   "name": "suite",
+   "value": "test_billing_invoices"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestBillingInvoices"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "5919-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.billing.test_billing_invoices"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "billing"
+  }
+ ]
+}

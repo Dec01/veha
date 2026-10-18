@@ -1,0 +1,102 @@
+{
+ "name": "Таблица клиентов",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/customers → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789318034352,
+       "stop": 1789318034353
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789318034353,
+       "stop": 1789318034354
+      }
+     ],
+     "start": 1789318027996,
+     "stop": 1789318034354
+    }
+   ],
+   "attachments": [],
+   "start": 1789318027996,
+   "stop": 1789318034354
+  }
+ ],
+ "attachments": [],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789318027996,
+ "stop": 1789318034354,
+ "uuid": "9b489ac4-4478-8d4a-ddc7-e4814b90af5a",
+ "historyId": "b8bf15db6d5410569252cc289f33ad82",
+ "testCaseId": "df6a0c8fb9f009294ce9eab81900b56f",
+ "fullName": "src.ui.tests.crm.test_crm_customers.TestCrmCustomers#test_customers_table[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "CRM / клиенты"
+  },
+  {
+   "name": "story",
+   "value": "Таблица клиентов"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.crm.test_crm_customers"
+  },
+  {
+   "name": "suite",
+   "value": "test_crm_customers"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCrmCustomers"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "1095-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.crm.test_crm_customers"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "crm"
+  }
+ ]
+}

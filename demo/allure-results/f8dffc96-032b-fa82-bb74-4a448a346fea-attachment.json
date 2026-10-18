@@ -1,0 +1,11 @@
+{
+ "method": "POST",
+ "url": "https://shop-api.example.com/api/v1/purchases/{id}/receive",
+ "headers": {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer <redacted>"
+ },
+ "body": {
+  "demo": true
+ }
+}

@@ -1,0 +1,123 @@
+{
+ "name": "Поиск по каталогу",
+ "status": "failed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/products/search → expect status=200",
+   "status": "failed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "failed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317886615,
+       "stop": 1789317886616
+      },
+      {
+       "name": "Response body validation",
+       "status": "failed",
+       "start": 1789317886616,
+       "stop": 1789317886617
+      }
+     ],
+     "start": 1789317880973,
+     "stop": 1789317886617
+    }
+   ],
+   "attachments": [
+    {
+     "name": "request",
+     "source": "e089c1cd-e2f1-7d62-737a-5b486ac5ed71-attachment.json",
+     "type": "application/json"
+    },
+    {
+     "name": "response",
+     "source": "59e8b4f3-fd42-7593-7a3f-eed5c3b869ce-attachment.json",
+     "type": "application/json"
+    }
+   ],
+   "start": 1789317880973,
+   "stop": 1789317886617
+  }
+ ],
+ "attachments": [
+  {
+   "name": "log",
+   "source": "d770559c-ca4e-01d1-ed4a-836cc9ec51b6-attachment.txt",
+   "type": "text/plain"
+  }
+ ],
+ "parameters": [
+  {
+   "name": "browser",
+   "value": "chromium"
+  }
+ ],
+ "start": 1789317880973,
+ "stop": 1789317886617,
+ "uuid": "efed96b1-2353-35c8-631d-2d30b72dbc9c",
+ "historyId": "1348197deb6eaa1c07a5b539fd7fa826",
+ "testCaseId": "b24203f55b746a4e9d14516c97836999",
+ "fullName": "src.ui.tests.catalog.test_catalog_products.TestCatalogProducts#test_catalog_search_input[chromium]",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — интерфейс"
+  },
+  {
+   "name": "feature",
+   "value": "Каталог / список товаров"
+  },
+  {
+   "name": "story",
+   "value": "Поиск по каталогу"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.ui.tests.catalog.test_catalog_products"
+  },
+  {
+   "name": "suite",
+   "value": "test_catalog_products"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCatalogProducts"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "4826-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.ui.tests.catalog.test_catalog_products"
+  },
+  {
+   "name": "tag",
+   "value": "ui"
+  },
+  {
+   "name": "tag",
+   "value": "catalog"
+  }
+ ],
+ "statusDetails": {
+  "message": "AssertionError: Sum of lines does not match order total\nExpected: 18450.00\nActual: 18300.00\nHint: скидка применена дважды",
+  "trace": "Traceback (most recent call last):\n  File \"src/ui/tests/catalog/test_catalog_products.py\", line 146, in test_catalog_search_input\n    assert_response(response, expected)\nAssertionError: Sum of lines does not match order total"
+ }
+}

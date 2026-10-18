@@ -1,0 +1,126 @@
+{
+ "name": "test_get_customers_by_id_not_found",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP POST /api/v1/customers → expect status=201",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 201, got 201",
+       "status": "passed",
+       "start": 1789317774290,
+       "stop": 1789317774291
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317774291,
+       "stop": 1789317774292
+      }
+     ],
+     "start": 1789317774156,
+     "stop": 1789317774292
+    }
+   ],
+   "attachments": [],
+   "start": 1789317774156,
+   "stop": 1789317774292
+  },
+  {
+   "name": "HTTP GET /api/v1/customers/4211 → expect status=404",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 404, got 404",
+       "status": "passed",
+       "start": 1789317774426,
+       "stop": 1789317774427
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317774427,
+       "stop": 1789317774428
+      }
+     ],
+     "start": 1789317774292,
+     "stop": 1789317774428
+    }
+   ],
+   "attachments": [],
+   "start": 1789317774292,
+   "stop": 1789317774428
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317774156,
+ "stop": 1789317774429,
+ "uuid": "bc0dfb30-c6a6-f44f-785c-aa80875fb8ff",
+ "historyId": "c3b004178503d1f3358af38b3b541d9c",
+ "testCaseId": "e6aa37ad471dad21a4ee18ce312bdc4e",
+ "fullName": "src.api.tests.customers.test_customers_crud.TestCustomersCrud#test_get_customers_by_id_not_found",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Customers / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Customers"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.customers.test_customers_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_customers_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCustomersCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "1943-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.customers.test_customers_crud"
+  },
+  {
+   "name": "tag",
+   "value": "customers"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

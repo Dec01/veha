@@ -1,0 +1,97 @@
+{
+ "name": "test_get_stock_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/stock/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317723274,
+       "stop": 1789317723275
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317723275,
+       "stop": 1789317723276
+      }
+     ],
+     "start": 1789317722978,
+     "stop": 1789317723276
+    }
+   ],
+   "attachments": [],
+   "start": 1789317722978,
+   "stop": 1789317723276
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317722978,
+ "stop": 1789317723276,
+ "uuid": "9320bd83-fa46-2a13-d217-61324f194929",
+ "historyId": "633609419a1b67745bb53dc2e831fd0c",
+ "testCaseId": "1845142f6f95754167a739578a8cc508",
+ "fullName": "src.api.tests.stock.test_stock_crud.TestStockCrud#test_get_stock_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Stock / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Stock"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.stock.test_stock_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_stock_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestStockCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "3912-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.stock.test_stock_crud"
+  },
+  {
+   "name": "tag",
+   "value": "stock"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

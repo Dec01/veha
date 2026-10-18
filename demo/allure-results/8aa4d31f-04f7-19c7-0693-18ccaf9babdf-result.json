@@ -1,0 +1,97 @@
+{
+ "name": "test_get_refunds_by_id_default",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/refunds/4211 → expect status=200",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 200, got 200",
+       "status": "passed",
+       "start": 1789317767191,
+       "stop": 1789317767192
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317767192,
+       "stop": 1789317767193
+      }
+     ],
+     "start": 1789317767088,
+     "stop": 1789317767193
+    }
+   ],
+   "attachments": [],
+   "start": 1789317767088,
+   "stop": 1789317767193
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317767088,
+ "stop": 1789317767193,
+ "uuid": "8aa4d31f-04f7-19c7-0693-18ccaf9babdf",
+ "historyId": "7d5033b614e5aac5353fffe7becbf43b",
+ "testCaseId": "ad74c267af4f99cac5252c92a9d821ed",
+ "fullName": "src.api.tests.refunds.test_refunds_crud.TestRefundsCrud#test_get_refunds_by_id_default",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Refunds / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Refunds"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.refunds.test_refunds_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_refunds_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestRefundsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "9854-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.refunds.test_refunds_crud"
+  },
+  {
+   "name": "tag",
+   "value": "refunds"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}

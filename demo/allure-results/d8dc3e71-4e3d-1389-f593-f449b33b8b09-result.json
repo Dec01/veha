@@ -1,0 +1,97 @@
+{
+ "name": "test_get_carts_by_id_permissions",
+ "status": "passed",
+ "steps": [
+  {
+   "name": "HTTP GET /api/v1/carts/4211 → expect status=403",
+   "status": "passed",
+   "steps": [
+    {
+     "name": "Validate response",
+     "status": "passed",
+     "steps": [
+      {
+       "name": "Status code: expected 403, got 403",
+       "status": "passed",
+       "start": 1789317658866,
+       "stop": 1789317658867
+      },
+      {
+       "name": "Response body validation",
+       "status": "passed",
+       "start": 1789317658867,
+       "stop": 1789317658868
+      }
+     ],
+     "start": 1789317658571,
+     "stop": 1789317658868
+    }
+   ],
+   "attachments": [],
+   "start": 1789317658571,
+   "stop": 1789317658868
+  }
+ ],
+ "attachments": [],
+ "parameters": [],
+ "start": 1789317658571,
+ "stop": 1789317658868,
+ "uuid": "d8dc3e71-4e3d-1389-f593-f449b33b8b09",
+ "historyId": "efa8addaa4583e0e6af8df01228ddc08",
+ "testCaseId": "2a6fbb1ab1bd96dbc903177d174cbbf0",
+ "fullName": "src.api.tests.carts.test_carts_crud.TestCartsCrud#test_get_carts_by_id_permissions",
+ "labels": [
+  {
+   "name": "epic",
+   "value": "Сеть N — витрина"
+  },
+  {
+   "name": "feature",
+   "value": "Carts / жизненный цикл"
+  },
+  {
+   "name": "story",
+   "value": "Карточка: Carts"
+  },
+  {
+   "name": "parentSuite",
+   "value": "src.api.tests.carts.test_carts_crud"
+  },
+  {
+   "name": "suite",
+   "value": "test_carts_crud"
+  },
+  {
+   "name": "subSuite",
+   "value": "TestCartsCrud"
+  },
+  {
+   "name": "framework",
+   "value": "pytest"
+  },
+  {
+   "name": "language",
+   "value": "cpython3"
+  },
+  {
+   "name": "host",
+   "value": "demo-runner"
+  },
+  {
+   "name": "thread",
+   "value": "6711-MainThread"
+  },
+  {
+   "name": "package",
+   "value": "src.api.tests.carts.test_carts_crud"
+  },
+  {
+   "name": "tag",
+   "value": "carts"
+  },
+  {
+   "name": "tag",
+   "value": "жизненный цикл"
+  }
+ ]
+}
