@@ -1,9 +1,9 @@
-/* Окна атласа: обзор, эндпоинты, матрица, прогон, сервисы.
+/* Разделы Вехи: Покрытие, Система, Требования, Прогон — страницы рядом с картой.
  *
  * Числа не пересчитываем — берём готовые срезы coverage.json (те же, что в
- * coverage_report.html) и сводку прогона из allure-results. Задача окон —
- * дать те же списки/фильтры/матрицу рядом со сценой и связать их с 3D:
- * фильтр гасит узлы на сцене, клик по строке выделяет узел и открывает путь.
+ * coverage_report.html) и сводку прогона из allure-results. Раздел связан с
+ * картой: фильтр таблицы гасит узлы на карте, клик по строке открывает узел
+ * на карте с его цепочкой.
  */
 'use strict';
 
@@ -11,38 +11,33 @@
 // (последняя перекрывает штатный window.CSS), иначе скрипт падает на загрузке.
 (function () {
 const AT = () => window.atlas;
-const dock = document.getElementById('dock');
 const dockBody = document.getElementById('dock-body');
 const dockNote = document.getElementById('dock-note');
 
 let g = null;
 let tab = 'overview';
+let section = 'map';       // map — карта; иначе раздел-страница
 /* История переходов между вкладками: из «Обзора» кликом уходят в «Эндпоинты»,
  * из требования — в «Отчёт», и вернуться было некуда. */
 const trail = [];
-let selNode = '';          // что выделено на сцене — подсвечиваем строку
+let selNode = '';          // что выделено на карте — подсвечиваем строку
 let sortKey = 'coverage', sortDir = 1;
 const F = { q: '', method: '', service: '', subtype: '', status: '', missing: '', run: '' };
 
-/* Вкладки сгруппированы по смыслу: покрытие · модель · документы · прогон.
- * Четырнадцать равноправных кнопок в ряд читались как список без структуры. */
-const TABS = [
-  ['overview', 'Обзор'],
-  ['endpoints', 'Эндпоинты'],
-  ['matrix', 'Методика'],
-  ['|', ''],
-  ['links', 'Связи'],
-  ['schema', 'Схема БД'],
-  ['services', 'Сервисы'],
-  ['|', ''],
-  ['specs', 'Требования'],
-  ['contract', 'Контракт'],
-  ['|', ''],
-  ['runner', 'Раннер'],
-  ['run', 'Прогон'],
-  ['log', 'Лог'],
-  ['live', 'Live'],
+/* Пять разделов в шапке: карта и четыре страницы, у каждой свои подразделы.
+ * Подраздел — вид со своей разметкой (view*), раздел только выбирает, какой показать. */
+const SECTIONS = [
+  ['cov', 'Покрытие', [['overview', 'Обзор'], ['endpoints', 'Эндпоинты'], ['matrix', 'Методика']]],
+  ['sys', 'Система', [['links', 'Связи'], ['schema', 'Схема БД'], ['services', 'Сервисы']]],
+  ['req', 'Требования', [['specs', 'Требования'], ['contract', 'Контракт']]],
+  ['run', 'Прогон', [['run', 'Прогон'], ['runner', 'Раннер'], ['log', 'Лог'], ['live', 'Live']]],
 ];
+const TABS = SECTIONS.flatMap(([, , tabs]) => tabs);
+const sectionOf = (t) => (SECTIONS.find(([, , tabs]) => tabs.some(([k]) => k === t)) || ['cov'])[0];
+const lastTab = { cov: 'overview', sys: 'links', req: 'specs', run: 'run' };
+// для палитры команд: разделы и подразделы
+window.vehaSections = [['map', 'Карта']].concat(
+  SECTIONS.flatMap(([, label, tabs]) => tabs.map(([k, l]) => [k, l === label ? l : `${label} → ${l}`])));
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -53,8 +48,9 @@ const num = (v) => { const n = Number(v); return Number.isFinite(n) ? n : ''; };
  * бы в контексте вебморды. */
 const safeUrl = (u) => (/^https?:\/\//i.test(String(u || '')) ? String(u) : '#');
 const pct = (v) => (v == null || num(v) === '' ? '—' : `${num(v)}%`);
-const covColor = (st) => ({ full: 'var(--ok)', partial: 'var(--warn)',
-  empty: 'var(--bad)' }[st] || 'var(--unseen)');
+const covColor = (st) => (Object.hasOwn(COV_VAR, st) ? COV_VAR[st] : 'var(--unseen)');
+const COV_VAR = { full: 'var(--ok)', partial: 'var(--part)',
+  empty: 'var(--line-2)' };
 const ms = (v) => (v == null ? '—' : v >= 1000 ? `${(v / 1000).toFixed(1)} с` : `${Math.round(v)} мс`);
 
 /* ------------------------------------------------------------------ данные */
@@ -158,9 +154,9 @@ function viewOverview() {
     ${kpi('Среднее покрытие', pct(s.avg), noAvg && s.avg === null ? 'не посчитано'
       : d == null ? 'по методике'
       : `${d > 0 ? '▲' : '▼'} ${Math.abs(d)} п.п. к прошлому прогону`,
-      d == null ? null : (d >= 0 ? 'var(--ok)' : 'var(--bad)'))}
+      d == null || d < 0 ? null : 'var(--ok)')}
     ${kpi('Эндпоинтов в отчёте', s.endpoints == null ? '—' : num(s.endpoints),
-      `${num(g.meta.endpoints)} узлов на сцене`)}
+      `${num(g.meta.endpoints)} узлов на карте`)}
     ${kpi('Прогон', r.total ? `${num(r.passed)}/${num(r.total)}` : '—',
       passRate == null ? 'нет allure-results' : `${passRate}% зелёных`,
       passRate == null ? null : (passRate === 100 ? 'var(--ok)' : 'var(--warn)'))}
@@ -214,7 +210,9 @@ const collapsed = new Set();
 
 function groupKey(n) {
   const m = n.meta || {};
-  return ({ service: m.service, domain: m.domain, method: m.method,
+  const dl = ((g && g.domains) || []).find((d) => d.key === m.domain);
+  const domain = !m.domain || m.domain === 'other' ? 'Прочее' : (dl ? dl.label : m.domain);
+  return ({ service: m.service, domain, method: m.method,
             status: m.status, runStatus: m.runStatus }[groupBy]) || '—';
 }
 
@@ -257,7 +255,7 @@ function viewEndpoints() {
             <td class="muted">${esc(m.subtype || '—')}</td>
             <td><span class="dotc" data-css="background:${covColor(m.status)}"></span>${pct(m.coverage)}</td>
             <td>${(m.missing || []).length
-              ? `<span class="chip bad">${(m.missing || []).length}</span>` : ''}</td>
+              ? `<span class="chip">${(m.missing || []).length}</span>` : ''}</td>
             <td class="num">${m.calls == null ? '' : num(m.calls)}</td>
             <td class="num">${num((m.timing || {}).msP95 ?? '')}</td>
             <td class="num">${m.runFailed ? `<span class="chip bad">${num(m.runFailed)}</span>` : ''}</td>
@@ -291,7 +289,7 @@ function rowHtml(n) {
     <td>${esc(m.service || '—')}</td>
     <td class="muted">${esc(m.subtype || '—')}</td>
     <td><span class="dotc" data-css="background:${covColor(m.status)}"></span>${pct(m.coverage)}</td>
-    <td>${(m.missing || []).length ? `<span class="chip bad">${(m.missing || []).length}</span>` : ''}</td>
+    <td>${(m.missing || []).length ? `<span class="chip">${(m.missing || []).length}</span>` : ''}</td>
     <td class="num">${m.calls == null ? '' : num(m.calls)}</td>
     <td class="num">${num((m.timing || {}).msP95 ?? '')}</td>
     <td class="num">${m.runFailed ? `<span class="chip bad">${num(m.runFailed)}</span>` : ''}</td>
@@ -412,12 +410,16 @@ function failsBody() {
 }
 
 /* ------------------------------------------------------------------ связи */
-/* Та же паутина, что на сцене, но списком: видно вес связи и обе стороны.
- * Набор рёбер зависит от переключателя «Покрытие / Тесты». */
+/* Связи списком: структура и выбранный здесь набор сходства (`linkSet`); видно
+ * вес связи и обе стороны. На карте сходства нет — только здесь. */
 let linkKind = '';
+/* Выведенные связи — сходство, а не поток: на карте их нет, здесь они рядом со
+ * структурой, и набор выбирается тут же. */
+let linkSet = 'coverage';
+let linkQ = '';
 function viewLinks() {
   const sets = g.edgeSets || {};
-  const ds = AT().dataSet;
+  const ds = linkSet;
   const all = (sets.structure || []).concat(ds === 'tests' ? sets.tests || [] : sets.coverage || []);
   const label = (id) => {
     const n = g.nodes.find((x) => x.id === id);
@@ -434,16 +436,21 @@ function viewLinks() {
   all.forEach((e) => (counts[e.kind] = (counts[e.kind] || 0) + 1));
   const rows = all
     .filter((e) => !linkKind || e.kind === linkKind)
-    .filter((e) => !F.q || (label(e.source) + ' ' + label(e.target)).toLowerCase()
-      .includes(F.q.toLowerCase()))
+    .filter((e) => !linkQ || (label(e.source) + ' ' + label(e.target)).toLowerCase()
+      .includes(linkQ.toLowerCase()))
     .sort((a, b) => (b.w || 0) - (a.w || 0));
 
-  return `<div class="filters">
-      <input type="search" data-f="q" value="${esc(F.q)}" placeholder="узел в связи…">
+  return `<div class="chips pad-b">
+      <span class="muted" data-css="font-size:12.5px;margin-right:4px">Кроме структуры — сходство:</span>
+      <button class="chip ${ds === 'coverage' ? 'on' : ''}" data-lset="coverage">общие пробелы и подтип</button>
+      <button class="chip ${ds === 'tests' ? 'on' : ''}" data-lset="tests">общий тест и фича</button>
+    </div>
+    <div class="filters">
+      <input type="search" data-lq value="${esc(linkQ)}" placeholder="узел в связи…">
       <div class="chips">
         <button class="chip ${linkKind ? '' : 'on'}" data-lk="">все ${all.length}</button>
         ${Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([k, c]) =>
-          `<button class="chip ${linkKind === k ? 'on' : ''}" data-lk="${k}">${
+          `<button class="chip ${linkKind === k ? 'on' : ''}" data-lk="${esc(k)}">${
             esc(KINDS[k] || k)} <b>${num(c)}</b></button>`).join('')}
       </div>
     </div>
@@ -485,18 +492,18 @@ function viewGaps() {
           .sort((a, b) => b[1].holes - a[1].holes).slice(0, 10)
           .map(([k, v]) => `<tr class="click" data-set="subtype" data-val="${esc(k)}">
             <td>${esc(k)}</td><td class="num">${num(v.n)}</td>
-            <td class="num bad">${num(v.holes)}</td></tr>`).join('')}</tbody></table>
+            <td class="num">${num(v.holes)}</td></tr>`).join('')}</tbody></table>
       </section>
       <section class="win">
         <h3>Как читать</h3>
         <div class="hint-row">Слева — сколько эндпоинтов подтипа имеют дыры и сколько
           всего недостающих TC. Ниже — по каждому тест-кейсу список эндпоинтов,
-          где он не выполнялся. Клик по строке ведёт к узлу на сцене.</div>
+          где он не выполнялся. Клик по строке ведёт к узлу на карте.</div>
       </section>
     </div>
     <div class="gaps">${list.map(([tc, arr]) => `
       <section class="win">
-        <h3>${esc(tc)} <span class="chip bad">${arr.length}</span></h3>
+        <h3>${esc(tc)} <span class="chip">${arr.length}</span></h3>
         <div class="chips">${arr.slice(0, 40).map((n) => `
           <button class="chip" data-node="${esc(n.id)}"
             title="${esc(n.meta.service || '')}">${esc(n.meta.path || n.label)}</button>`).join('')}
@@ -582,7 +589,7 @@ const HOW = {
   anchor: ['по эндпоинту', 'ok'],
   table: ['по таблице, по окну теста с фикстурами', 'warn'],
   feature: ['по названию фичи', 'warn'],
-  none: ['не проверено', 'bad'],
+  none: ['не проверено', ''],
 };
 
 function viewSpecs() {
@@ -736,7 +743,7 @@ function renderTableCard(t) {
         <div class="chips">${refs.slice(0, 24).map((r) =>
           `<span class="chip">${esc(r)}</span>`).join('')}</div></div>` : ''}
       <div class="row" data-css="margin-top:10px">
-        <button class="act sm" data-node="store:${esc(t.name)}">Показать на сцене</button>
+        <button class="act sm" data-node="store:${esc(t.name)}">Показать на карте</button>
       </div>
     </section>`;
 }
@@ -1251,11 +1258,12 @@ function pollRunner() {
     try {
       const d = await (await fetch('/api/runner/status')).json();
       RN.busy = !!d.busy; RN.run = d.run || RN.run;
-      // подсветка на сцене идёт отдельно от кадра: анимация не должна
+      // подсветка на карте идёт отдельно от кадра: анимация не должна
       // ни тормозить тесты, ни держать перерисовку сцены
       if (AT().setRunHighlight && RN.run) {
         AT().setRunHighlight(RN.run.touchedEndpoints || [],
-                             RN.run.failedEndpoints || []);
+                             RN.run.failedEndpoints || [],
+                             (num(RN.run.failed) || 0) + (num(RN.run.broken) || 0));
       }
       if (!RN.busy) { await loadRunner(); return; }   // дописать историю
     } catch (e) { /* сеть моргнула — попробуем на следующем тике */ }
@@ -1297,7 +1305,7 @@ function viewServices() {
         <td>${esc(s.label)}</td><td class="num">${num(s.totalEndpoints)}</td>
         <td class="num">${pct(s.avgCoverage)}</td>
         <td class="barcell"><i data-css="width:${num(s.avgCoverage) || 0}%;background:${
-          s.avgCoverage >= 99 ? 'var(--ok)' : s.avgCoverage >= 60 ? 'var(--warn)' : 'var(--bad)'
+          s.avgCoverage >= 99 ? 'var(--ok)' : s.avgCoverage > 0 ? 'var(--part)' : 'var(--line-2)'
         }"></i></td>
         <td class="num">${num(s.full)}</td><td class="num">${num(s.partial)}</td>
         <td class="num">${num(s.empty) || 0}</td><td class="num">${num(s.calls)}</td>
@@ -1316,8 +1324,6 @@ function renderDockNav() {
       ? `Вернуться: ${(TABS.find(([k]) => k === trail[trail.length - 1]) || [])[1] || ''}`
       : '';
   }
-  const off = document.getElementById('dock-deselect');
-  if (off) off.hidden = !selNode;
 }
 
 /* Переход на другую вкладку с запоминанием, откуда пришли. */
@@ -1327,15 +1333,27 @@ function go(next) {
     if (trail.length > 20) trail.shift();
     tab = next;
   }
+  section = sectionOf(tab);
+  lastTab[section] = tab;
+  // раздел мог смениться (из требования — в «Прогон»): шапка идёт за ним
+  document.querySelectorAll('#sections [data-section]').forEach((b) => {
+    if (b.dataset.section === section) b.setAttribute('aria-current', 'page');
+    else b.removeAttribute('aria-current');
+  });
 }
 
 /* ------------------------------------------------------------------ рендер */
 function render() {
-  document.getElementById('dock-tabs').innerHTML = TABS.map(([k, l]) => {
-    if (k === '|') return '<span class="dsep"></span>';
-    const badge = k === 'run' && g.run && (g.run.failed + g.run.broken)
-      ? `<b class="bad">${g.run.failed + g.run.broken}</b>` : '';
-    return `<button class="dtab ${tab === k ? 'on' : ''}" data-tab="${k}">${l}${badge}</button>`;
+  if (section === 'map') return;      // страница скрыта — рисовать нечего
+  // счётчик и снятие фильтров эндпоинтов — только в разделе, где фильтр живёт
+  dockNote.hidden = section !== 'cov';
+  const af = document.getElementById('active-filters');
+  if (af) af.hidden = section !== 'cov';
+  const tabs = (SECTIONS.find(([k]) => k === section) || SECTIONS[0])[2];
+  const fails = (num((g.run || {}).failed) || 0) + (num((g.run || {}).broken) || 0);
+  document.getElementById('dock-tabs').innerHTML = tabs.map(([k, l]) => {
+    const badge = k === 'run' && fails ? `<b>${fails}</b>` : '';
+    return `<button data-tab="${k}"${tab === k ? ' aria-current="page"' : ''}>${l}${badge}</button>`;
   }).join('');
   renderDockNav();
   dockBody.innerHTML = ({ overview: viewOverview, endpoints: viewEndpoints,
@@ -1347,20 +1365,26 @@ function render() {
 }
 
 function wire() {
-  // Из таблицы только выделяем узел: камеру не двигаем. Рывок кадра на каждый
-  // клик по строке раздражает сильнее, чем помогает — если узел не видно,
-  // есть «Показать на сцене» в карточке и поиск.
   dockBody.querySelectorAll('[data-rmode]').forEach((el) =>
     el.addEventListener('click', () => { RS.mode = el.dataset.rmode; render(); }));
   dockBody.querySelectorAll('[data-mxmode]').forEach((el) =>
     el.addEventListener('click', () => { mxMode = el.dataset.mxmode; render(); }));
-  // Повторный клик по выбранной строке снимает выделение: раньше выбранный
-  // эндпоинт снимался только перезагрузкой страницы.
+  // Строка ведёт на карту: узел выбран, его цепочка видна. Фильтр таблицы
+  // остаётся на карте подсветкой — снять его можно там же.
   dockBody.querySelectorAll('[data-node]').forEach((el) => {
     if (el.dataset.node === selNode) el.classList.add('sel');
     el.addEventListener('click', () => {
-      AT().select(el.dataset.node === selNode ? null : el.dataset.node);
+      showSection('map');
+      AT().select(el.dataset.node);
     });
+  });
+  dockBody.querySelectorAll('[data-lset]').forEach((el) =>
+    el.addEventListener('click', () => { linkSet = el.dataset.lset; render(); }));
+  const lqEl = dockBody.querySelector('[data-lq]');
+  if (lqEl) lqEl.addEventListener('input', () => {
+    linkQ = lqEl.value; render();
+    const again = dockBody.querySelector('[data-lq]');
+    if (again) { again.focus(); again.setSelectionRange(9999, 9999); }
   });
   // фильтры вкладки «Требования»: свой набор, чтобы не мешать фильтру эндпоинтов
   dockBody.querySelectorAll('[data-sp]').forEach((el) => {
@@ -1391,7 +1415,8 @@ function wire() {
     }));
   dockBody.querySelectorAll('[data-set]').forEach((el) => el.addEventListener('click', () => {
     F[el.dataset.set] = el.dataset.val;
-    if (tab === 'overview') go('endpoints');
+    // фильтр виден там, где он действует: в «Эндпоинтах», откуда бы ни нажали
+    if (tab !== 'endpoints') go('endpoints');
     applyFilter();
   }));
   dockBody.querySelectorAll('[data-f]').forEach((el) => {
@@ -1512,7 +1537,7 @@ function wire() {
   }));
   dockBody.querySelectorAll('[data-goto-feature]').forEach((el) =>
     el.addEventListener('click', () => {
-      runFeature = el.dataset.gotoFeature; tab = 'run'; render();
+      runFeature = el.dataset.gotoFeature; go('run'); render();
     }));
   dockBody.querySelectorAll('[data-trace]').forEach((el) => el.addEventListener('click', () => {
     const pre = [...dockBody.querySelectorAll('[data-trace-for]')]
@@ -1548,75 +1573,84 @@ async function rerunFromDock(btn, nodeid) {
 }
 
 /* --------------------------------------------------------------- каркас UI */
+/* Переключение разделов: карта или страница. Карта при возвращении
+ * перерисовывается — пока страница была открыта, могли смениться размеры. */
+function showSection(next) {
+  section = next === 'map' ? 'map' : (SECTIONS.some(([k]) => k === next) ? next : 'cov');
+  if (section !== 'map') tab = lastTab[section];
+  document.getElementById('view-map').hidden = section !== 'map';
+  document.getElementById('view-page').hidden = section === 'map';
+  document.querySelectorAll('#sections [data-section]').forEach((b) => {
+    if (b.dataset.section === section) b.setAttribute('aria-current', 'page');
+    else b.removeAttribute('aria-current');
+  });
+  if (section === 'map') { if (AT()) AT().shown(); return; }
+  if (g) render();
+  const page = document.getElementById('view-page');
+  if (page) page.scrollTop = 0;
+}
+
+/* Переход на подраздел (или на карту) — из карточки, сводки, палитры. */
+function openTab(t) {
+  if (!t || t === 'map') { showSection('map'); return; }
+  if (!TABS.some(([k]) => k === t)) return;
+  go(t);
+  showSection(section);
+}
+
+document.querySelectorAll('[data-section]').forEach((b) => b.addEventListener('click', (e) => {
+  e.preventDefault();
+  showSection(b.dataset.section);
+}));
+
 document.getElementById('dock-tabs').addEventListener('click', (e) => {
   const b = e.target.closest('[data-tab]');
   if (!b) return;
   go(b.dataset.tab);
-  dock.classList.remove('min');
   render();
 });
-/* Высота дока живёт в CSS-переменной: от неё отталкиваются боковые панели.
- * Камеру при этом не трогаем — иначе карта прыгает на каждое движение дока. */
-function syncDockHeight() {
-  const h = dock.classList.contains('min') ? 46 : dock.offsetHeight;
-  document.documentElement.style.setProperty('--dock-h', h + 'px');
-}
 
 document.getElementById('dock-back').addEventListener('click', () => {
   if (!trail.length) return;
   tab = trail.pop();
-  render();
-});
-
-document.getElementById('dock-deselect').addEventListener('click', () => {
-  AT().select(null);
+  section = sectionOf(tab);
+  lastTab[section] = tab;
+  showSection(section);
 });
 
 document.addEventListener('atlas:selection', (e) => {
   selNode = e.detail || '';
-  if (g) render();
+  if (g && section !== 'map') render();
 });
-
-document.getElementById('dock-toggle').addEventListener('click', () => {
-  dock.classList.toggle('min');
-  document.getElementById('dock-toggle').textContent =
-    dock.classList.contains('min') ? 'Развернуть' : 'Свернуть';
-  syncDockHeight();
-});
-
-// тянем верхнюю кромку — окно занимает столько, сколько нужно сейчас
-let grab = null;
-document.getElementById('dock-grip').addEventListener('mousedown', (e) => {
-  grab = { y: e.clientY, h: dock.offsetHeight };
-  e.preventDefault();
-});
-window.addEventListener('mousemove', (e) => {
-  if (!grab) return;
-  // потолок — 60% экрана: ниже дока должна оставаться работающая сцена
-  const h = Math.max(46, Math.min(innerHeight * 0.6, grab.h + (grab.y - e.clientY)));
-  dock.style.height = h + 'px';
-  syncDockHeight();
-});
-window.addEventListener('mouseup', () => { if (grab) { grab = null; syncDockHeight(); } });
-window.addEventListener('resize', syncDockHeight);
 
 document.addEventListener('atlas:ready', (e) => {
   g = e.detail;
   applyFilter();
-  syncDockHeight();
 });
-// набор данных общий для сцены и окон: «Связи» и «Обзор» показывают тот же срез
-document.addEventListener('atlas:dataset', () => { if (g) render(); });
 
-// требование из карточки узла: раскрыть его во вкладке «Требования»
+// из карточки или сводки: подраздел, при необходимости — с фильтром таблицы
+document.addEventListener('atlas:goto', (e) => {
+  const d = e.detail || {};
+  if (d.set === 'lq') { linkQ = d.val || ''; linkKind = ''; }
+  else if (d.set && Object.prototype.hasOwnProperty.call(F, d.set)) {
+    F[d.set] = d.val || '';
+    applyFilter();
+  }
+  if (d.feature) runFeature = d.feature;
+  openTab(d.tab);
+});
+
+// «снять» у подсветки на карте снимает фильтр таблицы
+document.addEventListener('atlas:clearfilter', () => {
+  Object.keys(F).forEach((k) => (F[k] = ''));
+  applyFilter();
+});
+
+// требование из карточки узла: раскрыть его в разделе «Требования»
 document.addEventListener('atlas:openreq', (e) => {
   if (!g) return;
-  go('specs');
   SP.how = ''; SP.src = ''; SP.q = ''; SP.open = e.detail;
-  dock.classList.remove('min');
-  document.getElementById('dock-toggle').textContent = 'Свернуть';
-  render();
-  syncDockHeight();
+  openTab('specs');
   // без CSS.escape: в этом файле глобальный `CSS` — палитра из atlas.js
   const card = [...dockBody.querySelectorAll('[data-sp-open]')]
     .find((el) => el.dataset.spOpen === e.detail);

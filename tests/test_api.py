@@ -8,7 +8,8 @@ from tests.conftest import make_client
 
 
 @pytest.mark.parametrize("url", [
-    "/", "/static/api.js", "/static/atlas.js", "/static/dock.js", "/static/scene3d.js", "/static/style.css",
+    "/", "/static/api.js", "/static/atlas.js", "/static/dock.js", "/static/scene3d.js", "/static/map2d.js",
+    "/static/style.css",
     "/api/graph", "/api/artifacts", "/api/tests", "/api/log",
     "/api/live/containers", "/api/live/mrs", "/api/live/container/storefront-api/logs",
     "/api/runner/suites", "/api/runner/status", "/screens/orders_list.png",

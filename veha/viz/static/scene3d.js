@@ -7,15 +7,19 @@
  * Ось Y направлена вверх в мире и вниз на экране: основание объекта лежит на
  * `y`, вершина — на `y - height`.
  *
- * За «качество» отвечают три приёма, а не один:
- *   · градиент по грани вместо плоской заливки — грань перестаёт быть пятном;
- *   · светящаяся кромка верхней грани — читается силуэт объекта;
- *   · контактная тень под объектом — объект стоит на площадке, а не парит.
+ * Оформление — в языке partest.ru: плоские грани без свечения и теней, силуэт
+ * держит тонкая кромка. Её тон задаёт тема: в светлой кромка темнее грани, в
+ * тёмной — светлее (`theme()`), а цвет кромки можно передать явно (`rimColor`):
+ * так «Объём» метит упавший эндпоинт красной рамкой поверх цвета покрытия.
  */
 'use strict';
 
 window.S3 = (function () {
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  let RIM = 0.62;   // во сколько раз кромка темнее (светлая тема) или светлее грани
+
+  /** Тема сцены: тёмная — кромка светлее грани, светлая — темнее. */
+  function theme(dark) { RIM = dark ? 1.45 : 0.62; }
 
   /** Осветлить/затемнить цвет: имитация освещения без настоящего света. */
   function shade(rgb, k, alpha = 1) {
@@ -27,15 +31,6 @@ window.S3 = (function () {
     ctx.beginPath();
     pts.forEach((p, i) => (i ? ctx.lineTo(p.sx, p.sy) : ctx.moveTo(p.sx, p.sy)));
     ctx.closePath();
-  }
-
-  /** Заливка грани градиентом: от светлого угла к тёмному. */
-  function faceFill(ctx, pts, rgb, k0, k1, alpha) {
-    const a = pts[0], b = pts[Math.min(2, pts.length - 1)];
-    const g = ctx.createLinearGradient(a.sx, a.sy, b.sx, b.sy);
-    g.addColorStop(0, shade(rgb, k0, alpha));
-    g.addColorStop(1, shade(rgb, k1, alpha));
-    return g;
   }
 
   /** Контур скруглённого прямоугольника в плоскости XZ. */
@@ -56,25 +51,6 @@ window.S3 = (function () {
       }
     });
     return out;
-  }
-
-  /** Мягкая тень под объектом: объект должен касаться поверхности. */
-  function contactShadow(ctx, project, o) {
-    const c = project({ x: o.x, y: o.y + 0.5, z: o.z });
-    const e = project({ x: o.x + o.r, y: o.y + 0.5, z: o.z });
-    const rx = Math.abs(e.sx - c.sx) || 6;
-    const ry = rx * 0.52;
-    const g = ctx.createRadialGradient(c.sx, c.sy, 0, c.sx, c.sy, Math.max(rx, 4));
-    g.addColorStop(0, `rgba(0,0,0,${o.alpha ?? 0.45})`);
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.save();
-    ctx.translate(c.sx, c.sy);
-    ctx.scale(1, ry / Math.max(rx, 1));
-    ctx.beginPath();
-    ctx.arc(0, 0, Math.max(rx, 4), 0, Math.PI * 2);
-    ctx.restore();
-    ctx.fillStyle = g;
-    ctx.fill();
   }
 
   /* --------------------------------------------------------------- площадка */
@@ -98,19 +74,14 @@ window.S3 = (function () {
     }
     segs.sort((a, b) => b.depth - a.depth).forEach((s) => {
       polyPath(ctx, s.pts);
-      ctx.fillStyle = faceFill(ctx, s.pts, rgb, 0.42, 0.2, alpha);
+      ctx.fillStyle = shade(rgb, 0.85, alpha);
       ctx.fill();
     });
 
-    // верхняя грань: тёмное стекло с лёгким свечением к центру
+    // верхняя грань — плоская
     polyPath(ctx, top);
     const c = project({ x: o.x, y: o.y - h, z: o.z });
-    const edge = project({ x: o.x + o.w / 2, y: o.y - h, z: o.z });
-    const rr = Math.max(20, Math.abs(edge.sx - c.sx));
-    const g = ctx.createRadialGradient(c.sx, c.sy, 0, c.sx, c.sy, rr);
-    g.addColorStop(0, shade(rgb, 0.5, (o.top ?? 0.3) * alpha));
-    g.addColorStop(1, shade(rgb, 0.22, (o.top ?? 0.3) * 0.4 * alpha));
-    ctx.fillStyle = g;
+    ctx.fillStyle = shade(rgb, 1, (o.top ?? 0.3) * alpha);
     ctx.fill();
 
     if (o.grid) {
@@ -134,12 +105,9 @@ window.S3 = (function () {
 
     // кромка: главный носитель силуэта
     polyPath(ctx, top);
-    ctx.strokeStyle = shade(rgb, 1.85, 0.9 * alpha);
-    ctx.lineWidth = o.rim ?? 1.6;
-    ctx.shadowColor = shade(rgb, 1.9, 1);
-    ctx.shadowBlur = o.glow ?? 14;
+    ctx.strokeStyle = o.rimColor || shade(rgb, RIM, alpha);
+    ctx.lineWidth = o.rim ?? 1;
     ctx.stroke();
-    ctx.shadowBlur = 0;
     return { top, bot, centerTop: c };
   }
 
@@ -179,9 +147,6 @@ window.S3 = (function () {
     // Раньше нулевой уровень рисовал только две грани, и при вращении камеры
     // у объектов буквально пропадали стороны — экономия того не стоила.
     const lod = o.lod ?? 2;
-    if (lod >= 2 && o.shadow !== false && h > 2) {
-      contactShadow(ctx, project, { x, y, z, r: Math.max(w, d) * 0.72, alpha: 0.4 * alpha });
-    }
     const pr = boxCorners(x, y, z, w, h, d).map(project);
 
     BOX_FACES
@@ -192,22 +157,19 @@ window.S3 = (function () {
       .sort((a, b) => b.depth - a.depth)
       .forEach((f) => {
         polyPath(ctx, f.pts);
-        ctx.fillStyle = lod >= 2
-          ? faceFill(ctx, f.pts, rgb, f.k0 * dimK, f.k1 * dimK, alpha)
-          : shade(rgb, ((f.k0 + f.k1) / 2) * dimK, alpha);
+        // плоская заливка: свет даёт только разница тона между гранями
+        ctx.fillStyle = shade(rgb, (0.55 + 0.45 * ((f.k0 + f.k1) / 2)) * dimK, alpha);
         ctx.fill();
       });
 
-    // светящаяся кромка верхней грани; на нулевом уровне её не рисуем —
-    // обводка каждого объекта заметна в профиле, а грани уже на месте
-    if (lod >= 1) {
+    // кромка верхней грани; на нулевом уровне её не рисуем — грани уже на месте.
+    // Явный цвет кромки (упавший эндпоинт) рисуется всегда: это смысл, а не отделка
+    if (lod >= 1 || o.rimColor) {
       const top = BOX_FACES[0][0].map((i) => pr[i]);
       polyPath(ctx, top);
-      ctx.strokeStyle = shade(rgb, o.dim ? 0.9 : 2.0, alpha);
-      ctx.lineWidth = 1.2;
-      if (o.glow) { ctx.shadowColor = shade(rgb, 1.9, 1); ctx.shadowBlur = o.glow; }
+      ctx.strokeStyle = o.rimColor || shade(rgb, RIM, alpha);
+      ctx.lineWidth = o.rimWidth || 1;
       ctx.stroke();
-      ctx.shadowBlur = 0;
     }
     return pr;
   }
@@ -217,9 +179,6 @@ window.S3 = (function () {
     const { x, y, z, r, h, rgb } = o;
     const alpha = o.alpha ?? 1;
     const dimK = o.dim ? 0.45 : 1;
-    if ((o.lod ?? 2) >= 2 && o.shadow !== false) {
-      contactShadow(ctx, project, { x, y, z, r: r * 1.5, alpha: 0.42 * alpha });
-    }
     // сегментов по детализации: 26 колец на объект в четыре пикселя —
     // чистая трата кадра
     const N = o.lod === 0 ? 8 : (o.lod === 1 ? 14 : 26);
@@ -237,7 +196,7 @@ window.S3 = (function () {
       segs.push({
         pts: [bottom[i], bottom[j], top[j], top[i]],
         depth: (bottom[i].depth + bottom[j].depth) / 2,
-        k: (0.36 + 0.62 * Math.pow(Math.abs(Math.sin(t * Math.PI * 2 + 0.8)), 0.7)) * dimK,
+        k: (0.7 + 0.3 * Math.pow(Math.abs(Math.sin(t * Math.PI * 2 + 0.8)), 0.7)) * dimK,
       });
     }
     segs.sort((a, b) => b.depth - a.depth).forEach((s) => {
@@ -246,15 +205,11 @@ window.S3 = (function () {
       ctx.fill();
     });
     polyPath(ctx, top);
-    ctx.fillStyle = (o.lod ?? 2) >= 2
-      ? faceFill(ctx, top, rgb, 1.3 * dimK, 0.85 * dimK, alpha)
-      : shade(rgb, 1.1 * dimK, alpha);
+    ctx.fillStyle = shade(rgb, dimK, alpha);
     ctx.fill();
-    ctx.strokeStyle = shade(rgb, o.dim ? 0.9 : 2.0, alpha);
-    ctx.lineWidth = 1.3;
-    if (o.glow) { ctx.shadowColor = shade(rgb, 1.9, 1); ctx.shadowBlur = o.glow; }
+    ctx.strokeStyle = o.rimColor || shade(rgb, RIM, alpha);
+    ctx.lineWidth = 1;
     ctx.stroke();
-    ctx.shadowBlur = 0;
   }
 
   /* -------------------------------------------------- стопка пластин (БД) */
@@ -262,11 +217,6 @@ window.S3 = (function () {
   function stack(ctx, project, o) {
     const n = clamp(o.count ?? 3, 1, 6);
     const h = o.h ?? 7, gap = o.gap ?? 8;
-    if (o.shadow !== false) {
-      contactShadow(ctx, project, {
-        x: o.x, y: o.y, z: o.z, r: Math.max(o.w, o.d) * 0.72, alpha: 0.42 * (o.alpha ?? 1),
-      });
-    }
     for (let i = n - 1; i >= 0; i--) {
       const grow = 1 - i * 0.06;   // нижние пластины чуть шире — стопка «оседает»
       box(ctx, project, {
@@ -274,7 +224,6 @@ window.S3 = (function () {
         y: o.y - i * (h + gap), h,
         w: o.w * grow, d: o.d * grow,
         alpha: (o.alpha ?? 1) * (i === 0 ? 1 : 0.8),
-        glow: i === 0 ? o.glow : 0,
       });
     }
   }
@@ -284,7 +233,7 @@ window.S3 = (function () {
   /** Габарит бирки без отрисовки — нужен для раскладки без пересечений. */
   function tagBox(ctx, o) {
     const size = o.size || 10.5;
-    ctx.font = (o.strong ? '650 ' : '') + size + 'px "Segoe UI", sans-serif';
+    ctx.font = (o.strong ? '600 ' : '') + size + 'px ' + FONT;
     const w = ctx.measureText(o.text).width + 16;
     const h = size + 9;
     const lift = o.lift ?? 22;
@@ -295,7 +244,7 @@ window.S3 = (function () {
     const { x, y, text, color } = o;
     const size = o.size || 10.5;
     const lift = o.lift ?? 22;
-    ctx.font = (o.strong ? '650 ' : '') + size + 'px "Segoe UI", sans-serif';
+    ctx.font = (o.strong ? '600 ' : '') + size + 'px ' + FONT;
     const w = ctx.measureText(text).width + 16;
     const hgt = size + 9;
     const bx = x - w / 2, by = y - lift - hgt;
@@ -303,19 +252,19 @@ window.S3 = (function () {
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x, by + hgt);
-    ctx.strokeStyle = o.line || 'rgba(255,255,255,.28)';
+    ctx.strokeStyle = o.line || 'rgba(128,128,128,.5)';
     ctx.lineWidth = 1;
     ctx.stroke();
 
     ctx.beginPath();
     ctx.roundRect(bx, by, w, hgt, 4);
-    ctx.fillStyle = o.bg || 'rgba(10,15,24,.9)';
+    ctx.fillStyle = o.bg || '#fffdf8';
     ctx.fill();
-    ctx.strokeStyle = color ? shade(hexToRgb(color), 1, 0.55) : 'rgba(255,255,255,.14)';
+    ctx.strokeStyle = o.line || 'rgba(128,128,128,.5)';
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    ctx.fillStyle = color || '#e7ecf3';
+    ctx.fillStyle = color || '#1b1d1f';
     ctx.textAlign = 'center';
     ctx.fillText(text, x, by + hgt - 6);
     ctx.textAlign = 'left';
@@ -331,6 +280,10 @@ window.S3 = (function () {
     return (_hex[hex] = v);
   }
 
-  return { shade, polyPath, faceFill, roundRect, contactShadow,
+  // шрифт подписей — системный, как у страницы (никаких внешних шрифтов)
+  const FONT = (getComputedStyle(document.documentElement).getPropertyValue('--sans').trim())
+    || 'system-ui, sans-serif';
+
+  return { shade, polyPath, roundRect, theme,
            pad, box, cylinder, stack, tag, tagBox, hexToRgb, boxCorners };
 }());

@@ -117,6 +117,20 @@ def test_agent_screen_form_is_normalised():
     assert norm_screen("/admin/accounts/") == "/admin/accounts"
 
 
+def test_screen_carries_the_controls_key(demo_graph):
+    """У экрана путь в том же виде, что у его контролов: в карте `{orderId}`, у
+    рекордера `{id}` — вебморда сводит их по `screenPath`, не по сырому `path`."""
+    from veha.core.sources import norm_screen
+
+    screens = [n for n in demo_graph["nodes"] if n["kind"] == "screen"]
+    assert screens and all(n["meta"]["screenPath"] == norm_screen(n["meta"]["path"])
+                           for n in screens)
+    keys = {n["meta"]["screenPath"] for n in screens}
+    controls = [n for n in demo_graph["nodes"] if n["kind"] == "control"]
+    assert all(c["meta"].get("screenPath") in keys for c in controls if c["meta"].get("screenPath"))
+    assert any(n["meta"]["path"] != n["meta"]["screenPath"] for n in screens)
+
+
 def test_demo_ui_flow_is_in_the_agents_form(demo_root):
     import json
 

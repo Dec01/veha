@@ -2,143 +2,86 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Веха — карта тестирования</title>
 <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
 
-<header>
-  <h1><span class="dot"></span> Веха</h1>
-
-  <div class="seg hdr" title="Вид сцены (1 / 2)">
-    <button data-view="map" class="on">Карта</button>
-    <button data-view="ring">Кольцо</button>
-  </div>
-
-  <div class="seg hdr accent" title="Чем красим узлы: покрытием по методике или результатом прогона (q / w)">
-    <button data-data="coverage" class="on">Покрытие</button>
-    <button data-data="tests">Тесты</button>
-  </div>
-
-  <div class="stats" id="stats"></div>
-  <div class="spacer"></div>
-
+<!-- Одна строка, как у partest.ru: знак, пять разделов, поиск. Всё остальное
+     живёт внутри раздела, а не в шапке. -->
+<header class="app-header">
+  <a class="brand" href="#" data-section="map" title="Веха — карта">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect class="m-bg" width="32" height="32" rx="7"/><path class="m-p" d="M8 9.5V26M8 14.5a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" fill="none" stroke-width="3" stroke-linecap="round"/><rect class="m-c" x="21.5" y="9" width="4.5" height="11" rx="1"/></svg>
+    <span>Веха</span>
+  </a>
+  <nav class="groups" id="sections" aria-label="Разделы">
+    <button data-section="map" aria-current="page">Карта</button>
+    <button data-section="cov">Покрытие</button>
+    <button data-section="sys">Система</button>
+    <button data-section="req">Требования</button>
+    <button data-section="run">Прогон<b class="n" id="run-badge"></b></button>
+  </nav>
+  <span class="spacer"></span>
   <div class="search">
-    <input type="search" id="q" placeholder="Найти эндпоинт, таблицу, экран…  /" autocomplete="off">
+    <input type="search" id="q" placeholder="Эндпоинт, таблица, экран…" autocomplete="off" aria-label="Поиск по карте">
+    <kbd class="key">/</kbd>
     <div class="ac" id="ac"></div>
   </div>
-
-  <button class="act" id="palette-btn" title="Палитра команд (Ctrl+K)">⌘K</button>
-  <button class="act" id="flat" title="Развернуть сцену фасадом">В лоб</button>
-  <button class="act" id="reset" title="Сбросить камеру">Сброс</button>
-  <button class="act primary" id="refresh">Обновить данные</button>
+  <button class="btn" id="refresh" title="Пересобрать граф из артефактов">Обновить данные</button>
 </header>
 
-<canvas id="scene"></canvas>
+<!-- Оговорки о данных: область, непрочитанные артефакты, частичный прогон. Пусто — не видно. -->
+<div class="notes" id="stats"></div>
 
-<!-- Быстрые фильтры прямо на сцене: искать нужный узел в панели неудобно -->
-<div class="scene-bar" id="scene-bar">
-  <div class="seg sm" title="Что оставить видимым на сцене">
-    <button data-scope="all" class="on">Всё</button>
-    <button data-scope="chain">Цепочка</button>
-    <button data-scope="domain">Домен</button>
-    <button data-scope="layer">Слой</button>
+<!-- Раздел «Карта»: сцена и постоянная колонка справа (сводка или карточка узла) -->
+<section class="view-map" id="view-map">
+  <div class="tools">
+    <div class="pills" id="pills" role="group" aria-label="Что подсветить"></div>
+    <span class="filter-note" id="filter-note" hidden></span>
+    <span class="spacer"></span>
+    <label class="lbl" for="domain">Домен</label>
+    <select id="domain"></select>
+    <span class="lbl">Вид</span>
+    <span class="seg" role="group" aria-label="Вид карты">
+      <button data-view="map" aria-pressed="true" title="Слои по ходу запроса (1)">Слои</button>
+      <button data-view="volume" aria-pressed="false" title="Объёмная сцена (2)">Объём</button>
+    </span>
   </div>
-  <span class="vr"></span>
-  <div class="chips" id="scope-chips"></div>
-  <span class="vr"></span>
-  <div class="chips" id="quick-chips"></div>
-  <button class="chip ghost" id="scene-clear" title="Снять фильтры сцены">сброс</button>
-</div>
-
-<!-- Подсказка вынесена из полосы фильтров: иначе полоса меняет ширину на
-     каждое наведение и прыгает под курсором -->
-<div class="scene-hint" id="scene-hint"></div>
-
-<!-- Закладки: каждая раскрывает свою панель, а не вкладку внутри общей -->
-<nav class="rail" id="rail">
-  <button data-panel="screens" title="Экраны (1 клик — открыть)">
-    <span class="ic">▤</span><span class="tx">Экраны</span></button>
-  <button data-panel="view" title="Вид сцены">
-    <span class="ic">◫</span><span class="tx">Вид</span></button>
-  <button data-panel="filters" title="Фильтры">
-    <span class="ic">⌗</span><span class="tx">Фильтры</span></button>
-  <button data-panel="legend" title="Легенда">
-    <span class="ic">◑</span><span class="tx">Легенда</span></button>
-</nav>
-
-<aside class="side" data-side="screens" hidden>
-  <div class="sh"><h2>Экраны</h2><button class="close" data-close>×</button></div>
-  <div class="sb"><div id="screens"></div></div>
-</aside>
-
-<aside class="side" data-side="view" hidden>
-  <div class="sh"><h2>Вид сцены</h2><button class="close" data-close>×</button></div>
-  <div class="sb">
-    <h3>Слои</h3>
-    <div id="layers"></div>
-    <div class="divider"></div>
-    <h3>Слои связей</h3>
-    <div class="hint-row">Структура — правда об интеграциях. Покрытие и тесты
-      выведены из данных: это сходство, а не связь.</div>
-    <div class="chips" id="edge-layers"></div>
-    <div class="divider"></div>
-    <h3>Плотность связей</h3>
-    <label class="slider">
-      <span>показываем <b id="density-val">75%</b></span>
-      <input type="range" id="density" min="0" max="100" step="5" value="75">
-    </label>
-    <label class="check"><input type="checkbox" id="dim-edges"> прятать связи вне цепочки</label>
-    <div class="divider"></div>
-    <h3>Камера</h3>
-    <label class="check"><input type="checkbox" id="spin"> вращение</label>
+  <div class="stage">
+    <div class="map-wrap" id="map-wrap">
+      <p class="hint" id="scene-hint"></p>
+      <div class="map2d" id="map2d"></div>
+      <canvas id="scene" hidden></canvas>
+    </div>
+    <aside class="card" id="panel" aria-live="polite">
+      <div class="rh">
+        <button class="close" id="close" title="Снять выделение (Esc)" hidden>×</button>
+        <div class="kind" id="p-kind"></div>
+        <div class="title" id="p-title"></div>
+      </div>
+      <div class="rb" id="p-body"></div>
+    </aside>
   </div>
-</aside>
+</section>
 
-<aside class="side wide" data-side="filters" hidden>
-  <div class="sh"><h2>Фильтры</h2><button class="close" data-close>×</button></div>
-  <div class="sb" id="filters-pane"></div>
-</aside>
-
-<aside class="side" data-side="legend" hidden>
-  <div class="sh"><h2>Легенда</h2><button class="close" data-close>×</button></div>
-  <div class="sb">
-    <h3>Цвет узла</h3>
-    <div class="legend" id="legend"></div>
-    <div class="divider"></div>
-    <h3>Связи</h3>
-    <div class="legend" id="edge-legend"></div>
-    <div class="divider"></div>
-    <h3>Формы объектов</h3>
-    <div class="legend shapes" id="shape-legend"></div>
+<!-- Остальные разделы — страницы: подразделы сверху, содержимое ниже -->
+<section class="page" id="view-page" hidden>
+  <div class="wrap">
+    <div class="subbar">
+      <nav class="subnav" id="dock-tabs" aria-label="Подразделы"></nav>
+      <span class="spacer"></span>
+      <button class="btn sm" id="dock-back" hidden>← назад</button>
+      <span class="muted" id="dock-note"></span>
+    </div>
+    <!-- включённые фильтры эндпоинтов: видно, что включено, и снимается кликом -->
+    <div class="chips pad-b" id="active-filters" hidden></div>
+    <div id="dock-body"></div>
   </div>
-</aside>
-
-<aside class="right" id="panel">
-  <div class="rh">
-    <button class="close" id="close">×</button>
-    <div class="kind" id="p-kind"></div>
-    <div class="title" id="p-title"></div>
-  </div>
-  <div class="rb" id="p-body"></div>
-</aside>
-
-<section class="dock" id="dock">
-  <div class="dock-grip" id="dock-grip"></div>
-  <div class="dock-head">
-    <button class="act sm" id="dock-back" hidden title="Вернуться на предыдущую вкладку">← назад</button>
-    <div class="dock-tabs" id="dock-tabs"></div>
-    <div class="spacer"></div>
-    <button class="act sm" id="dock-deselect" hidden
-      title="Снять выделение узла">снять выделение</button>
-    <span class="muted" id="dock-note"></span>
-    <button class="act" id="dock-toggle">Свернуть</button>
-  </div>
-  <div class="dock-body" id="dock-body"></div>
 </section>
 
 <div class="palette" id="palette">
-  <input type="search" id="pal-q" placeholder="Куда перейти: эндпоинт, таблица, экран, вкладка…" autocomplete="off">
+  <input type="search" id="pal-q" placeholder="Куда перейти: эндпоинт, таблица, экран, раздел…" autocomplete="off">
   <div class="pal-list" id="pal-list"></div>
 </div>
 
@@ -148,6 +91,7 @@
      сайта, а у сервера страница отдаётся с корня — и там, и там это `static/…`. -->
 <script src="static/api.js"></script>
 <script src="static/scene3d.js"></script>
+<script src="static/map2d.js"></script>
 <script src="static/atlas.js"></script>
 <script src="static/dock.js"></script>
 </body>

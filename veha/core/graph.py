@@ -1054,6 +1054,10 @@ def build(s: Sources) -> dict:
     for key, sc in screens.items():
         add(Node(id=f"screen:{key}", label=sc.get("label", key), layer="frontend",
                  kind="screen", meta={"path": sc.get("path"),
+                                      # общий ключ с контролами (`screenPath` у них
+                                      # тоже через norm_screen): в карте экран
+                                      # `/#/orders/{orderId}`, у рекордера — `{id}`
+                                      "screenPath": norm_screen(sc.get("path")),
                                       "pageObject": sc.get("page_object"),
                                       "frame": sc.get("frame") or []}))
     for el in amap.get("ui_elements") or []:

@@ -42,7 +42,7 @@ class Container:
     match: List[str] = field(default_factory=list)
     default: bool = False
     note: str = ""
-    tier: int = 0                   # ярус: чем больше, тем выше палуба на карте
+    tier: int = 0                   # ярус: чем больше, тем выше палуба в виде «Объём»
     names: List[str] = field(default_factory=list)   # имена контейнеров в среде запуска
 
 

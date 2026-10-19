@@ -1,8 +1,8 @@
 ---
 title: Статус «Вехи»
 status: current
-verified: 2026-10-18
-sources: [README.md, pyproject.toml, CHANGELOG.md, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, MANIFEST.in]
+verified: 2026-10-19
+sources: [README.md, pyproject.toml, CHANGELOG.md, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, MANIFEST.in]
 audience: agent
 allow_version_literals: true
 ---
@@ -177,6 +177,14 @@ Allure, только если агент записал ровно такой no
 иначе — по всем вариантам, каждый со своим последним статусом: перезапуск `[a]` не
 скрывает упавший `[b]`.
 
+**Вебморда** (`veha/viz/static`) — в языке сайта partest.ru: тема по настройке системы,
+системные шрифты, один акцент, цвет только у покрытия и прогона
+([[decisions/visual-language]]). Раздел «Карта»: вид «Слои» (`map2d.js`, SVG) по
+умолчанию и «Объём» (`atlas.js` + `scene3d.js`, Canvas 2D); связи — у выбранного узла,
+справа — сводка или карточка узла. Остальные разделы — Покрытие, Система, Требования,
+Прогон — страницы из прежних вкладок дока (`dock.js`). Проверка в браузере — вручную, на
+`veha demo`, светлая и тёмная тема; автотестов на отрисовку нет.
+
 **Демонстрация** поставляется в пакете: набор лежит в `veha/demo_data/` и входит в колесо
 (`package-data`), `veha demo` (`veha/demo.py`) поднимает над ним сервер только для
 просмотра и читает его на месте — в режиме просмотра сервер не пишет ничего, и тест
@@ -310,6 +318,10 @@ connect-src 'self'` из подкаталога: ни одного наруше�
   сервер, и их форму задаёт он (ограничение 10).
 
 ## Что дальше
+
+Невыпущенное: вебморда в языке partest.ru (`CHANGELOG.md`, «Не выпущено»); предложено
+0.2.0. Демо на сайте (`/veha/demo/`) пересобирается при выпуске вместе со страницами Вехи на
+сайте — они описывают интерфейс 0.1.0.
 
 Ближайшее: переход `core/` на `partest.path_match`; `examples/` и `templates/atlas.yaml`;
 подключение сервера к настоящему проекту как внешней зависимости и полный цикл на

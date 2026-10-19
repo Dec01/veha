@@ -66,7 +66,7 @@ from veha.core import sources as core_sources
 STATIC = Path(__file__).resolve().parent / "static"
 #: Что из `static/` уезжает в снимок. Белый список, а не «всё из каталога»: случайный
 #: файл рядом со статикой (заметки, бэкап редактора) не должен попасть на сайт.
-STATIC_FILES = ("api.js", "scene3d.js", "atlas.js", "dock.js", "style.css")
+STATIC_FILES = ("api.js", "scene3d.js", "map2d.js", "atlas.js", "dock.js", "style.css")
 #: Метка снимка: по ней экспорт узнаёт свой каталог и только его перезаписывает.
 MARKER = "api/export.json"
 #: То, из чего состоит снимок. Каталог, где есть что-то ещё, — не снимок.

@@ -99,18 +99,19 @@ window.vehaApi = (function () {
   }
 
   if (STATIC) {
-    const h1 = document.querySelector('header h1');
-    if (h1) {
+    const brand = document.querySelector('header .brand');
+    if (brand) {
       const tag = document.createElement('span');
-      tag.className = 'chip';
+      tag.className = 'badge';
       tag.title = 'Статический снимок на вымышленных данных: только просмотр';
       tag.textContent = 'демо · только просмотр';
-      tag.style.whiteSpace = 'nowrap';   // CSSOM, не атрибут: CSP его пропускает
-      h1.after(tag);
+      brand.after(tag);
     }
+    // Пересобрать снимок некому: кнопки нет совсем, а не выключенной в шапке
     const refresh = document.getElementById('refresh');
     if (refresh) {
       refresh.disabled = true;
+      refresh.hidden = true;
       refresh.title = `${OFFLINE}: данные — снимок, пересобирать их некому`;
     }
   }

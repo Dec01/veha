@@ -186,7 +186,7 @@ def test_header_script_does_not_print_objects():
     from tests.conftest import REPO
 
     js = (REPO / "veha" / "viz" / "static" / "atlas.js").read_text(encoding="utf-8")
-    block = js[js.index("if (G.meta.partialRun)"):js.index("/* Легенда паутины")]
+    block = js[js.index("if (G.meta.partialRun)"):js.index("/* Пилюли над картой")]
     assert "k !== 'optin'" in block and "typeof v !== 'object'" in block
     assert "esc(optinText.join" in block
 
