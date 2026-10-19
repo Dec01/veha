@@ -16,10 +16,6 @@ license-files = ["LICENSE"]
 authors = [{ name = "dec01" }]
 keywords = ["testing", "coverage", "observability", "pytest", "visualization"]
 classifiers = [
-    # Пока стоит этот классификатор, PyPI отвергает загрузку (`Private ::`): пакет не
-    # уйдёт по ошибке. Снимается в момент выпуска 0.1.0 отдельным изменением: подготовка
-    # выпуска и решение выпускать — не одно и то же.
-    "Private :: Do Not Upload",
     "Development Status :: 3 - Alpha",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
