@@ -37,7 +37,8 @@
 `live/` — не артефакты агента: у агента нет вида ни для состояния контейнеров, ни для
 очереди проверки, а отметки проверки пишет сам сервер.
 
-Нужен установленный `partest-atlas` (ставится вместе с пакетом `veha`).
+Нужны установленные `veha` (срезы истории снимает его код, `veha.runner.snapshot_of`)
+и `partest-atlas` не ниже 0.2.1 (ставится вместе с пакетом `veha`).
 
 Запуск:  python demo/generate.py   (из корня репозитория; из любого каталога — то же)
 """
@@ -58,7 +59,10 @@ from partest_atlas.collect import container_logs as atlas_container_logs
 from partest_atlas.collect import db_schema as atlas_db_schema
 from partest_atlas.collect import openapi as atlas_openapi
 from partest_atlas.collect import specs as atlas_specs
+from partest_atlas.collect import history as atlas_history
 from partest_atlas.collect import ui_flow as atlas_ui_flow
+
+from veha.runner import snapshot_of
 
 # Куда пишется набор: каталог данных пакета. Генератор в колесо не входит — он
 # нужен тому, кто меняет модель, а не тому, кто смотрит демонстрацию.
@@ -2202,6 +2206,65 @@ def unseen_ratio(endpoints: list[dict]) -> float | None:
     return round(unseen / len(endpoints), 4)
 
 
+#: Правило среднего, которое пишет partest 2.7.0 (`meta.avgRule`): строки `exception`
+#: вне каждого среднего и вне `covered`, но в счётчиках. Набор повторяет его, а не своё.
+AVG_RULE = 2
+
+
+def row_depth(key: str, done: list[str]) -> dict | None:
+    """Глубина проверок строки (ось C, partest 2.7.0): из заполненных ячеек — в скольких
+    вызов просил проверить статус и в скольких ещё и схему. Нет заполненной ячейки —
+    `None`, «не измерено».
+
+    Свой генератор на каждую строку — чтобы глубина не сдвинула значения остального
+    набора, который берёт числа из общего `RND`.
+    """
+    cells = len(done)
+    if not cells:
+        return None
+    r = random.Random(zlib.crc32(("depth " + key).encode("utf-8")))
+    status = cells - (r.randint(1, max(1, cells // 3)) if r.random() < 0.3 else 0)
+    schema = min(status, int(round(status * r.uniform(0.25, 0.9))))
+    return {"cells": cells, "status": status, "schema": schema, "values": None}
+
+
+def scored_stats(rows: list[dict]) -> dict:
+    """Счётчики и среднее набора строк — как `partest.reports.payload.summarize` 2.7.0:
+    строки `exception` считаются, но в среднее не входят; нечего усреднять — `None`."""
+    exc = sum(1 for r in rows if r["status"] == "exception")
+    scored = [r for r in rows if r["status"] != "exception"]
+    return {
+        "avg": round(sum(r["coverage"] for r in scored) / len(scored), 2) if scored else None,
+        "calls": sum(r["calls"] for r in rows),
+        "full": sum(1 for r in scored if r["status"] == "full"),
+        "partial": sum(1 for r in scored if r["status"] == "partial"),
+        "empty": sum(1 for r in scored if r["status"] not in ("full", "partial")),
+        "exception": exc, "endpoints": len(rows), "scored": len(scored),
+    }
+
+
+def depth_summary(rows: list[dict]) -> dict | None:
+    """`summary.depth` partest 2.7.0: ячейки по всем строкам вне `exception`, доли — от
+    измеренных ячеек; ни одной — `None`."""
+    cells = status = schema = 0
+    for r in rows:
+        if r["status"] == "exception" or not r.get("depth"):
+            continue
+        cells += r["depth"]["cells"]
+        status += r["depth"]["status"]
+        schema += r["depth"]["schema"]
+    if not cells:
+        return None
+    return {"cells": cells, "status": status, "schema": schema, "values": None,
+            "statusPct": round(status / cells * 100.0, 2),
+            "schemaPct": round(schema / cells * 100.0, 2)}
+
+
+def _by_avg(avg: float | None) -> tuple:
+    """Порядок строк по среднему, как у partest: большее первым, без среднего — в конце."""
+    return (avg is None, -(avg or 0.0))
+
+
 def build_coverage(corpus: Corpus) -> dict:
     calls_by_ep: dict[str, int] = {}
     for t in corpus.tests:
@@ -2235,6 +2298,7 @@ def build_coverage(corpus: Corpus) -> dict:
             "kind": "unseen" if n == 0 else status,
             "executed": done, "missing": missing,
             "description": e["title"],
+            "depth": row_depth(key, done),
             "timing": {"n": n, "msAvg": avg, "msP50": round(avg * 0.96, 1),
                        "msP95": round(avg * 1.35, 1),
                        "msMin": round(avg * 0.6, 1),
@@ -2252,42 +2316,34 @@ def build_coverage(corpus: Corpus) -> dict:
         ep["prev"]["deltaMs"] = round(ep["timing"]["msAvg"] - ep["prev"]["msAvg"], 1)
 
     def agg(rows, key_fn, label_fn):
-        acc: dict = {}
+        groups: dict = {}
         for r in rows:
-            k = key_fn(r)
-            box = acc.setdefault(k, {"key": k, "label": label_fn(r), "count": 0,
-                                     "calls": 0, "full": 0, "partial": 0,
-                                     "empty": 0, "exception": 0, "sum": 0.0})
-            box["count"] += 1
-            box["calls"] += r["calls"]
-            box[r["status"]] += 1
-            box["sum"] += r["coverage"]
+            groups.setdefault(key_fn(r), (label_fn(r), []))[1].append(r)
         out = []
-        for box in acc.values():
-            box["avgCoverage"] = round(box["sum"] / box["count"], 2)
-            box.pop("sum")
-            out.append(box)
-        return sorted(out, key=lambda b: -b["avgCoverage"])
+        for k, (label, items) in groups.items():
+            st = scored_stats(items)
+            out.append({"key": k, "label": label, "count": st["endpoints"],
+                        "scored": st["scored"], "calls": st["calls"], "full": st["full"],
+                        "partial": st["partial"], "empty": st["empty"],
+                        "exception": st["exception"], "avgCoverage": st["avg"]})
+        return sorted(out, key=lambda b: _by_avg(b["avgCoverage"]))
 
     services = agg(endpoints, lambda r: r["service"], lambda r: r["serviceLabel"])
     for s in services:
         s["totalEndpoints"] = s["count"]
-        s["covered"] = s["count"] - s["empty"]
+        # правило 2: `exception` — не покрытая работа, `covered` — полные и частичные
+        s["covered"] = s["full"] + s["partial"]
     subtypes = agg(endpoints, lambda r: r["subtypeKey"], lambda r: r["subtype"])
 
-    methods: dict = {}
+    by_method: dict = {}
     for r in endpoints:
-        box = methods.setdefault(r["method"], {"method": r["method"], "count": 0,
-                                               "calls": 0, "sum": 0.0})
-        box["count"] += 1
-        box["calls"] += r["calls"]
-        box["sum"] += r["coverage"]
+        by_method.setdefault(r["method"], []).append(r)
     method_rows = []
-    for box in methods.values():
-        box["avgCoverage"] = round(box["sum"] / box["count"], 2)
-        box.pop("sum")
-        method_rows.append(box)
-    method_rows.sort(key=lambda m: m["method"])
+    for method, items in sorted(by_method.items()):
+        st = scored_stats(items)
+        method_rows.append({"method": method, "count": st["endpoints"],
+                            "calls": st["calls"], "avgCoverage": st["avg"],
+                            "scored": st["scored"], "exception": st["exception"]})
 
     missing_count: dict = {}
     for r in endpoints:
@@ -2300,24 +2356,24 @@ def build_coverage(corpus: Corpus) -> dict:
     for r in endpoints:
         box = cells.setdefault((r["service"], r["subtypeKey"]),
                                {"service": r["service"],
-                                "subtype": r["subtypeKey"], "sum": 0.0,
+                                "subtype": r["subtypeKey"], "values": [],
                                 "count": 0})
-        box["sum"] += r["coverage"]
+        if r["status"] != "exception":
+            box["values"].append(r["coverage"])
         box["count"] += 1
     cell_rows = []
     for box in cells.values():
+        vals = box["values"]
         cell_rows.append({"service": box["service"], "subtype": box["subtype"],
-                          "avg": round(box["sum"] / box["count"], 2),
+                          "avg": round(sum(vals) / len(vals), 2) if vals else None,
                           "count": box["count"]})
 
     total_calls = sum(r["calls"] for r in endpoints)
-    # `if endpoints else 0.0` — ровно то, что делает partest в `summarize()`:
-    # набор обязан повторять поведение владельца формата, а не своё.
-    avg_cov = (round(sum(r["coverage"] for r in endpoints) / len(endpoints), 2)
-               if endpoints else 0.0)
-    full = sum(1 for r in endpoints if r["status"] == "full")
-    partial = sum(1 for r in endpoints if r["status"] == "partial")
-    empty = sum(1 for r in endpoints if r["status"] == "empty")
+    # Как `summarize()` partest 2.7.0: среднее — по строкам вне `exception`, нечего
+    # усреднять — `None`. Набор обязан повторять поведение владельца формата, а не своё.
+    totals = scored_stats(endpoints)
+    avg_cov = totals["avg"]
+    full, partial, empty = totals["full"], totals["partial"], totals["empty"]
     ms_n = sum(r["timing"]["n"] for r in endpoints)
 
     by_type: dict = {}
@@ -2360,7 +2416,10 @@ def build_coverage(corpus: Corpus) -> dict:
                  "title": "Сеть N — покрытие API по методике",
                  "defaultExcluded": [], "workers": 1, "merged": False,
                  "partialRun": False, "callsTotal": total_calls,
-                 "unseenRatio": unseen_ratio(endpoints), "timingSamples": ms_n,
+                 "unseenRatio": unseen_ratio(endpoints),
+                 # правило среднего (partest 2.7.0): тренд сравнивает средние только
+                 # в пределах одного правила
+                 "avgRule": AVG_RULE, "timingSamples": ms_n,
                  "timingUnmatched": RND.randint(40, 260),
                  # partest ≥ 2.5.0: opt-in-набор `slow` снят — прогон полный, но без
                  # медленных тестов. `deselected` выбора — те же снятые тесты: partest
@@ -2375,8 +2434,10 @@ def build_coverage(corpus: Corpus) -> dict:
                                           "msP95": r["msP95"]}
                               for r in timing_by_type}},
         "summary": {"avg": avg_cov, "calls": total_calls, "full": full,
-                    "partial": partial, "empty": empty, "exception": 0,
-                    "endpoints": len(endpoints), "avgAll": avg_cov,
+                    "partial": partial, "empty": empty,
+                    "exception": totals["exception"], "endpoints": len(endpoints),
+                    "scored": totals["scored"], "depth": depth_summary(endpoints),
+                    "avgAll": avg_cov,
                     "msAvg": ms_avg, "msP50": round(ms_avg * 0.95, 1),
                     "msP95": round(ms_avg * 1.42, 1),
                     "msMax": round(ms_avg * 9.1, 1), "msN": ms_n},
@@ -2668,13 +2729,18 @@ OPTIN_SLOW_OFF = {"slow": {"state": "off", "env": "RUN_SLOW", "deselected": 14}}
 OPTIN_SLOW_ENV = {"slow": {"state": "env", "env": "RUN_SLOW", "deselected": 0}}
 
 
-def nightly_run(summary: dict, started: datetime) -> dict:
+def nightly_run(coverage: dict, started: datetime) -> dict:
     """Ночной полный прогон с `RUN_SLOW=1`: медленные тесты в нём были.
 
     Свой генератор случайных чисел — чтобы добавленный прогон не сдвинул значения
     остальных и разница в git осталась в этой записи.
     """
     rnd = random.Random(13)
+    summary = coverage["summary"]
+    night = {**coverage,
+             "meta": {**coverage["meta"], "selection": {"deselected": 0,
+                                                        "optin": OPTIN_SLOW_ENV}},
+             "summary": {**summary, "avg": round(summary["avg"] + 1.9, 2)}}
     total = 585 + OPTIN_SLOW_OFF["slow"]["deselected"]
     failed = rnd.randint(1, 5)
     wall = rnd.randint(1500, 2400) * 1000
@@ -2687,19 +2753,21 @@ def nightly_run(summary: dict, started: datetime) -> dict:
         "passed": total - failed, "failed": failed, "broken": 0,
         "skipped": rnd.randint(0, 4), "current": "", "failures": [], "touched": [],
         "context": {}, "suiteFull": True,
-        # медленные тесты добирают по ячейке у нескольких эндпоинтов — среднее выше
-        "coverage": {**{k: summary.get(k) for k in
-                        ("avg", "full", "partial", "empty", "endpoints")},
-                     "avg": round(summary["avg"] + 1.9, 2),
-                     "optin": OPTIN_SLOW_ENV},
+        # Медленные тесты добирают по ячейке у нескольких эндпоинтов — среднее выше.
+        # Срез снимает тот же код, что у сервера, с отчёта этого прогона.
+        "coverage": snapshot_of(night, suite_full=True),
         "containers": {"total": 11, "down": 0, "restarting": 0, "bad": []},
     }
 
 
 def write_runs(coverage: dict, corpus: Corpus) -> None:
     rnd = random.Random(9)
-    summary = coverage["summary"]
-    runs = [nightly_run(summary, RUN_START - timedelta(hours=18))]
+    runs = [nightly_run(coverage, RUN_START - timedelta(hours=18))]
+    # Наборы раннера, кроме полного, — выбор по путям: медленных тестов в них нет, и
+    # запись opt-in у их прогонов набор не показывает (сервер записал бы её, если бы
+    # она была в отчёте прогона).
+    subset = {**coverage, "meta": {k: v for k, v in coverage["meta"].items()
+                                   if k != "selection"}}
     # Последний прогон — полный набор: тренд среднего покрытия строится только по
     # таким, и в истории демонстрации он должен быть.
     suites = [("smoke", "Дымовой"), ("api", "API целиком"),
@@ -2729,15 +2797,11 @@ def write_runs(coverage: dict, corpus: Corpus) -> None:
             "touched": nodeids[:120],
             "context": {"mr": {"iid": 118 + i}} if i in (1, 3, 5) else {},
             "suiteFull": suite == "full",
-            # Как пишет сервер (`veha.runner.coverage_snapshot`): набор, не объявленный
-            # полным, — частичный прогон без среднего.
-            "coverage": ({**{k: summary.get(k) for k in
-                             ("avg", "full", "partial", "empty", "endpoints")},
-                          "optin": OPTIN_SLOW_OFF}
-                         if suite == "full" else
-                         {**{k: summary.get(k) for k in
-                             ("full", "partial", "empty", "endpoints")},
-                          "partialRun": True, "partialReasons": ["выбор набора"]}),
+            # Срез снимает код сервера (`veha.runner.snapshot_of` — сводку берёт
+            # `partest_atlas.collect.history.coverage_snapshot`): набор, не объявленный
+            # полным, — частичный прогон без среднего и без долей глубины.
+            "coverage": (snapshot_of(coverage, suite_full=True) if suite == "full"
+                         else snapshot_of(subset, suite_full=False)),
             "containers": {"total": 11, "down": 1 if i > 2 else 0,
                            "restarting": 1 if i > 3 else 0,
                            "bad": ["sandbox-delivery"] if i > 2 else []},
@@ -2912,6 +2976,12 @@ def bus_record(ev: dict) -> dict:
 # 13. Сборка набора
 # ===========================================================================
 def main() -> None:
+    # Срез истории пишет код агента, и до 0.2.1 он не переносил `exception`, `scored`
+    # и `depth`: набор, собранный старым агентом, вышел бы другим. Набор один — и
+    # собирается одним агентом.
+    if "scored" not in atlas_history.COVERAGE_KEYS:
+        raise SystemExit("демонстрация собирается partest-atlas ≥ 0.2.1: срез истории "
+                         "переносит exception, scored и depth только с этой версии")
     check_model()
     ROOT.mkdir(parents=True, exist_ok=True)
     # Артефакты прежней раскладки (плоский `atlas/`, схема 1) удаляются: сервер их

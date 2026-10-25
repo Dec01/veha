@@ -13,6 +13,8 @@ recursive-include demo *.py *.md
 # Тесты проходят из распакованного sdist: им нужны conftest, генератор и документы,
 # на которые ссылаются README и CHANGELOG (их ссылки проверяет tests/test_readme_links.py).
 recursive-include tests *.py
+# Образцы coverage.json обеих эпох правила среднего (`tests/test_avg_rule.py`).
+recursive-include tests/data *.json
 recursive-include docs *.md
 
 # Намеренно НЕ уходит:

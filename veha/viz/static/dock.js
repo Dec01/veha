@@ -274,11 +274,13 @@ function groupBar() {
       data-grpby="${k}">${l}</button>`).join('')}</div>`;
 }
 
+/* Среднее покрытие группы строк — правилом отчёта (`vehaApi.coverageAverage`): при
+ * `meta.avgRule: 2` строки exception вне среднего, как у partest. */
 function avgCoverage(list) {
-  const vals = list.map((n) => n.meta.coverage).filter((v) => v != null)
-    .map(Number).filter(Number.isFinite);
-  if (!vals.length) return '';
-  return `покрытие ${(vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)}%`;
+  const { value, reason } = window.vehaApi.coverageAverage(g, list);
+  if (value != null) return `покрытие ${value.toFixed(1)}%`;
+  return { exception: 'покрытие не измерено: только exception',
+           rule: 'покрытие: правило среднего отчёта не известно' }[reason] || '';
 }
 
 function rowHtml(n) {
@@ -1112,6 +1114,7 @@ async function loadContainerLog(cid) {
 /* Запуск наборов прямо из атласа. Прогресс читается из вывода pytest, поэтому
  * визуал может отставать на секунду — тесты от этого не страдают. */
 const RN = { suites: [], history: [], trend: [], trendSeries: [], run: null,
+             historyState: null, historyWrite: null,
              busy: false, loaded: false, poll: 0, note: '' };
 
 function viewRunner() {
@@ -1173,7 +1176,13 @@ function viewRunner() {
           esc((cov.partialReasons || ['?'])[0])}</span>`
         : cov.endpoints === 0
           ? `<span class="chip" title="отчёт ничего не посчитал (endpoints: 0) — в тренд среднего не входит">не посчитано</span>`
-          : (cov.avg != null ? num(cov.avg) + '%' : '—')}${
+          : cov.avg != null
+            ? `${num(cov.avg)}%${cov.ruleMark ? ` <span class="chip" title="${
+              esc('среднее посчитано не по правилу текущей серии тренда — с ней не сравнивается')
+              }">${esc(cov.ruleMark)}</span>` : ''}`
+            // partest 2.7.0: `null` при эндпоинтах — все строки exception, вне среднего
+            : (num(cov.endpoints) > 0 ? '<span class="chip">не измерено: только exception</span>'
+              : '—')}${
         (cov.optinText || []).length ? ` <span class="chip" title="${
           esc('opt-in: ' + cov.optinText.map(String).join('; '))}">opt-in</span>` : ''}</td>
       <td>${cn.down ? `<span class="chip bad" title="${esc((cn.bad || []).join(', '))}">
@@ -1194,6 +1203,7 @@ function viewRunner() {
     <section class="win"><h3>Наборы</h3><div class="suites">${cards}</div></section>
     <section class="win">
       <h3>История прогонов <span class="chip">${RN.history.length}</span></h3>
+      ${historyLine()}
       ${trendLine()}
       ${RN.history.length ? `<div class="tbl-wrap"><table class="tbl">
         <thead><tr><th>Когда</th><th>Набор и МР</th><th>Итог</th><th>Упало</th>
@@ -1203,11 +1213,32 @@ function viewRunner() {
     </section>`;
 }
 
+/* Одна строка о записи истории, если с ней что-то не так. Файл истории не понят
+ * (`historyState` — newer, broken, invalid) — прогоны в него не пишутся, файл не тронут.
+ * Иначе — чем кончилась последняя запись (`historyWrite`): пропуск или сбой, с
+ * причиной. Записалось — молчим. */
+function historyLine() {
+  const st = RN.historyState, w = RN.historyWrite;
+  if (st && st !== 'ok' && st !== 'missing') {
+    return `<div class="warn">Файл истории не прочитан (${esc(st)}) — прогоны в него не `
+      + 'пишутся, файл не тронут; причина — в шапке карты.</div>';
+  }
+  if (w && w.state && w.state !== 'written') {
+    const when = num(w.at) ? ` (${esc(new Date(num(w.at) * 1000).toLocaleTimeString('ru-RU'))})` : '';
+    return `<div class="warn">Последний прогон${when} в историю не записан: `
+      + `${esc(w.reason || w.state)}${w.note ? '; ' + esc(w.note) : ''}</div>`;
+  }
+  // записан, но предел истории в atlas.yaml не годится — взят по умолчанию
+  if (w && w.note) return `<div class="warn">${esc(w.note)}</div>`;
+  return '';
+}
+
 /* Тренд среднего покрытия — строкой, только по полным прогонам: процент частичного
  * посчитан по части набора и с полным несравним. Нет полного набора — так и сказано.
- * Прогоны с разным состоянием opt-in-наборов — разные серии (`trendSeries`): у них
- * разный состав тестов, и одна линия нарисовала бы скачок, которого не было. Первой
- * идёт серия последнего полного прогона. */
+ * Серии (`trendSeries`) делятся по правилу среднего (`avgRule`: partest 2.7.0 вынес
+ * строки exception из среднего) и по состоянию opt-in-наборов (другой состав тестов):
+ * одна линия нарисовала бы скачок, которого не было. Первой идёт серия последнего
+ * полного прогона. */
 function trendLine() {
   const full = RN.suites.some((s) => s.full);
   if (!full) {
@@ -1220,21 +1251,55 @@ function trendLine() {
     return '<div class="muted">Тренд покрытия (только полные прогоны): полных прогонов '
       + 'ещё не было.</div>';
   }
-  const pts = (s) => (s.points || []).slice(-12).map((x) => pct(x.avg)).join(' → ');
+  // Серия без записи правила — не тренд: её точки могли быть посчитаны по разным
+  // правилам, и стрелки нарисовали бы падение, которого не было. Только значения.
+  const pts = (s) => (s.points || []).slice(-12).map((x) => pct(x.avg))
+    .join(s.isTrend === false ? ', ' : ' → ');
+  const notTrend = (s) => (s.isTrend === false ? ' (не тренд: правило среднего не записано)' : '');
   const many = series.length > 1;
-  const why = {
-    differs: 'opt-in-наборы решены иначе — другой состав тестов, с текущей серией несравнимо',
-    unknown: 'у одной из серий нет записи opt-in — сопоставимость не подтверждена',
+  const WHY = {
+    avgRule: {
+      differs: 'правило среднего другое (exception в среднем или вне его) — с текущей серией несравнимо',
+      unknown: 'у одной из серий правило среднего не записано — сопоставимость не подтверждена',
+    },
+    optin: {
+      differs: 'opt-in-наборы решены иначе — другой состав тестов, с текущей серией несравнимо',
+      unknown: 'у одной из серий нет записи opt-in — сопоставимость не подтверждена',
+    },
   };
-  return series.map((s) => {
-    const label = s.label ? `opt-in: ${s.label}`
-      : (many ? 'без записи opt-in' : '');
+  const why = (s) => Object.entries(s.relationBy || { optin: s.relation })
+    .map(([k, v]) => (WHY[k] || {})[v]).filter(Boolean).join('; ');
+  const anyOptin = series.some((s) => s.label);
+  // Смена правила видна строкой, а не только подсказкой: иначе разрыв тренда после
+  // обновления partest выглядит как потеря истории.
+  // Текст — по случаю: правило сменилось (записано у обеих и разное) или в прежних
+  // записях его нет. Хвост про следующий прогон — только пока у текущей серии одна точка.
+  const byRule = (v) => series.some((s) => s.relationBy && s.relationBy.avgRule === v);
+  const cur = series.find((s) => s.current) || series[0];
+  const oneNow = (cur.points || []).length < 2;
+  const ruleText = cur.avgRule === null && (byRule('differs') || byRule('unknown'))
+    ? 'У последнего прогона правило среднего не записано — прежние прогоны отдельной серией'
+    : byRule('differs')
+    ? 'Правило среднего сменилось (exception в среднем или вне его) — прежние прогоны отдельной серией'
+    : byRule('unknown')
+      ? 'В записях прежних прогонов правило среднего не записано — они отдельной серией' : '';
+  const ruleBreak = ruleText ? `<div class="warn">${ruleText}${
+    oneNow ? '; тренд — со следующего полного прогона' : ''}.</div>` : '';
+  return ruleBreak + series.map((s) => {
+    const label = [s.ruleLabel || '',
+      s.label ? `opt-in: ${s.label}` : (many && anyOptin ? 'без записи opt-in' : '')]
+      .filter(Boolean).join(', ');
     if (s.current) {
-      return `<div class="muted" title="только полные прогоны">Тренд покрытия `
-        + `(только полные прогоны${label ? ', ' + esc(label) : ''}): <b>${pts(s)}</b></div>`;
+      const one = (s.points || []).length < 2;
+      // одна точка — ещё не тренд: так начинается каждая новая серия
+      return `<div class="muted" title="только полные прогоны">${one
+        ? 'Покрытие последнего полного прогона' : 'Тренд покрытия'} `
+        + `(только полные прогоны${label ? ', ' + esc(label) : ''}): <b>${pts(s)}</b>${
+          one ? (ruleBreak ? '' : ' — тренд со следующего полного прогона')
+            : esc(notTrend(s))}</div>`;
     }
-    return `<div class="muted" title="${esc(why[s.relation] || '')}">отдельная серия — `
-      + `${esc(label)}: <b>${pts(s)}</b></div>`;
+    return `<div class="muted" title="${esc(why(s))}">отдельная серия — `
+      + `${esc(label)}: <b>${pts(s)}</b>${esc(notTrend(s))}</div>`;
   }).join('');
 }
 
@@ -1244,6 +1309,7 @@ async function loadRunner() {
     const d = await window.vehaApi.runner();
     RN.suites = d.suites || []; RN.history = d.history || []; RN.trend = d.trend || [];
     RN.trendSeries = d.trendSeries || [];
+    RN.historyState = d.historyState || null; RN.historyWrite = d.historyWrite || null;
     RN.busy = !!d.busy; RN.run = d.run || null;
   } catch (e) { RN.note = 'не прочитать: ' + e; }
   // «Live» тоже показывает наборы и историю: там кнопка «прогнать» у МР
@@ -1303,10 +1369,13 @@ function viewServices() {
       const rr = runBySvc[s.label] || runBySvc[s.key] || { fail: 0 };
       return `<tr class="click" data-set="service" data-val="${esc(s.label)}">
         <td>${esc(s.label)}</td><td class="num">${num(s.totalEndpoints)}</td>
-        <td class="num">${pct(s.avgCoverage)}</td>
+        ${s.avgCoverage == null || num(s.avgCoverage) === ''
+          // partest 2.7.0: у сервиса из одних exception среднего нет — не ноль
+          ? `<td class="num muted" title="${esc(`exception: ${num(s.exception) || 0}`)}">не измерено</td><td></td>`
+          : `<td class="num">${pct(s.avgCoverage)}</td>
         <td class="barcell"><i data-css="width:${num(s.avgCoverage) || 0}%;background:${
           s.avgCoverage >= 99 ? 'var(--ok)' : s.avgCoverage > 0 ? 'var(--part)' : 'var(--line-2)'
-        }"></i></td>
+        }"></i></td>`}
         <td class="num">${num(s.full)}</td><td class="num">${num(s.partial)}</td>
         <td class="num">${num(s.empty) || 0}</td><td class="num">${num(s.calls)}</td>
         <td class="num">${rr.fail ? `<span class="chip bad">${num(rr.fail)}</span>` : ''}</td>

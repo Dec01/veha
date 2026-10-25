@@ -175,8 +175,26 @@ def suites(cfg: Config) -> List[Suite]:
     return out
 
 
+def history_limit_checked(cfg: Config) -> Tuple[int, str]:
+    """Предел истории из `runner.history_limit` и предупреждение, если значение не годится.
+
+    Только целое ≥ 1. Не задан — :data:`HISTORY_LIMIT` молча. Ноль, отрицательное, не
+    целое (``bool``, дробь, строка) — тоже :data:`HISTORY_LIMIT`, но с предупреждением:
+    `append` агента с пределом < 1 стирает историю, а `int("10.5")` ронял бы запись.
+    """
+    raw = cfg.section("runner").get("history_limit")
+    if raw is None:
+        return HISTORY_LIMIT, ""
+    if isinstance(raw, int) and not isinstance(raw, bool) and raw >= 1:
+        return raw, ""
+    shown = repr(raw)
+    shown = shown if len(shown) <= 40 else shown[:39] + "…"
+    return HISTORY_LIMIT, (f"runner.history_limit: {shown} — не целое ≥ 1, взят предел "
+                           f"по умолчанию {HISTORY_LIMIT}")
+
+
 def history_limit(cfg: Config) -> int:
-    return int(cfg.section("runner").get("history_limit") or HISTORY_LIMIT)
+    return history_limit_checked(cfg)[0]
 
 
 #: Подпись состояния прогона для истории и интерфейса.
@@ -559,10 +577,14 @@ class Runner:
                 # завершает процесс через os._exit(1). Это не «завершён», а «оборван»
                 st.status = "aborted"
         if self._on_finish:
+            # Обработчик сам отвечает за то, чтобы сбой записи не потерялся (сервер
+            # показывает его в окне раннера); здесь — последний рубеж: поток наблюдения
+            # не должен умереть молча, и прогон получает пометку.
             try:
                 self._on_finish(st)
-            except Exception:
-                pass
+            except Exception as exc:
+                st.note = "; ".join(filter(None, [
+                    st.note, f"после прогона: {type(exc).__name__}"]))
 
 
 def scope_env(scope: Scope) -> Dict[str, str]:
@@ -582,35 +604,92 @@ def append_history(cfg: Config, scope: Scope, entry: dict) -> List[dict]:
                           collector="veha/runner")
 
 
-def coverage_snapshot(root: Path, *, suite_full: Optional[bool] = None) -> Dict[str, Any]:
-    """Срез покрытия на момент прогона — для тренда по истории.
+#: Правило среднего у отчёта без `meta.avgRule`: так считали все выпуски partest до
+#: 2.7.0 (`exception` — как 100 % внутри среднего). С 2.7.0 — правило 2: строки
+#: `exception` вне среднего и вне `covered`. Контракт `coverage-payload`: тренд и
+#: сравнение средних — только в пределах одного правила.
+DEFAULT_AVG_RULE = 1
+
+#: Больше любого настоящего номера правила — как у `partest-atlas` (`COUNT_LIMIT`).
+_RULE_LIMIT = 10**12
+
+
+def _rule(value: Any) -> Optional[int]:
+    """Номер правила среднего, как записан: целое не ``bool``; иначе ``None`` — неизвестно."""
+    if isinstance(value, bool) or not isinstance(value, int) or abs(value) > _RULE_LIMIT:
+        return None
+    return value
+
+
+def avg_rule_of(document: Any) -> Optional[int]:
+    """Правило среднего отчёта покрытия — ``meta.avgRule`` по тому же правилу, что у
+    `partest_atlas.collect.history.coverage_snapshot` (0.2.1).
+
+    Нет ``meta`` или нет ключа — :data:`DEFAULT_AVG_RULE`: так считали все прежние
+    выпуски partest. Ключ не целым числом или ``meta`` не объект — ``None``: о правиле
+    такой отчёт ничего не говорит, и «1» было бы догадкой.
+    """
+    if not isinstance(document, dict):
+        return None
+    if "meta" not in document:
+        return DEFAULT_AVG_RULE
+    meta = document["meta"]
+    if not isinstance(meta, dict):
+        return None
+    if "avgRule" not in meta:
+        return DEFAULT_AVG_RULE
+    return _rule(meta["avgRule"])
+
+
+def snapshot_of(document: Any, *, suite_full: Optional[bool] = None) -> Dict[str, Any]:
+    """Срез покрытия из прочитанного `coverage.json` — то, что сервер пишет в историю.
+
+    Сводку берёт код агента (`history.coverage_snapshot`); сервер дописывает то, что
+    знает только он, — частичность прогона, opt-in, — и правило среднего, если агент
+    его не записал (`partest-atlas` до 0.2.1): правило пишется в срез при любом
+    установленном агенте, иначе тренд не отличил бы новые прогоны от прежних.
 
     Частичный прогон в тренд со средним не кладётся: его процент считан по части набора
-    и с полным несравним. Пометка остаётся — что прогон был и почему без среднего.
-    Причины — :func:`veha.core.sources.partial_reasons`; набор, не объявленный полным,
-    — тоже причина.
+    и с полным несравним. По той же причине у него убираются и доли глубины
+    (``depth.statusPct``, ``depth.schemaPct`` — всё, что кончается на ``Pct``);
+    счётчики остаются, как остаются ``full``/``partial``/``empty``. Пометка остаётся —
+    что прогон был и почему без среднего. Причины —
+    :func:`veha.core.sources.partial_reasons`; набор, не объявленный полным, — тоже
+    причина.
 
     Запись opt-in-наборов (`meta.selection.optin`, partest ≥ 2.5.0) кладётся в срез
     ключом ``optin`` у любого прогона, полного и частичного: по ней тренд не смешивает
     прогоны с разными наборами. Нет ключа в отчёте — нет и в срезе: «не знаем» не
     превращается в «ничего не снято».
+
+    Отчёт — чужой файл: не объект — пустой срез; ``meta`` и ``meta.selection``, которые
+    не объекты, читаются как «нет».
     """
-    f = Path(root) / "coverage.json"
-    if not f.is_file():
+    if not isinstance(document, dict):
         return {}
-    try:
-        data = json.loads(f.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    snap = history.coverage_snapshot(data)
-    meta = data.get("meta") or {}
+    snap = history.coverage_snapshot(document)
+    if snap:
+        # Как у агента 0.2.1: правило пишется, если сводка дала хоть один ключ. Число
+        # строк `exception` агент до 0.2.1 не переносил, а без него тренд не знает, что
+        # правила 1 и 2 дали одно и то же число (:func:`effective_rule`).
+        snap.setdefault("avgRule", avg_rule_of(document))
+        summary = document.get("summary")
+        exc = summary.get("exception") if isinstance(summary, dict) else None
+        if isinstance(exc, int) and not isinstance(exc, bool) and 0 <= exc <= _RULE_LIMIT:
+            snap.setdefault("exception", exc)
+    meta = document.get("meta")
+    meta = meta if isinstance(meta, dict) else {}
     reasons = partial_reasons(meta, suite_full=suite_full)
     if reasons:
         snap.pop("avg", None)
+        depth = snap.get("depth")
+        if isinstance(depth, dict):
+            snap["depth"] = {k: v for k, v in depth.items() if not str(k).endswith("Pct")}
         snap["partialRun"] = True
         snap["partialReasons"] = reasons
         # запись opt-in — своим ключом ниже, а не второй копией внутри выбора
-        selection = {k: v for k, v in (meta.get("selection") or {}).items()
+        selection = meta.get("selection")
+        selection = {k: v for k, v in (selection if isinstance(selection, dict) else {}).items()
                      if k != "optin"}
         if selection:
             snap["selection"] = selection
@@ -620,64 +699,192 @@ def coverage_snapshot(root: Path, *, suite_full: Optional[bool] = None) -> Dict[
     return snap
 
 
-def _series_key(signature: Optional[tuple]) -> str:
-    """Имя серии тренда: пусто — прогоны без записи opt-in."""
-    if signature is None:
-        return ""
-    return "optin:" + ";".join(f"{name}={state or ''}" for name, state in signature)
+def coverage_snapshot(root: Path, *, suite_full: Optional[bool] = None) -> Dict[str, Any]:
+    """Срез покрытия на момент прогона — для тренда по истории (:func:`snapshot_of`).
+
+    Нет `coverage.json` или он не читается как JSON — пустой срез.
+    """
+    f = Path(root) / "coverage.json"
+    if not f.is_file():
+        return {}
+    try:
+        data = json.loads(f.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return snapshot_of(data, suite_full=suite_full)
+
+
+def current_rule_of(rule: Any) -> int:
+    """Правило текущей серии для срезов без строк `exception`: правило последней точки,
+    если оно 1 или 2, иначе 2."""
+    rule = _rule(rule)
+    return rule if rule in (1, 2) else 2
+
+
+def effective_rule(cov: Any, current: Any = 2) -> Optional[int]:
+    """Правило, под которым число среднего из среза надо сравнивать.
+
+    Без строк `exception` (``exception: 0``) правила 1 и 2 дают одно число — так говорит
+    и `partest.reports.compare` («a rule-1 side without such rows has the same number
+    under both»), — и такой срез относится к правилу **текущей** серии (*current*,
+    :func:`current_rule_of`): переход partest 2.6 → 2.7 без exception-строк, откат обратно
+    и проект на 2.6, у которого exception-строка появилась, серию не делят. Нет счётчика,
+    правило не 1 и не 2 или не записано — правило как записано (``None`` — неизвестно).
+    """
+    if not isinstance(cov, dict):
+        return None
+    rule = _rule(cov.get("avgRule"))
+    exc = cov.get("exception")
+    if rule in (1, 2) and exc == 0 and not isinstance(exc, bool):
+        return current_rule_of(current)
+    return rule
+
+
+def _series_key(rule: Optional[int], signature: Optional[tuple]) -> str:
+    """Имя серии тренда: правило среднего и состояния opt-in-наборов.
+
+    Пусто — прогоны без записи правила и без записи opt-in: так записаны все прогоны
+    сервера, пока он не писал правило, и имя их серии не меняется.
+    """
+    parts = []
+    if rule is not None:
+        parts.append(f"avgRule:{rule}")
+    if signature is not None:
+        parts.append("optin:" + ";".join(f"{name}={state or ''}" for name, state in signature))
+    return "|".join(parts)
+
+
+def _pair_relation(a: Any, b: Any) -> str:
+    """Различает ли признак две серии: ``same`` (равны или записи нет у обеих),
+    ``differs`` (записаны у обеих и разные), ``unknown`` (запись только у одной)."""
+    if a is None and b is None:
+        return "same"
+    if a is None or b is None:
+        return "unknown"
+    return "same" if a == b else "differs"
+
+
+def _trend_runs(runs: Any) -> List[Tuple[dict, dict]]:
+    """``(запись, срез)`` прогонов, дающих точку тренда."""
+    kept = []
+    for r in runs or []:
+        if not isinstance(r, dict):
+            continue
+        cov = r.get("coverage")
+        if not isinstance(cov, dict):
+            continue
+        # Любой тренд проверяет частичность: процент и доли частичного прогона — по
+        # части набора.
+        if cov.get("partialRun") or cov.get("avg") is None:
+            continue
+        if cov.get("endpoints") == 0:
+            continue
+        kept.append((r, cov))
+    return kept
+
+
+def _current_rule(kept: List[Tuple[dict, dict]]) -> int:
+    """Правило текущей серии — то, к которому относятся срезы без строк `exception`.
+
+    Ищется с конца. Точки без записанного правила пропускаются. Правило 2 с
+    ``exception: 0`` назначает 2 (так пишет partest 2.7.0). Правило 1 с ``exception: 0``
+    ничего не решает — по обоим правилам то же число, — и правило берётся у ближайшей
+    более ранней точки, которая решает; нет такой — 1. Иное записанное правило — оно,
+    если 1 или 2, иначе 2.
+    """
+    saw_neutral_1 = False
+    for _, cov in reversed(kept):
+        rule = _rule(cov.get("avgRule"))
+        if rule is None:
+            continue
+        exc = cov.get("exception")
+        neutral = exc == 0 and not isinstance(exc, bool)
+        if rule == 1 and neutral:
+            saw_neutral_1 = True
+            continue
+        return current_rule_of(rule)
+    return 1 if saw_neutral_1 else 2
+
+
+def current_rule(runs: Any) -> int:
+    """Правило текущей серии тренда по истории (:func:`_current_rule`)."""
+    return _current_rule(_trend_runs(runs))
 
 
 def trend(runs: List[dict]) -> List[Dict[str, Any]]:
     """Среднее покрытие по истории — только полные прогоны со средним.
 
-    Каждая точка помечена серией (``series``) — состоянием opt-in-наборов прогона.
-    Точки разных серий в одну линию не сводятся: см. :func:`trend_series`.
+    Каждая точка помечена серией (``series``) — правилом среднего (``avgRule``) и
+    состоянием opt-in-наборов прогона. Точки разных серий в одну линию не сводятся: см.
+    :func:`trend_series`.
 
     Срез с ``endpoints: 0`` в тренд не идёт: это отчёт, который ничего не посчитал
     (спецификация не загрузилась, `confpartest` не нашёлся), и его ``avg: 0`` — не
     «0 % покрытия», а отсутствие замера. До partest 2.6.0 такой отчёт выходил молча, и
     в истории проектов, где `confpartest` лежал в корне pytest вне `sys.path`, стоят
     нули; с 2.6.0 там появляются числа. Без отсечения тренд нарисовал бы рост с нуля,
-    которого не было.
+    которого не было. Срез с ``avg: null`` (partest 2.7.0: прогон без эндпоинтов или
+    только со строками `exception`) — тоже не точка.
     """
+    kept = _trend_runs(runs)
+    current = _current_rule(kept)
     out = []
-    for r in runs or []:
-        cov = r.get("coverage") or {}
-        if cov.get("partialRun") or cov.get("avg") is None:
-            continue
-        if cov.get("endpoints") == 0:
-            continue
+    for r, cov in kept:
         optin = normalize_optin(cov.get("optin"))
+        # Нет ключа (сервер ещё не писал правило, агент — до 0.2.1) или не целое —
+        # правило неизвестно: такой прогон мог быть посчитан и по правилу 1, и по 2.
+        # Без строк `exception` правила 1 и 2 — одно число (:func:`effective_rule`).
+        rule = effective_rule(cov, current)
         out.append({"startedAt": r.get("startedAt"), "avg": cov["avg"],
-                    "suite": r.get("suite"), "optin": optin,
-                    "series": _series_key(optin_signature(optin))})
+                    "suite": r.get("suite"), "optin": optin, "avgRule": rule,
+                    "series": _series_key(rule, optin_signature(optin))})
     return out
 
 
-def trend_series(runs: List[dict]) -> List[Dict[str, Any]]:
-    """Тренд, разложенный на серии по состоянию opt-in-наборов.
+def _rule_phrase(rule: Optional[int]) -> str:
+    return "правило среднего не записано" if rule is None else f"правило среднего {rule}"
 
-    Прогон со снятым набором и прогон с включённым — оба полные (`partialRun` partest
-    на opt-in не смотрит), но выполнили разные наборы тестов, и средний процент у них
-    про разное. Правило сравнимости — как у `partest.reports.compare`: если запись есть
-    у обоих и состояния наборов расходятся, прогоны несравнимы. Поэтому серия — это
-    прогоны с одинаковыми состояниями; число снятых тестов серию не делит.
+
+def trend_series(runs: List[dict]) -> List[Dict[str, Any]]:
+    """Тренд, разложенный на серии по правилу среднего и состоянию opt-in-наборов.
+
+    **Правило среднего** (`meta.avgRule` отчёта, в срезе — ``avgRule``): partest 2.7.0
+    вынес строки `exception` из среднего, и на прогоне с такими строками среднее
+    опустилось, хотя тесты те же. Контракт `coverage-payload`: тренд — только в пределах
+    одного правила, поэтому правила 1 и 2 — разные серии. Прогоны без записи правила
+    (история, записанная, пока сервер не писал правило, а агент был до 0.2.1) — своя
+    серия «правило не записано»: тот прогон мог идти и под partest 2.7.0.
+
+    **opt-in.** Прогон со снятым набором и прогон с включённым — оба полные
+    (`partialRun` partest на opt-in не смотрит), но выполнили разные наборы тестов, и
+    средний процент у них про разное. Правило сравнимости — как у
+    `partest.reports.compare`: если запись есть у обоих и состояния наборов расходятся,
+    прогоны несравнимы. Число снятых тестов серию не делит.
 
     Серии, а не исключение: ночной прогон с `RUN_SLOW=1` и дневной без него — два
     законных тренда, и выбросить один из них ради другого значит потерять ровно ту
     историю, которую смотрят после правки медленных тестов.
 
-    Прогоны без записи (partest до 2.5.0, проект без наборов) — своя серия. `compare`
-    для пары «есть запись / нет записи» ставит только пометку, но в тренде на этой
-    границе обычно и появляется набор: до неё медленные тесты шли в общем прогоне,
-    после — сняты. Свести их в одну линию значит нарисовать падение, которого не было.
+    Прогоны без записи opt-in (partest до 2.5.0, проект без наборов) — своя серия.
+    `compare` для пары «есть запись / нет записи» ставит только пометку, но в тренде на
+    этой границе обычно и появляется набор. Свести их в одну линию значит нарисовать
+    падение, которого не было.
 
     Первой идёт серия последнего полного прогона с замером (``current``): частичный
     прогон и отчёт, который ничего не посчитал, точек не дают и текущую серию не
-    назначают — иначе серия без единой точки стала бы «текущей». Остальные — по
-    свежести. ``relation`` — как серия соотносится с текущей: ``differs`` (записи у
-    обеих, состояния разные — несравнимы), ``unknown`` (у одной из двух записи нет —
-    сопоставимость не подтверждена).
+    назначают. Остальные — по свежести. ``relation`` — как серия соотносится с текущей:
+    ``differs`` (правило или opt-in записаны у обеих и разные — несравнимы), иначе
+    ``unknown`` (правило или opt-in записаны только у одной — сопоставимость не
+    подтверждена). ``relationBy`` — то же по каждому признаку (``avgRule``, ``optin``).
+    Подпись — ``label`` (состояния opt-in) и ``ruleLabel`` (правило; пусто, если по
+    правилу серии не расходятся).
+
+    Правило сравнивается действующее (:func:`effective_rule`): без строк `exception`
+    правила 1 и 2 дают одно число и серию не делят.
+
+    ``isTrend: false`` — у серии без записи правила: её точки могли быть посчитаны по
+    разным правилам (partest обновили до 2.7.0 раньше, чем сервер стал писать правило:
+    75 → 75 → 50 → 50), и линией их не соединяют — только значения.
     """
     points = trend(runs)
     if not points:
@@ -687,15 +894,26 @@ def trend_series(runs: List[dict]) -> List[Dict[str, Any]]:
         g = groups.setdefault(p["series"], {"series": p["series"], "points": []})
         g["points"].append({k: p[k] for k in ("startedAt", "avg", "suite")})
         g["optin"] = p["optin"]                      # подпись — по самой свежей точке
-    current = points[-1]["series"]
-    ordered = sorted(groups.values(), key=lambda g: (g["series"] != current,
+        g["avgRule"] = p["avgRule"]
+    current = groups[points[-1]["series"]]
+    ordered = sorted(groups.values(), key=lambda g: (g is not current,
                                                      -_last_started(g)))
+    rules_differ = len({g["avgRule"] for g in ordered}) > 1
     for g in ordered:
-        g["current"] = g["series"] == current
+        g["current"] = g is current
         g["label"] = "; ".join(optin_phrases(g["optin"], counts=False))
-        g["relation"] = ("same" if g["current"]
-                         else "unknown" if "" in (g["series"], current)
-                         else "differs")
+        g["ruleLabel"] = _rule_phrase(g["avgRule"]) if rules_differ else ""
+        g["isTrend"] = g["avgRule"] is not None
+        if g["current"]:
+            g["relation"] = "same"
+            g["relationBy"] = {"avgRule": "same", "optin": "same"}
+            continue
+        by = {"avgRule": _pair_relation(g["avgRule"], current["avgRule"]),
+              "optin": _pair_relation(optin_signature(g["optin"]),
+                                      optin_signature(current["optin"]))}
+        g["relationBy"] = by
+        g["relation"] = ("differs" if "differs" in by.values()
+                         else "unknown" if "unknown" in by.values() else "same")
     return ordered
 
 

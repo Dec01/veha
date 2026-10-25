@@ -28,6 +28,7 @@ import subprocess
 from contextlib import asynccontextmanager
 import sys
 import threading
+import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 from urllib.parse import urlsplit
@@ -114,6 +115,9 @@ class Server:
         # флагом: иначе процесс, запущенный в момент остановки, ускользнул бы.
         self._proc_lock = threading.Lock()
         self.closing = False
+        # Чем кончилась последняя запись прогона в историю (`_remember_run`): окно
+        # раннера показывает пропуск и сбой. `None` — с запуска сервера не писали.
+        self.history_write: Optional[dict] = None
 
     def remember_rerun(self, proc: Any) -> None:
         """Запомнить процесс перезапуска. Если сервер уже останавливается — убить сразу."""
@@ -453,7 +457,44 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
 
     # ---------------------------------------------------------------- раннер
     def _remember_run(state, scope: Scope) -> None:
-        """Записать прогон в историю вместе с состоянием стенда и покрытием."""
+        """Записать прогон в историю вместе с состоянием стенда и покрытием.
+
+        Чем кончилась запись — в ``srv.history_write`` (окно раннера показывает его
+        строкой): пропуск и сбой не теряются молча. Граф сбрасывается в любом случае —
+        и после сбоя: прогон мог переписать артефакты и `coverage.json`.
+        """
+        try:
+            srv.history_write = _write_run(state, scope)
+        except Exception as exc:
+            srv.history_write = _history_outcome(
+                "error", f"запись прогона не удалась: {_error_text(exc)}",
+                veha_runner.history_limit_checked(srv.cfg)[1])
+        finally:
+            srv.drop_graph()
+
+    def _error_text(exc: BaseException) -> str:
+        """Причина сбоя для вебморды — без абсолютных путей.
+
+        У ``OSError`` — тип, ``strerror`` и только имя файла: путь называет каталог
+        данных и домашний каталог. У прочих — тип и текст через `redact`, с корнем
+        данных и домашним каталогом, заменёнными на метки.
+        """
+        if isinstance(exc, OSError):
+            name = Path(str(exc.filename)).name if exc.filename else ""
+            why = exc.strerror or "ошибка ввода-вывода"
+            return f"{type(exc).__name__}: {why}" + (f" ({name})" if name else "")
+        text = redact.text(str(exc))
+        for path, mark in ((str(srv.root), "<каталог данных>"),
+                           (str(Path.home()), "<домашний каталог>")):
+            if path and len(path) > 3:
+                text = text.replace(path, mark).replace(path.replace("\\", "/"), mark)
+        return f"{type(exc).__name__}: {text[:300]}"
+
+    def _history_outcome(state: str, reason: str = "", note: str = "") -> dict:
+        return {"state": state, "reason": reason, "at": time.time(),
+                **({"note": note} if note else {})}
+
+    def _write_run(state, scope: Scope) -> dict:
         entry = state.as_dict()
         suite = next((s for s in veha_runner.suites(srv.cfg) if s.key == state.suite), None)
         entry["suiteFull"] = bool(suite and suite.full)
@@ -466,9 +507,17 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         # xdist строки другие, и пересчёт молча давал нули.
         finished = state.status == "done" and state.complete
         fresh = cov.is_file() and cov.stat().st_mtime >= state.started
-        entry["coverage"] = (
-            veha_runner.coverage_snapshot(srv.root, suite_full=entry["suiteFull"])
-            if finished and fresh else {"note": "покрытие этим прогоном не записано"})
+        if finished and fresh:
+            try:
+                entry["coverage"] = veha_runner.coverage_snapshot(
+                    srv.root, suite_full=entry["suiteFull"])
+            except Exception as exc:
+                # Срез снимает код агента над чужим файлом; не снялся — прогон всё
+                # равно записывается, с причиной вместо среза.
+                entry["coverage"] = {"note": "срез покрытия не снят: "
+                                             f"{type(exc).__name__}"}
+        else:
+            entry["coverage"] = {"note": "покрытие этим прогоном не записано"}
         try:
             srv.live.invalidate("containers")
             c = srv.live.containers(ttl=0)
@@ -493,15 +542,32 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
                 srv.live.invalidate("mrs")
             except Exception:
                 pass
-        # Пока формат агента: `history.append` дописывает поверх файла, которого не
-        # понял (новее схемы, битый): такой файл не перезаписываем — дописка уничтожила
-        # бы чужие записи. Состояние берётся с диска сейчас, а не из закэшированного
-        # графа: файл мог поменяться за время прогона.
+        # Пока пол partest-atlas ниже 0.2.1: `history.append` агента 0.1–0.2.0 дописывает
+        # поверх файла, которого не понял (новее схемы, битый), и уничтожает его записи;
+        # с 0.2.1 он такой файл не трогает сам. До подъёма пола файл проверяется здесь.
+        # Состояние берётся с диска сейчас, а не из закэшированного графа: файл мог
+        # поменяться за время прогона.
         path = scope.path(srv.cfg.artifacts_dir, atlas_history.KIND)
         hist, _ = core_sources.inspect(path, atlas_history.KIND, scope, srv.root)
-        if hist.state in ("ok", "missing"):
-            veha_runner.append_history(srv.cfg, scope, entry)
-        srv.drop_graph()
+        if hist.state not in ("ok", "missing"):
+            return _history_outcome(
+                "skipped", f"файл истории не понят ({hist.state}) — прогон не записан, "
+                           "файл не тронут")
+        # Предел — только целое ≥ 1 (`history_limit_checked`): с пределом < 1 агент стёр
+        # бы историю. Негодное значение — предел по умолчанию и видимая пометка.
+        _, limit_note = veha_runner.history_limit_checked(srv.cfg)
+        runs = veha_runner.append_history(srv.cfg, scope, entry)
+        # Агент 0.2.1 не трогает файл, которого не понял, и не записанный файл
+        # (занят, нет места или прав): предупреждение `UnreadableHistory` и пустой
+        # список. Предупреждение из потока раннера ловить нечестно — фильтр
+        # `warnings` общий на процесс, — поэтому судим по возврату: при пределе ≥ 1
+        # записанная история не бывает пустой.
+        if not runs:
+            return _history_outcome(
+                "skipped", "partest-atlas не записал прогон: файл истории не понят или "
+                           "не записан, файл не тронут (причина — в выводе сервера)",
+                limit_note)
+        return _history_outcome("written", note=limit_note)
 
     @app.get("/api/runner/suites")
     def runner_suites() -> dict:
@@ -509,32 +575,49 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         hist = next((a for a in arts["artifacts"] if a["kind"] == atlas_history.KIND), {})
         last = srv.last_sources
         history = last.artifacts.payload(atlas_history.KIND) if last else []
+        series = veha_runner.trend_series(history)
+        current_rule = series[0]["avgRule"] if series else None
+        neutral_rule = veha_runner.current_rule(history)
         return {
             "suites": [{"key": s.key, "label": s.label, "args": s.args, "note": s.note,
                         "full": s.full}
                        for s in veha_runner.suites(srv.cfg)],
-            "history": [_with_optin_text(h) for h in history],
+            "history": [_for_window(h, current_rule, neutral_rule, bool(series))
+                        for h in history],
             "historyState": hist.get("state"),
+            # Последняя запись прогона в историю: `written`, `skipped` (файл не понят —
+            # не тронут) или `error`, с причиной. Состояние файла — `historyState`.
+            "historyWrite": srv.history_write,
             # Тренд среднего покрытия — только по полным прогонам: процент частичного
             # прогона посчитан по части набора и с полным несравним. Точки помечены
             # серией opt-in; показывается разложение `trendSeries`, а не одна линия.
             "trend": veha_runner.trend(history),
-            "trendSeries": veha_runner.trend_series(history),
+            "trendSeries": series,
             "readonly": srv.readonly,
             **srv.runner.status(),
         }
 
-    def _with_optin_text(entry: Any) -> Any:
-        """Запись истории для окна раннера: к записи opt-in — готовая подпись.
+    def _for_window(entry: Any, current_rule: Any, neutral_rule: int,
+                    has_series: bool) -> Any:
+        """Запись истории для окна раннера: к записи opt-in — готовая подпись; к среднему,
+        посчитанному не по правилу текущей серии тренда, — пометка правила (``ruleMark``).
 
         Копия, а не правка: история — артефакт агента, и в нём остаётся то, что
         записано.
         """
         cov = entry.get("coverage") if isinstance(entry, dict) else None
-        if not isinstance(cov, dict) or "optin" not in cov:
+        if not isinstance(cov, dict):
             return entry
-        optin = core_sources.normalize_optin(cov.get("optin"))
-        return {**entry, "coverage": {**cov, "optinText": core_sources.optin_phrases(optin)}}
+        extra: Dict[str, Any] = {}
+        if "optin" in cov:
+            optin = core_sources.normalize_optin(cov.get("optin"))
+            extra["optinText"] = core_sources.optin_phrases(optin)
+        if has_series and cov.get("avg") is not None:
+            rule = veha_runner.effective_rule(cov, neutral_rule)
+            if rule != current_rule:
+                extra["ruleMark"] = ("правило не записано" if rule is None
+                                     else f"правило {rule}")
+        return {**entry, "coverage": {**cov, **extra}} if extra else entry
 
     def _mr_context(iid: int) -> dict:
         try:

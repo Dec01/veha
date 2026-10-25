@@ -118,8 +118,11 @@ class ArtifactStatus:
 class ScopeChoice:
     scope: Scope
     how: str
-    #: `False` — на диске несколько областей, и ни одна не выбрана. Сервер показывает
-    #: пустоту с требованием выбрать и ничего в такую область не пишет.
+    #: `False` — на диске несколько областей, и ни одна не выбрана. Артефакты из
+    #: `atlas/` не читаются ни из одной (все — `missing`), а `coverage.json`, Allure,
+    #: `atlas.yaml` и `app_map` от области не зависят и показываются; в шапке — значок
+    #: «область не выбрана», причина — в подсказке к нему и в выводе при старте. Прогон
+    #: и перезапуск отвечают 409, история не пишется: в такую область сервер не пишет.
     chosen: bool = True
 
     @property
@@ -524,17 +527,20 @@ def partial_reasons(meta: Dict[str, Any], *, suite_full: Optional[bool] = None) 
     Выбор по путям partest не помечает — его знает только тот, кто запускал: набор
     раннера, не объявленный полным (`suite_full=False`), — отдельная причина.
     """
-    meta = meta or {}
+    # Отчёт — чужой файл: `meta` и `selection`, которые не объекты, читаются как «нет»,
+    # `workers` не числом — как один воркер.
+    meta = meta if isinstance(meta, dict) else {}
     reasons: List[str] = []
     if suite_full is False:
         reasons.append("выбор набора")
     if not meta.get("partialRun"):
         return reasons
     named: List[str] = []
-    selection = meta.get("selection") or {}
+    selection = meta.get("selection")
+    selection = selection if isinstance(selection, dict) else {}
     if selection.get("markexpr") or selection.get("keyword"):
         named.append("выбор -m/-k")
-    if int(meta.get("workers") or 1) > 1 and not meta.get("merged"):
+    if _count(meta.get("workers")) > 1 and not meta.get("merged"):
         named.append("воркеры не слиты")
     ratio = meta.get("unseenRatio")
     if not named:

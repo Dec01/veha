@@ -1,0 +1,233 @@
+{
+ "meta": {
+  "generated": "2026-10-25 10:00 UTC",
+  "engine": "partest",
+  "title": "veha fixture",
+  "defaultExcluded": [],
+  "workers": 1,
+  "merged": false,
+  "partialRun": false,
+  "callsTotal": 13,
+  "unseenRatio": 0.0,
+  "tlsVerified": true,
+  "tlsUnverifiedHosts": [],
+  "tlsUnknownHosts": []
+ },
+ "summary": {
+  "avg": 75.0,
+  "calls": 13,
+  "full": 1,
+  "partial": 1,
+  "empty": 1,
+  "exception": 3,
+  "endpoints": 6,
+  "avgAll": 75.0
+ },
+ "services": [
+  {
+   "key": "probes",
+   "label": "probes",
+   "totalEndpoints": 2,
+   "covered": 2,
+   "calls": 4,
+   "full": 0,
+   "partial": 0,
+   "empty": 0,
+   "exception": 2,
+   "avgCoverage": 100.0
+  },
+  {
+   "key": "orders",
+   "label": "orders",
+   "totalEndpoints": 4,
+   "covered": 3,
+   "calls": 9,
+   "full": 1,
+   "partial": 1,
+   "empty": 1,
+   "exception": 1,
+   "avgCoverage": 62.5
+  }
+ ],
+ "subtypes": [
+  {
+   "key": "crud",
+   "label": "CRUD",
+   "avgCoverage": 75.0,
+   "count": 6,
+   "calls": 13,
+   "full": 1,
+   "partial": 1,
+   "empty": 1
+  }
+ ],
+ "methods": [
+  {
+   "method": "DELETE",
+   "avgCoverage": 0.0,
+   "count": 1,
+   "calls": 1
+  },
+  {
+   "method": "GET",
+   "avgCoverage": 100.0,
+   "count": 4,
+   "calls": 9
+  },
+  {
+   "method": "POST",
+   "avgCoverage": 50.0,
+   "count": 1,
+   "calls": 3
+  }
+ ],
+ "missingTop": [
+  {
+   "tc": "negative",
+   "count": 1
+  },
+  {
+   "tc": "positive",
+   "count": 1
+  }
+ ],
+ "heatmap": {
+  "services": [
+   {
+    "key": "orders",
+    "label": "orders"
+   },
+   {
+    "key": "probes",
+    "label": "probes"
+   }
+  ],
+  "subtypes": [
+   {
+    "key": "crud",
+    "label": "CRUD"
+   }
+  ],
+  "cells": [
+   {
+    "service": "orders",
+    "subtype": "crud",
+    "avg": 62.5,
+    "count": 4
+   },
+   {
+    "service": "probes",
+    "subtype": "crud",
+    "avg": 100.0,
+    "count": 2
+   }
+  ]
+ },
+ "endpoints": [
+  {
+   "method": "GET",
+   "path": "/api/v1/orders",
+   "service": "orders",
+   "serviceLabel": "orders",
+   "subtype": "CRUD",
+   "subtypeKey": "crud",
+   "calls": 4,
+   "coverage": 100.0,
+   "status": "full",
+   "kind": "full",
+   "executed": [
+    "positive",
+    "negative"
+   ],
+   "missing": [],
+   "description": ""
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/orders",
+   "service": "orders",
+   "serviceLabel": "orders",
+   "subtype": "CRUD",
+   "subtypeKey": "crud",
+   "calls": 3,
+   "coverage": 50.0,
+   "status": "partial",
+   "kind": "partial",
+   "executed": [
+    "positive"
+   ],
+   "missing": [
+    "negative"
+   ],
+   "description": ""
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/orders/{id}",
+   "service": "orders",
+   "serviceLabel": "orders",
+   "subtype": "CRUD",
+   "subtypeKey": "crud",
+   "calls": 1,
+   "coverage": 0.0,
+   "status": "empty",
+   "kind": "empty",
+   "executed": [],
+   "missing": [
+    "positive"
+   ],
+   "description": ""
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/orders/health",
+   "service": "orders",
+   "serviceLabel": "orders",
+   "subtype": "CRUD",
+   "subtypeKey": "crud",
+   "calls": 1,
+   "coverage": 100.0,
+   "status": "exception",
+   "kind": "exception",
+   "executed": [
+    "health"
+   ],
+   "missing": [],
+   "description": ""
+  },
+  {
+   "method": "GET",
+   "path": "/health",
+   "service": "probes",
+   "serviceLabel": "probes",
+   "subtype": "CRUD",
+   "subtypeKey": "crud",
+   "calls": 2,
+   "coverage": 100.0,
+   "status": "exception",
+   "kind": "exception",
+   "executed": [
+    "health"
+   ],
+   "missing": [],
+   "description": ""
+  },
+  {
+   "method": "GET",
+   "path": "/ready",
+   "service": "probes",
+   "serviceLabel": "probes",
+   "subtype": "CRUD",
+   "subtypeKey": "crud",
+   "calls": 2,
+   "coverage": 100.0,
+   "status": "exception",
+   "kind": "exception",
+   "executed": [
+    "health"
+   ],
+   "missing": [],
+   "description": ""
+  }
+ ]
+}

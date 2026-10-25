@@ -297,8 +297,8 @@ window.Map2D = (function () {
       let yy = TOP - 6;
       c.items.sort((a, b) => declaredOrder.get(a) - declaredOrder.get(b)).forEach((b) => {
         const x0 = c.x;
-        const known = b.eps.map((n) => n.meta.coverage).filter((v) => v != null && Number.isFinite(Number(v)));
-        const avg = known.length ? known.reduce((a, v) => a + Number(v), 0) / known.length : null;
+        // правилом отчёта: при `meta.avgRule: 2` строки exception вне среднего, как у partest
+        const avg = window.vehaApi.coverageAverage(G, b.eps).value;
         const cnt = { ok: 0, part: 0, none: 0, unseen: 0 };
         b.eps.forEach((n) => { cnt[cov(n)] += 1; });
         const failed = b.eps.filter((n) => n.meta.runStatus === 'failed').length;

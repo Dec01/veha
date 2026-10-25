@@ -1562,7 +1562,9 @@ function renderSummary() {
   const body = document.getElementById('p-body');
   body.innerHTML = `
     <div class="big">${noAvg ? '—' : recNum(s.avg) + ' %'}</div>
-    <p class="delta">${noAvg && s.avg === null ? 'не посчитано: отчёт пуст'
+    <p class="delta">${noAvg && s.avg === null
+      // partest 2.7.0: `null` и при эндпоинтах — если все они exception (вне среднего)
+      ? (recNum(s.endpoints) > 0 ? 'не посчитано: только exception' : 'не посчитано: отчёт пуст')
       : delta == null ? 'по методике partest'
       : `<span class="${delta >= 0 ? 'up' : ''}">${delta >= 0 ? '▲' : '▼'} ${Math.abs(delta)} п. п.</span> к прошлому прогону`}</p>
     ${recNum(r.runsFound) > 1 ? `<div class="warn">В <code>allure-results</code> ${recNum(r.runsFound)}

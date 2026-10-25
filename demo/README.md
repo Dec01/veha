@@ -135,8 +135,13 @@ python demo/generate.py
 Правки руками в `veha/demo_data/atlas.yaml`, `veha/demo_data/app_map.yaml`,
 `veha/demo_data/atlas/` и `veha/demo_data/live/` перетрутся — менять нужно модель
 в начале `demo/generate.py`. Генератору нужен установленный
-`partest-atlas`: заголовки артефактов проверяются его `validate`, а контракт,
-схема БД, связи UI, требования и логи контейнеров собираются его же функциями.
+`partest-atlas` не ниже 0.2.1: заголовки артефактов проверяются его `validate`,
+контракт, схема БД, связи UI, требования и логи контейнеров собираются его же
+функциями, а срезы покрытия в истории прогонов снимает код сервера
+(`veha.runner.snapshot_of`) поверх его `collect.history.coverage_snapshot` —
+до 0.2.1 тот не переносил `exception`, `scored` и `depth`, и генератор на нём
+не запускается. `coverage.json` набора — в форме partest 2.7.0: правило среднего
+`meta.avgRule: 2`, `summary.exception`, `scored`, `depth` и глубина у строк.
 
 ## Ограничения демонстрационной сборки
 

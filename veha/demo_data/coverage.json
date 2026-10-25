@@ -9,6 +9,7 @@
   "partialRun": false,
   "callsTotal": 2030,
   "unseenRatio": 0.0409,
+  "avgRule": 2,
   "timingSamples": 2030,
   "timingUnmatched": 86,
   "selection": {
@@ -99,6 +100,15 @@
   "empty": 9,
   "exception": 0,
   "endpoints": 171,
+  "scored": 171,
+  "depth": {
+   "cells": 551,
+   "status": 505,
+   "schema": 301,
+   "values": null,
+   "statusPct": 91.65,
+   "schemaPct": 54.63
+  },
   "avgAll": 66.05,
   "msAvg": 155.6,
   "msP50": 147.8,
@@ -111,6 +121,7 @@
    "key": "enums",
    "label": "Enums",
    "count": 5,
+   "scored": 5,
    "calls": 41,
    "full": 5,
    "partial": 0,
@@ -124,6 +135,7 @@
    "key": "payments",
    "label": "Payments",
    "count": 7,
+   "scored": 7,
    "calls": 120,
    "full": 6,
    "partial": 1,
@@ -137,6 +149,7 @@
    "key": "orders",
    "label": "Orders",
    "count": 11,
+   "scored": 11,
    "calls": 253,
    "full": 9,
    "partial": 2,
@@ -150,6 +163,7 @@
    "key": "carts",
    "label": "Carts",
    "count": 7,
+   "scored": 7,
    "calls": 143,
    "full": 6,
    "partial": 1,
@@ -163,6 +177,7 @@
    "key": "products",
    "label": "Products",
    "count": 8,
+   "scored": 8,
    "calls": 157,
    "full": 6,
    "partial": 2,
@@ -176,6 +191,7 @@
    "key": "categories",
    "label": "Categories",
    "count": 6,
+   "scored": 6,
    "calls": 77,
    "full": 4,
    "partial": 2,
@@ -189,6 +205,7 @@
    "key": "variants",
    "label": "Variants",
    "count": 6,
+   "scored": 6,
    "calls": 119,
    "full": 4,
    "partial": 2,
@@ -202,6 +219,7 @@
    "key": "prices",
    "label": "Prices",
    "count": 7,
+   "scored": 7,
    "calls": 91,
    "full": 4,
    "partial": 3,
@@ -215,6 +233,7 @@
    "key": "customers",
    "label": "Customers",
    "count": 7,
+   "scored": 7,
    "calls": 136,
    "full": 4,
    "partial": 3,
@@ -228,6 +247,7 @@
    "key": "warehouses",
    "label": "Warehouses",
    "count": 5,
+   "scored": 5,
    "calls": 61,
    "full": 2,
    "partial": 3,
@@ -241,6 +261,7 @@
    "key": "suppliers",
    "label": "Suppliers",
    "count": 6,
+   "scored": 6,
    "calls": 58,
    "full": 1,
    "partial": 5,
@@ -254,6 +275,7 @@
    "key": "purchases",
    "label": "Purchase Orders",
    "count": 8,
+   "scored": 8,
    "calls": 124,
    "full": 0,
    "partial": 8,
@@ -267,6 +289,7 @@
    "key": "shipments",
    "label": "Shipments",
    "count": 7,
+   "scored": 7,
    "calls": 117,
    "full": 0,
    "partial": 7,
@@ -280,6 +303,7 @@
    "key": "accounts",
    "label": "Accounts",
    "count": 6,
+   "scored": 6,
    "calls": 56,
    "full": 0,
    "partial": 6,
@@ -293,6 +317,7 @@
    "key": "invoices",
    "label": "Invoices",
    "count": 6,
+   "scored": 6,
    "calls": 72,
    "full": 0,
    "partial": 6,
@@ -306,6 +331,7 @@
    "key": "returns",
    "label": "Returns",
    "count": 6,
+   "scored": 6,
    "calls": 77,
    "full": 0,
    "partial": 6,
@@ -319,6 +345,7 @@
    "key": "stock",
    "label": "Stock",
    "count": 7,
+   "scored": 7,
    "calls": 69,
    "full": 0,
    "partial": 7,
@@ -332,6 +359,7 @@
    "key": "roles",
    "label": "Roles & Permissions",
    "count": 4,
+   "scored": 4,
    "calls": 21,
    "full": 0,
    "partial": 4,
@@ -345,6 +373,7 @@
    "key": "reviews",
    "label": "Reviews",
    "count": 7,
+   "scored": 7,
    "calls": 44,
    "full": 0,
    "partial": 7,
@@ -358,6 +387,7 @@
    "key": "promotions",
    "label": "Promotions",
    "count": 6,
+   "scored": 6,
    "calls": 37,
    "full": 0,
    "partial": 6,
@@ -371,6 +401,7 @@
    "key": "campaigns",
    "label": "Campaigns",
    "count": 7,
+   "scored": 7,
    "calls": 51,
    "full": 0,
    "partial": 7,
@@ -384,6 +415,7 @@
    "key": "segments",
    "label": "Segments",
    "count": 6,
+   "scored": 6,
    "calls": 38,
    "full": 0,
    "partial": 6,
@@ -397,6 +429,7 @@
    "key": "subscriptions",
    "label": "Subscriptions",
    "count": 6,
+   "scored": 6,
    "calls": 24,
    "full": 0,
    "partial": 6,
@@ -410,6 +443,7 @@
    "key": "loyalty",
    "label": "Loyalty",
    "count": 5,
+   "scored": 5,
    "calls": 15,
    "full": 0,
    "partial": 5,
@@ -423,6 +457,7 @@
    "key": "gift-cards",
    "label": "Gift Cards",
    "count": 4,
+   "scored": 4,
    "calls": 9,
    "full": 0,
    "partial": 3,
@@ -436,6 +471,7 @@
    "key": "refunds",
    "label": "Refunds",
    "count": 4,
+   "scored": 4,
    "calls": 12,
    "full": 0,
    "partial": 2,
@@ -449,6 +485,7 @@
    "key": "notifications",
    "label": "Notifications",
    "count": 4,
+   "scored": 4,
    "calls": 4,
    "full": 0,
    "partial": 1,
@@ -462,6 +499,7 @@
    "key": "audit",
    "label": "Audit",
    "count": 3,
+   "scored": 3,
    "calls": 4,
    "full": 0,
    "partial": 0,
@@ -477,6 +515,7 @@
    "key": "get_static_object",
    "label": "GET STATIC OBJECT",
    "count": 7,
+   "scored": 7,
    "calls": 49,
    "full": 6,
    "partial": 0,
@@ -488,6 +527,7 @@
    "key": "put_object",
    "label": "PUT OBJECT",
    "count": 20,
+   "scored": 20,
    "calls": 256,
    "full": 7,
    "partial": 13,
@@ -499,6 +539,7 @@
    "key": "get_by_parent",
    "label": "GET BY PARENT",
    "count": 19,
+   "scored": 19,
    "calls": 171,
    "full": 6,
    "partial": 12,
@@ -510,6 +551,7 @@
    "key": "delete_object",
    "label": "DELETE OBJECT",
    "count": 17,
+   "scored": 17,
    "calls": 121,
    "full": 4,
    "partial": 13,
@@ -521,6 +563,7 @@
    "key": "get_by_self",
    "label": "GET BY SELF / SCOPE",
    "count": 1,
+   "scored": 1,
    "calls": 7,
    "full": 0,
    "partial": 1,
@@ -532,6 +575,7 @@
    "key": "action",
    "label": "ACTION",
    "count": 23,
+   "scored": 23,
    "calls": 227,
    "full": 7,
    "partial": 16,
@@ -543,6 +587,7 @@
    "key": "get_dynamic_object",
    "label": "GET DYNAMIC OBJECT",
    "count": 28,
+   "scored": 28,
    "calls": 191,
    "full": 9,
    "partial": 16,
@@ -554,6 +599,7 @@
    "key": "get_list_objects",
    "label": "GET LIST OBJECTS",
    "count": 30,
+   "scored": 30,
    "calls": 340,
    "full": 7,
    "partial": 21,
@@ -565,6 +611,7 @@
    "key": "post_create_object",
    "label": "POST CREATE OBJECT",
    "count": 26,
+   "scored": 26,
    "calls": 668,
    "full": 5,
    "partial": 19,
@@ -578,25 +625,33 @@
    "method": "DELETE",
    "count": 17,
    "calls": 121,
-   "avgCoverage": 69.12
+   "avgCoverage": 69.12,
+   "scored": 17,
+   "exception": 0
   },
   {
    "method": "GET",
    "count": 85,
    "calls": 758,
-   "avgCoverage": 65.98
+   "avgCoverage": 65.98,
+   "scored": 85,
+   "exception": 0
   },
   {
    "method": "POST",
    "count": 49,
    "calls": 895,
-   "avgCoverage": 62.92
+   "avgCoverage": 62.92,
+   "scored": 49,
+   "exception": 0
   },
   {
    "method": "PUT",
    "count": 20,
    "calls": 256,
-   "avgCoverage": 71.43
+   "avgCoverage": 71.43,
+   "scored": 20,
+   "exception": 0
   }
  ],
  "missingTop": [
@@ -1763,6 +1818,12 @@
    ],
    "missing": [],
    "description": "Список: Products",
+   "depth": {
+    "cells": 6,
+    "status": 5,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 20,
     "msAvg": 105.8,
@@ -1832,6 +1893,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Products",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 60,
     "msAvg": 214.5,
@@ -1893,6 +1960,12 @@
    ],
    "missing": [],
    "description": "Карточка: Products",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 106.6,
@@ -1952,6 +2025,12 @@
    ],
    "missing": [],
    "description": "Изменение: Products",
+   "depth": {
+    "cells": 7,
+    "status": 7,
+    "schema": 6,
+    "values": null
+   },
    "timing": {
     "n": 15,
     "msAvg": 121.1,
@@ -2023,6 +2102,12 @@
    ],
    "missing": [],
    "description": "Удаление: Products",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 82.4,
@@ -2081,6 +2166,12 @@
    ],
    "missing": [],
    "description": "Поиск по каталогу",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 17,
     "msAvg": 170.6,
@@ -2148,6 +2239,12 @@
     "RequestPermissions"
    ],
    "description": "Варианты товара",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 13,
     "msAvg": 120.5,
@@ -2199,6 +2296,12 @@
    ],
    "missing": [],
    "description": "Снять с продажи",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 90.4,
@@ -2258,6 +2361,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Categories",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 15,
     "msAvg": 212.9,
@@ -2322,6 +2431,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Categories",
+   "depth": {
+    "cells": 5,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 128.6,
@@ -2383,6 +2498,12 @@
    ],
    "missing": [],
    "description": "Карточка: Categories",
+   "depth": {
+    "cells": 4,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 99.6,
@@ -2442,6 +2563,12 @@
    ],
    "missing": [],
    "description": "Изменение: Categories",
+   "depth": {
+    "cells": 7,
+    "status": 7,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 18,
     "msAvg": 122.2,
@@ -2513,6 +2640,12 @@
    ],
    "missing": [],
    "description": "Удаление: Categories",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 13,
     "msAvg": 189.3,
@@ -2567,6 +2700,12 @@
    ],
    "missing": [],
    "description": "Дерево категорий",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 8,
     "msAvg": 216.3,
@@ -2615,6 +2754,12 @@
    ],
    "missing": [],
    "description": "Список: Variants",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 18,
     "msAvg": 97.9,
@@ -2684,6 +2829,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Variants",
+   "depth": {
+    "cells": 5,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 44,
     "msAvg": 164.5,
@@ -2745,6 +2896,12 @@
    ],
    "missing": [],
    "description": "Карточка: Variants",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 146.4,
@@ -2804,6 +2961,12 @@
    ],
    "missing": [],
    "description": "Изменение: Variants",
+   "depth": {
+    "cells": 7,
+    "status": 6,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 18,
     "msAvg": 89.3,
@@ -2876,6 +3039,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Variants",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 108.2,
@@ -2927,6 +3096,12 @@
    ],
    "missing": [],
    "description": "Варианты по товару",
+   "depth": {
+    "cells": 4,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 16,
     "msAvg": 140.0,
@@ -2985,6 +3160,12 @@
    ],
    "missing": [],
    "description": "Список: Prices",
+   "depth": {
+    "cells": 6,
+    "status": 5,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 108.9,
@@ -3054,6 +3235,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Prices",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 19,
     "msAvg": 188.8,
@@ -3115,6 +3302,12 @@
    ],
    "missing": [],
    "description": "Карточка: Prices",
+   "depth": {
+    "cells": 4,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 95.5,
@@ -3174,6 +3367,12 @@
    ],
    "missing": [],
    "description": "Изменение: Prices",
+   "depth": {
+    "cells": 7,
+    "status": 7,
+    "schema": 5,
+    "values": null
+   },
    "timing": {
     "n": 20,
     "msAvg": 179.8,
@@ -3246,6 +3445,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Prices",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 8,
     "msAvg": 104.6,
@@ -3297,6 +3502,12 @@
    ],
    "missing": [],
    "description": "Цены по товару",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 87.1,
@@ -3354,6 +3565,12 @@
     "RequestPermissions"
    ],
    "description": "Массовая переоценка",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 125.7,
@@ -3408,6 +3625,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Promotions",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 94.5,
@@ -3462,6 +3685,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Promotions",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 133.5,
@@ -3509,6 +3738,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Promotions",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 95.7,
@@ -3559,6 +3794,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Promotions",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 194.3,
@@ -3611,6 +3852,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Promotions",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 3,
     "msAvg": 209.9,
@@ -3658,6 +3905,12 @@
     "RequestPermissions"
    ],
    "description": "Включить акцию",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 3,
     "msAvg": 198.8,
@@ -3706,6 +3959,12 @@
    ],
    "missing": [],
    "description": "Список: Carts",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 16,
     "msAvg": 103.6,
@@ -3774,6 +4033,12 @@
    ],
    "missing": [],
    "description": "Создание: Carts",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 58,
     "msAvg": 121.8,
@@ -3840,6 +4105,12 @@
    ],
    "missing": [],
    "description": "Карточка: Carts",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 189.7,
@@ -3900,6 +4171,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Carts",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 169.9,
@@ -3961,6 +4238,12 @@
    ],
    "missing": [],
    "description": "Положить в корзину",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 21,
     "msAvg": 197.9,
@@ -4017,6 +4300,12 @@
    ],
    "missing": [],
    "description": "Убрать из корзины",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 183.4,
@@ -4073,6 +4362,12 @@
    ],
    "missing": [],
    "description": "Оформить корзину",
+   "depth": {
+    "cells": 4,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 15,
     "msAvg": 181.9,
@@ -4132,6 +4427,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Reviews",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 153.4,
@@ -4181,6 +4482,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Reviews",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 5,
     "msAvg": 217.4,
@@ -4228,6 +4535,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Reviews",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 2,
     "msAvg": 84.2,
@@ -4278,6 +4591,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Reviews",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 151.3,
@@ -4335,6 +4654,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Reviews",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 206.7,
@@ -4382,6 +4707,12 @@
     "RequestPermissions"
    ],
    "description": "Отзывы о товаре",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 220.8,
@@ -4434,6 +4765,12 @@
     "RequestPermissions"
    ],
    "description": "Опубликовать отзыв",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 119.2,
@@ -4482,6 +4819,12 @@
    ],
    "missing": [],
    "description": "Список: Orders",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 5,
+    "values": null
+   },
    "timing": {
     "n": 23,
     "msAvg": 93.6,
@@ -4550,6 +4893,12 @@
    ],
    "missing": [],
    "description": "Создание: Orders",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 89,
     "msAvg": 178.9,
@@ -4616,6 +4965,12 @@
    ],
    "missing": [],
    "description": "Карточка: Orders",
+   "depth": {
+    "cells": 4,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 21,
     "msAvg": 92.9,
@@ -4676,6 +5031,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Orders",
+   "depth": {
+    "cells": 6,
+    "status": 4,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 15,
     "msAvg": 184.6,
@@ -4742,6 +5103,12 @@
    ],
    "missing": [],
    "description": "Удаление: Orders",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 209.0,
@@ -4798,6 +5165,12 @@
    ],
    "missing": [],
    "description": "Строки заказа",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 13,
     "msAvg": 210.1,
@@ -4854,6 +5227,12 @@
    ],
    "missing": [],
    "description": "Заказы клиента",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 13,
     "msAvg": 196.4,
@@ -4910,6 +5289,12 @@
    ],
    "missing": [],
    "description": "Подтвердить заказ",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 15,
     "msAvg": 191.7,
@@ -4966,6 +5351,12 @@
    ],
    "missing": [],
    "description": "Отменить заказ",
+   "depth": {
+    "cells": 4,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 177.5,
@@ -5022,6 +5413,12 @@
    ],
    "missing": [],
    "description": "Выгрузить реестр",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 19,
     "msAvg": 232.8,
@@ -5081,6 +5478,12 @@
     "RequestPermissions"
    ],
    "description": "Отчёт по продажам",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 20,
     "msAvg": 221.1,
@@ -5145,6 +5548,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Payments",
+   "depth": {
+    "cells": 5,
+    "status": 4,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 125.2,
@@ -5208,6 +5617,12 @@
    ],
    "missing": [],
    "description": "Создание: Payments",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 5,
+    "values": null
+   },
    "timing": {
     "n": 50,
     "msAvg": 139.4,
@@ -5274,6 +5689,12 @@
    ],
    "missing": [],
    "description": "Карточка: Payments",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 108.8,
@@ -5333,6 +5754,12 @@
    ],
    "missing": [],
    "description": "Изменение: Payments",
+   "depth": {
+    "cells": 7,
+    "status": 7,
+    "schema": 5,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 156.1,
@@ -5404,6 +5831,12 @@
    ],
    "missing": [],
    "description": "Оплаты заказа",
+   "depth": {
+    "cells": 4,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 234.7,
@@ -5460,6 +5893,12 @@
    ],
    "missing": [],
    "description": "Списать средства",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 208.9,
@@ -5516,6 +5955,12 @@
    ],
    "missing": [],
    "description": "Чек",
+   "depth": {
+    "cells": 4,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 166.6,
@@ -5575,6 +6020,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Shipments",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 239.0,
@@ -5634,6 +6085,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Shipments",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 61,
     "msAvg": 140.8,
@@ -5696,6 +6153,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Shipments",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 8,
     "msAvg": 112.8,
@@ -5751,6 +6214,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Shipments",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 82.7,
@@ -5813,6 +6282,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Shipments",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 78.2,
@@ -5865,6 +6340,12 @@
     "RequestPermissions"
    ],
    "description": "Отгрузки заказа",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 13,
     "msAvg": 125.9,
@@ -5917,6 +6398,12 @@
     "RequestPermissions"
    ],
    "description": "Передать в доставку",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 104.5,
@@ -5971,6 +6458,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Returns",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 178.1,
@@ -6030,6 +6523,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Returns",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 34,
     "msAvg": 170.7,
@@ -6082,6 +6581,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Returns",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 211.5,
@@ -6137,6 +6642,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Returns",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 158.7,
@@ -6194,6 +6705,12 @@
     "RequestPermissions"
    ],
    "description": "Согласовать возврат",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 115.9,
@@ -6241,6 +6758,12 @@
     "RequestPermissions"
    ],
    "description": "Возвраты по заказу",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 8,
     "msAvg": 222.1,
@@ -6295,6 +6818,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Stock",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 19,
     "msAvg": 220.9,
@@ -6354,6 +6883,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Stock",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 175.7,
@@ -6411,6 +6946,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Stock",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 238.8,
@@ -6463,6 +7004,12 @@
     "RequestPermissions"
    ],
    "description": "Остатки по товару",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 185.3,
@@ -6510,6 +7057,12 @@
     "RequestPermissions"
    ],
    "description": "Остатки по складу",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 124.0,
@@ -6557,6 +7110,12 @@
     "RequestPermissions"
    ],
    "description": "Провести перемещение",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 181.9,
@@ -6609,6 +7168,12 @@
     "RequestPermissions"
    ],
    "description": "Пересчитать позицию",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 93.8,
@@ -6658,6 +7223,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Warehouses",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 15,
     "msAvg": 159.5,
@@ -6716,6 +7287,12 @@
    ],
    "missing": [],
    "description": "Создание: Warehouses",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 15,
     "msAvg": 183.7,
@@ -6783,6 +7360,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Warehouses",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 184.2,
@@ -6837,6 +7420,12 @@
    ],
    "missing": [],
    "description": "Изменение: Warehouses",
+   "depth": {
+    "cells": 7,
+    "status": 7,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 195.4,
@@ -6909,6 +7498,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Warehouses",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 150.3,
@@ -6963,6 +7558,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Suppliers",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 166.7,
@@ -7027,6 +7628,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Suppliers",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 108.6,
@@ -7088,6 +7695,12 @@
    ],
    "missing": [],
    "description": "Карточка: Suppliers",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 136.0,
@@ -7148,6 +7761,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Suppliers",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 100.8,
@@ -7205,6 +7824,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Suppliers",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 89.6,
@@ -7257,6 +7882,12 @@
     "RequestPermissions"
    ],
    "description": "Товары поставщика",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 217.6,
@@ -7311,6 +7942,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Purchase Orders",
+   "depth": {
+    "cells": 5,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 109.8,
@@ -7375,6 +8012,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Purchase Orders",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 46,
     "msAvg": 160.6,
@@ -7432,6 +8075,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Purchase Orders",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 8,
     "msAvg": 205.1,
@@ -7487,6 +8136,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Purchase Orders",
+   "depth": {
+    "cells": 6,
+    "status": 4,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 15,
     "msAvg": 139.6,
@@ -7554,6 +8209,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Purchase Orders",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 217.6,
@@ -7606,6 +8267,12 @@
     "RequestPermissions"
    ],
    "description": "Строки закупки",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 198.4,
@@ -7658,6 +8325,12 @@
     "RequestPermissions"
    ],
    "description": "Согласовать закупку",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 79.5,
@@ -7710,6 +8383,12 @@
     "RequestPermissions"
    ],
    "description": "Принять поставку",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 103.9,
@@ -7764,6 +8443,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Invoices",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 8,
     "msAvg": 233.9,
@@ -7818,6 +8503,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Invoices",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 27,
     "msAvg": 129.5,
@@ -7870,6 +8561,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Invoices",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 89.5,
@@ -7925,6 +8622,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Invoices",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 13,
     "msAvg": 166.2,
@@ -7987,6 +8690,12 @@
     "RequestPermissions"
    ],
    "description": "Строки счёта",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 114.9,
@@ -8039,6 +8748,12 @@
     "RequestPermissions"
    ],
    "description": "Отправить счёт",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 144.2,
@@ -8093,6 +8808,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Subscriptions",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 148.3,
@@ -8137,6 +8858,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Subscriptions",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 147.6,
@@ -8184,6 +8911,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Subscriptions",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 3,
     "msAvg": 96.1,
@@ -8229,6 +8962,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Subscriptions",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 140.7,
@@ -8276,6 +9015,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Subscriptions",
+   "depth": {
+    "cells": 1,
+    "status": 0,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 3,
     "msAvg": 232.3,
@@ -8318,6 +9063,12 @@
     "RequestPermissions"
    ],
    "description": "Приостановить",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 1,
     "msAvg": 234.2,
@@ -8361,6 +9112,7 @@
     "RequestPermissions"
    ],
    "description": "Список: Refunds",
+   "depth": null,
    "timing": {
     "n": 0,
     "msAvg": 179.8,
@@ -8398,6 +9150,7 @@
     "RequestPermissions"
    ],
    "description": "Создание: Refunds",
+   "depth": null,
    "timing": {
     "n": 5,
     "msAvg": 94.2,
@@ -8434,6 +9187,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Refunds",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 2,
     "msAvg": 147.6,
@@ -8476,6 +9235,12 @@
     "RequestPermissions"
    ],
    "description": "Подтвердить возврат",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 5,
     "msAvg": 188.0,
@@ -8520,6 +9285,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Gift Cards",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 110.4,
@@ -8569,6 +9340,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Gift Cards",
+   "depth": {
+    "cells": 1,
+    "status": 0,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 1,
     "msAvg": 156.1,
@@ -8610,6 +9387,7 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Gift Cards",
+   "depth": null,
    "timing": {
     "n": 0,
     "msAvg": 87.5,
@@ -8646,6 +9424,12 @@
     "RequestPermissions"
    ],
    "description": "Погасить карту",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 1,
     "msAvg": 219.5,
@@ -8690,6 +9474,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Customers",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 17,
     "msAvg": 188.2,
@@ -8753,6 +9543,12 @@
    ],
    "missing": [],
    "description": "Создание: Customers",
+   "depth": {
+    "cells": 6,
+    "status": 5,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 57,
     "msAvg": 152.1,
@@ -8820,6 +9616,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Customers",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 206.8,
@@ -8874,6 +9676,12 @@
    ],
    "missing": [],
    "description": "Изменение: Customers",
+   "depth": {
+    "cells": 7,
+    "status": 7,
+    "schema": 3,
+    "values": null
+   },
    "timing": {
     "n": 20,
     "msAvg": 121.5,
@@ -8946,6 +9754,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Customers",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 5,
     "msAvg": 142.2,
@@ -8997,6 +9811,12 @@
    ],
    "missing": [],
    "description": "Адреса",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 232.2,
@@ -9055,6 +9875,12 @@
    ],
    "missing": [],
    "description": "Поиск клиента",
+   "depth": {
+    "cells": 6,
+    "status": 6,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 16,
     "msAvg": 236.9,
@@ -9124,6 +9950,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Segments",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 106.6,
@@ -9173,6 +10005,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Segments",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 8,
     "msAvg": 172.2,
@@ -9220,6 +10058,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Segments",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 115.1,
@@ -9265,6 +10109,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Segments",
+   "depth": {
+    "cells": 1,
+    "status": 0,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 78.0,
@@ -9307,6 +10157,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Segments",
+   "depth": {
+    "cells": 1,
+    "status": 0,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 83.0,
@@ -9349,6 +10205,12 @@
     "RequestPermissions"
    ],
    "description": "Пересчитать",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 193.9,
@@ -9393,6 +10255,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Campaigns",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 120.0,
@@ -9442,6 +10310,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Campaigns",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 18,
     "msAvg": 109.5,
@@ -9489,6 +10363,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Campaigns",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 2,
     "msAvg": 232.3,
@@ -9534,6 +10414,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Campaigns",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 5,
     "msAvg": 184.4,
@@ -9581,6 +10467,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Campaigns",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 227.5,
@@ -9623,6 +10515,12 @@
     "RequestPermissions"
    ],
    "description": "Запустить кампанию",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 11,
     "msAvg": 199.0,
@@ -9665,6 +10563,12 @@
     "RequestPermissions"
    ],
    "description": "Аудитория",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 83.1,
@@ -9709,6 +10613,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Loyalty",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 2,
     "msAvg": 170.6,
@@ -9753,6 +10663,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Loyalty",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 197.8,
@@ -9800,6 +10716,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Loyalty",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 2,
     "msAvg": 139.1,
@@ -9842,6 +10764,12 @@
     "RequestPermissions"
    ],
    "description": "Бонусный счёт клиента",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 154.1,
@@ -9884,6 +10812,12 @@
     "RequestPermissions"
    ],
    "description": "Начислить бонусы",
+   "depth": {
+    "cells": 1,
+    "status": 0,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 1,
     "msAvg": 161.9,
@@ -9928,6 +10862,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Accounts",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 161.3,
@@ -9987,6 +10927,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Accounts",
+   "depth": {
+    "cells": 5,
+    "status": 5,
+    "schema": 4,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 224.2,
@@ -10049,6 +10995,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Accounts",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 181.1,
@@ -10099,6 +11051,12 @@
     "RequestPermissions"
    ],
    "description": "Изменение: Accounts",
+   "depth": {
+    "cells": 4,
+    "status": 4,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 14,
     "msAvg": 150.4,
@@ -10156,6 +11114,12 @@
     "RequestPermissions"
    ],
    "description": "Удаление: Accounts",
+   "depth": {
+    "cells": 3,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 107.5,
@@ -10207,6 +11171,12 @@
     "RequestPermissions"
    ],
    "description": "Текущая учётная запись",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 7,
     "msAvg": 142.9,
@@ -10256,6 +11226,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Roles & Permissions",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 182.8,
@@ -10310,6 +11286,12 @@
     "RequestPermissions"
    ],
    "description": "Создание: Roles & Permissions",
+   "depth": {
+    "cells": 3,
+    "status": 3,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 9,
     "msAvg": 128.9,
@@ -10362,6 +11344,12 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Roles & Permissions",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 2,
     "msAvg": 184.5,
@@ -10409,6 +11397,12 @@
     "RequestPermissions"
    ],
    "description": "Права роли",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 162.2,
@@ -10458,6 +11452,12 @@
     "RequestPermissions"
    ],
    "description": "Список: Notifications",
+   "depth": {
+    "cells": 1,
+    "status": 1,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 4,
     "msAvg": 224.2,
@@ -10501,6 +11501,7 @@
     "RequestPermissions"
    ],
    "description": "Создание: Notifications",
+   "depth": null,
    "timing": {
     "n": 0,
     "msAvg": 95.7,
@@ -10536,6 +11537,7 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Notifications",
+   "depth": null,
    "timing": {
     "n": 0,
     "msAvg": 150.1,
@@ -10569,6 +11571,7 @@
     "RequestElements"
    ],
    "description": "Шаблоны",
+   "depth": null,
    "timing": {
     "n": 0,
     "msAvg": 220.5,
@@ -10602,6 +11605,12 @@
    ],
    "missing": [],
    "description": "Статусы заказа",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 150.8,
@@ -10646,6 +11655,12 @@
    ],
    "missing": [],
    "description": "Способы оплаты",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 6,
     "msAvg": 98.5,
@@ -10690,6 +11705,12 @@
    ],
    "missing": [],
    "description": "Единицы измерения",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 1,
+    "values": null
+   },
    "timing": {
     "n": 3,
     "msAvg": 198.2,
@@ -10734,6 +11755,12 @@
    ],
    "missing": [],
    "description": "Периоды отчётов",
+   "depth": {
+    "cells": 2,
+    "status": 1,
+    "schema": 0,
+    "values": null
+   },
    "timing": {
     "n": 10,
     "msAvg": 190.6,
@@ -10778,6 +11805,12 @@
    ],
    "missing": [],
    "description": "Причины возврата",
+   "depth": {
+    "cells": 2,
+    "status": 2,
+    "schema": 2,
+    "values": null
+   },
    "timing": {
     "n": 12,
     "msAvg": 102.1,
@@ -10826,6 +11859,7 @@
     "RequestPermissions"
    ],
    "description": "Список: Audit",
+   "depth": null,
    "timing": {
     "n": 4,
     "msAvg": 133.6,
@@ -10861,6 +11895,7 @@
     "RequestPermissions"
    ],
    "description": "Карточка: Audit",
+   "depth": null,
    "timing": {
     "n": 0,
     "msAvg": 115.1,
@@ -10896,6 +11931,7 @@
     "RequestPermissions"
    ],
    "description": "История объекта",
+   "depth": null,
    "timing": {
     "n": 0,
     "msAvg": 213.8,

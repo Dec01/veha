@@ -1154,7 +1154,9 @@ def build(s: Sources) -> dict:
     # Частичный прогон (контракт `coverage-payload` partest: `meta.partialRun`,
     # `meta.selection`) — не то же самое, что полный: сравнивать его средний процент с
     # полным прогоном нельзя, и сцена обязана это сказать.
-    cov_meta = (cov_extras.get("meta") or {}) if isinstance(cov_extras, dict) else {}
+    cov_meta = cov_extras.get("meta") if isinstance(cov_extras, dict) else None
+    cov_meta = cov_meta if isinstance(cov_meta, dict) else {}
+    cov_selection = cov_meta.get("selection")
     optin = src.optin_record(cov_meta)
 
     tests = allure["tests"]
@@ -1183,7 +1185,7 @@ def build(s: Sources) -> dict:
             "scopeChosen": artifacts_status["scopeChosen"],
             "partialRun": bool(src.partial_reasons(cov_meta)),
             "partialReasons": src.partial_reasons(cov_meta),
-            "selection": dict(cov_meta.get("selection") or {}),
+            "selection": dict(cov_selection) if isinstance(cov_selection, dict) else {},
             # opt-in-наборы partest ≥ 2.5.0: что снято, что включено и чем. В шапку —
             # готовым текстом, чтобы подпись была одна на сцену, раннер и консоль
             "optin": optin,

@@ -116,10 +116,45 @@ window.vehaApi = (function () {
     }
   }
 
+  /* ------------------------------------------------- среднее покрытие группы */
+  /* Правило среднего отчёта — `meta.avgRule` (контракт coverage-payload), тем же
+   * правилом, что `veha.runner.avg_rule_of`: нет `meta` или ключа — 1, так считали все
+   * выпуски partest до 2.7.0 (exception — как 100 % внутри среднего); 2 — строки
+   * exception вне среднего (partest 2.7.0); `meta` не объект или правило, которого
+   * вебморда не знает, — `null`: своё среднее по нему не считается. */
+  function avgRule(graph) {
+    const cov = (graph || {}).coverage;
+    if (!cov || typeof cov !== 'object' || !Object.hasOwn(cov, 'meta')) return 1;
+    const meta = cov.meta;
+    if (!meta || typeof meta !== 'object' || Array.isArray(meta)) return null;
+    if (!Object.hasOwn(meta, 'avgRule')) return 1;
+    const r = meta.avgRule;
+    return r === 1 || r === 2 ? r : null;
+  }
+
+  /* Среднее покрытие набора эндпоинтов — тем же правилом, что у partest для групп
+   * отчёта (`avgCoverage` сервиса, подтипа, метода): среднее покрытий строк отчёта, при
+   * правиле 2 — без строк exception. `{ value, reason }`: `value` — число или `null`;
+   * `reason` при `null` — `none` (покрытия нет ни у одного), `exception` (только строки
+   * exception — среднего у такой группы нет и у partest), `rule` (правило не известно). */
+  function coverageAverage(graph, nodes) {
+    const rows = (nodes || []).filter((n) => n.meta && n.meta.coverage != null
+      && Number.isFinite(Number(n.meta.coverage)));
+    if (!rows.length) return { value: null, reason: 'none' };
+    const rule = avgRule(graph);
+    if (rule == null) return { value: null, reason: 'rule' };
+    const vals = rows.filter((n) => rule === 1 || n.meta.status !== 'exception')
+      .map((n) => Number(n.meta.coverage));
+    if (!vals.length) return { value: null, reason: 'exception' };
+    return { value: vals.reduce((x, y) => x + y, 0) / vals.length, reason: '' };
+  }
+
   return {
     isStatic: STATIC,
     OFFLINE,
     offline,
+    avgRule,
+    coverageAverage,
 
     graph: (refresh) => (STATIC ? file('api/graph.json')
       : json('/api/graph' + (refresh ? '?refresh=true' : ''))),

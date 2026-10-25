@@ -33,6 +33,17 @@
     "partial": 111,
     "empty": 9,
     "endpoints": 171,
+    "exception": 0,
+    "scored": 171,
+    "depth": {
+     "cells": 551,
+     "status": 505,
+     "schema": 301,
+     "values": null,
+     "statusPct": 91.65,
+     "schemaPct": 54.63
+    },
+    "avgRule": 2,
     "optin": {
      "slow": {
       "state": "env",
@@ -124,6 +135,15 @@
     "partial": 111,
     "empty": 9,
     "endpoints": 171,
+    "exception": 0,
+    "scored": 171,
+    "depth": {
+     "cells": 551,
+     "status": 505,
+     "schema": 301,
+     "values": null
+    },
+    "avgRule": 2,
     "partialRun": true,
     "partialReasons": [
      "выбор набора"
@@ -287,6 +307,15 @@
     "partial": 111,
     "empty": 9,
     "endpoints": 171,
+    "exception": 0,
+    "scored": 171,
+    "depth": {
+     "cells": 551,
+     "status": 505,
+     "schema": 301,
+     "values": null
+    },
+    "avgRule": 2,
     "partialRun": true,
     "partialReasons": [
      "выбор набора"
@@ -374,6 +403,15 @@
     "partial": 111,
     "empty": 9,
     "endpoints": 171,
+    "exception": 0,
+    "scored": 171,
+    "depth": {
+     "cells": 551,
+     "status": 505,
+     "schema": 301,
+     "values": null
+    },
+    "avgRule": 2,
     "partialRun": true,
     "partialReasons": [
      "выбор набора"
@@ -425,6 +463,15 @@
     "partial": 111,
     "empty": 9,
     "endpoints": 171,
+    "exception": 0,
+    "scored": 171,
+    "depth": {
+     "cells": 551,
+     "status": 505,
+     "schema": 301,
+     "values": null
+    },
+    "avgRule": 2,
     "partialRun": true,
     "partialReasons": [
      "выбор набора"
@@ -523,6 +570,15 @@
     "partial": 111,
     "empty": 9,
     "endpoints": 171,
+    "exception": 0,
+    "scored": 171,
+    "depth": {
+     "cells": 551,
+     "status": 505,
+     "schema": 301,
+     "values": null
+    },
+    "avgRule": 2,
     "partialRun": true,
     "partialReasons": [
      "выбор набора"
@@ -693,6 +749,17 @@
     "partial": 111,
     "empty": 9,
     "endpoints": 171,
+    "exception": 0,
+    "scored": 171,
+    "depth": {
+     "cells": 551,
+     "status": 505,
+     "schema": 301,
+     "values": null,
+     "statusPct": 91.65,
+     "schemaPct": 54.63
+    },
+    "avgRule": 2,
     "optin": {
      "slow": {
       "state": "off",
