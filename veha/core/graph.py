@@ -1182,6 +1182,9 @@ def build(s: Sources) -> dict:
             "artifactProblems": artifacts_status["problems"],
             "configError": s.cfg.error,
             "configExists": s.cfg.exists,
+            # что не так с отчётами прогона, кроме их отсутствия (раздел `reports`,
+            # путь не того вида, coverage.json не JSON) — без путей машины
+            "reportProblems": list(s.report_problems),
             "scopeChosen": artifacts_status["scopeChosen"],
             "partialRun": bool(src.partial_reasons(cov_meta)),
             "partialReasons": src.partial_reasons(cov_meta),

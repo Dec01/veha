@@ -47,8 +47,16 @@ def _requested_scope(args: argparse.Namespace) -> Optional[Scope]:
     return Scope(system=system or DEFAULT_SCOPE_KEY, env=env or DEFAULT_SCOPE_KEY)
 
 
-def _report(g: dict, root: Path, out=None) -> None:
+def _report(g: dict, root: Path, out=None, cfg: Any = None) -> None:
+    """Что прочитано при старте. *cfg* — конфигурация сервера: по ней называются пути
+    отчётов, заданные в `reports` (терминал локальный, путь здесь уместен — в вебморду
+    он не уходит)."""
     out = out or sys.stdout
+    if cfg is None:
+        from veha import config as veha_config  # noqa: PLC0415
+
+        cfg = veha_config.load(root)
+    cov_rep, allure_rep = cfg.report("coverage"), cfg.report("allure")
     meta, arts = g["meta"], g["artifacts"]
     scope = arts["scope"]
     mark = "" if arts["scopeChosen"] else "! "
@@ -89,10 +97,15 @@ def _report(g: dict, root: Path, out=None) -> None:
         # не предупреждение: снятый набор — штатный полный прогон, но другого набора
         print("  coverage.json — opt-in: " + "; ".join(meta.get("optinText") or []),
               file=out)
+    for rep in (cov_rep, allure_rep):
+        if rep.configured and rep.path is not None:
+            print(f"  {rep.label} → {os.path.normpath(rep.path)}", file=out)
+    for problem in meta.get("reportProblems") or []:
+        print(f"  ! {problem}", file=out)
     if not meta["hasCoverage"]:
-        print("  ! нет coverage.json — покрытие по методике не будет показано", file=out)
+        print(f"  ! нет {cov_rep.label} — покрытие по методике не будет показано", file=out)
     if not meta["hasAllure"]:
-        print("  ! нет allure-results — проверки и обмен не будут показаны", file=out)
+        print(f"  ! нет {allure_rep.label} — проверки и обмен не будут показаны", file=out)
 
 
 def serve(args: argparse.Namespace) -> int:
@@ -157,7 +170,7 @@ def _run_bound(root: Path, sock, *, scope: Optional[Scope], allow_run: bool,
     print(f"Веха {__version__} → {url}" + (f"  ({note})" if note else ""))
     print(f"  корень {root}")
     print("  режим: " + ("запуск прогонов разрешён" if allow_run else "только просмотр"))
-    _report(app.state.veha.graph(refresh=True), root)
+    _report(app.state.veha.graph(refresh=True), root, cfg=app.state.veha.cfg)
     from veha import runner as veha_runner  # noqa: PLC0415
 
     if not any(s.full for s in veha_runner.suites(app.state.veha.cfg)):
@@ -269,7 +282,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     s = sub.add_parser("serve", help="поднять вебморду над каталогом данных")
     s.add_argument("--root", required=True,
-                   help="корень данных: atlas.yaml, atlas/, coverage.json, allure-results/")
+                   help="корень данных: atlas.yaml, atlas/, coverage.json, allure-results/ "
+                        "(пути отчётов — раздел reports в atlas.yaml)")
     s.add_argument("--port", type=port_number, default=8770, help="порт на 127.0.0.1, 1..65535")
     s.add_argument("--no-browser", action="store_true", help="не открывать браузер")
     s.add_argument("--system", default="", help="система (по умолчанию — ATLAS_SYSTEM)")

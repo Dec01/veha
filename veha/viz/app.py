@@ -145,8 +145,17 @@ class Server:
             veha_runner.kill_tree(proc)
 
     @property
-    def allure_dir(self) -> Path:
-        return self.root / "allure-results"
+    def allure_dir(self) -> Optional[Path]:
+        """Каталог результатов Allure — из конфигурации (`reports.allure`), не из корня."""
+        return self.cfg.allure_dir
+
+    def require_allure_dir(self) -> Path:
+        """Каталог Allure для чтения файла из него; негодный путь в `atlas.yaml` — 404."""
+        d = self.allure_dir
+        if d is None:
+            raise HTTPException(404, "путь к результатам Allure в atlas.yaml негоден "
+                                     "(reports.allure)")
+        return d
 
     def sources(self) -> core_sources.Sources:
         return core_sources.load(self.cfg, self.requested_scope)
@@ -391,7 +400,7 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
                 break
         if rec is None:
             raise HTTPException(404, "тест не найден в текущем allure-results")
-        path = srv.allure_dir / (rec.get("file") or "")
+        path = srv.require_allure_dir() / (rec.get("file") or "")
         if not path.is_file():
             raise HTTPException(404, f"нет файла результата: {rec.get('file')}")
         raw = json.loads(path.read_text(encoding="utf-8"))
@@ -416,7 +425,7 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         """
         if not source or Path(source).name != source or ":" in source or ".." in source:
             raise HTTPException(400, "недопустимое имя вложения")
-        base = srv.allure_dir.resolve()
+        base = srv.require_allure_dir().resolve()
         path = (base / source).resolve()
         if path.parent != base:
             raise HTTPException(400, "недопустимое имя вложения")
@@ -501,16 +510,20 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         # Срез покрытия — только если прогон дошёл до конца и coverage.json записан им,
         # а не лежит с прошлого раза: иначе остановленный на середине прогон получил бы
         # в историю чужой процент.
-        cov = srv.root / "coverage.json"
+        # Путь — из конфигурации (`reports.coverage`), тот же, что читает граф.
+        cov = srv.cfg.coverage_file
         # Дошёл ли прогон до конца — решает итоговая строка pytest и отсутствие
         # прерывания (`-x`, `--maxfail`, ошибка сбора), а не пересчёт строк: под
         # xdist строки другие, и пересчёт молча давал нули.
         finished = state.status == "done" and state.complete
-        fresh = cov.is_file() and cov.stat().st_mtime >= state.started
-        if finished and fresh:
+        fresh = cov is not None and cov.is_file() and cov.stat().st_mtime >= state.started
+        if cov is None:
+            entry["coverage"] = {"note": "покрытие не прочитано: путь reports.coverage "
+                                         "в atlas.yaml негоден"}
+        elif finished and fresh:
             try:
                 entry["coverage"] = veha_runner.coverage_snapshot(
-                    srv.root, suite_full=entry["suiteFull"])
+                    cov, suite_full=entry["suiteFull"])
             except Exception as exc:
                 # Срез снимает код агента над чужим файлом; не снялся — прогон всё
                 # равно записывается, с причиной вместо среза.
@@ -675,14 +688,32 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
 
     @app.post("/api/runner/clean")
     def runner_clean() -> dict:
-        """Очистить allure-results: иначе прогоны копятся, и сводка склеивает их."""
+        """Очистить allure-results: иначе прогоны копятся, и сводка склеивает их.
+
+        Удаляются файлы прямо в каталоге (подкаталоги не трогаются) — и только если
+        каталог после разрешения ссылок лежит **строго внутри** корня данных. Путь
+        `reports.allure` может указывать куда угодно; удалять на диске пользователя то,
+        что лежит вне каталога, который он отдал серверу, Веха не берётся — и сам корень
+        тоже не чистит (`reports.allure: .` стёр бы `atlas.yaml`). Отчёт покрытия, если
+        лежит в том же каталоге, не удаляется.
+        """
         srv.require_writable("набор результатов не очищается")
         if srv.runner.busy or srv.rerun_lock.locked():
             raise HTTPException(409, "идёт прогон — очистка может испортить отчёт")
+        d = srv.allure_dir
+        if d is None:
+            raise HTTPException(409, "путь к результатам Allure в atlas.yaml негоден "
+                                     "(reports.allure) — очищать нечего")
         removed = 0
-        if srv.allure_dir.is_dir():
-            for f in srv.allure_dir.iterdir():
-                if f.is_file():
+        if d.is_dir() and not srv.cfg.inside_root(d):
+            raise HTTPException(409, "каталог результатов Allure (reports.allure) вне корня "
+                                     "данных — Веха не удаляет файлы вне корня; очистите "
+                                     "его средствами проекта")
+        keep = {p.resolve() for p in (srv.cfg.coverage_file,
+                                      srv.root / veha_config.CONFIG_NAME) if p is not None}
+        if d.is_dir():
+            for f in d.iterdir():
+                if f.is_file() and f.resolve() not in keep:
                     try:
                         f.unlink()
                         removed += 1

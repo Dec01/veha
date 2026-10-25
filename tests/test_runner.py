@@ -218,7 +218,7 @@ def test_partial_run_is_marked_and_kept_out_of_the_average(small_root):
 
     meta = build_root(small_root)["meta"]
     assert meta["partialRun"] is True and meta["selection"] == {"markexpr": "smoke"}
-    snap = runner.coverage_snapshot(small_root)
+    snap = runner.coverage_snapshot(small_root / "coverage.json")
     assert "avg" not in snap and snap["partialRun"] is True
     assert snap["selection"] == {"markexpr": "smoke"}
 
@@ -226,7 +226,7 @@ def test_partial_run_is_marked_and_kept_out_of_the_average(small_root):
 def test_full_run_snapshot_keeps_the_average(demo_root):
     from veha import runner
 
-    snap = runner.coverage_snapshot(demo_root)
+    snap = runner.coverage_snapshot(demo_root / "coverage.json")
     assert snap["avg"] == 66.05 and "partialRun" not in snap
 
 
@@ -317,8 +317,8 @@ def test_server_has_no_threshold_of_its_own():
 def test_suite_not_declared_full_is_partial(demo_root):
     from veha import runner
 
-    assert runner.coverage_snapshot(demo_root, suite_full=True)["avg"] == 66.05
-    snap = runner.coverage_snapshot(demo_root, suite_full=False)
+    assert runner.coverage_snapshot(demo_root / "coverage.json", suite_full=True)["avg"] == 66.05
+    snap = runner.coverage_snapshot(demo_root / "coverage.json", suite_full=False)
     assert "avg" not in snap and snap["partialReasons"] == ["выбор набора"]
 
 

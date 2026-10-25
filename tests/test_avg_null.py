@@ -43,7 +43,7 @@ def test_startup_report_survives_null(null_root, capsys):
 def test_snapshot_and_trend_skip_null(null_root):
     from veha import runner
 
-    snap = runner.coverage_snapshot(null_root, suite_full=True)
+    snap = runner.coverage_snapshot(null_root / "coverage.json", suite_full=True)
     assert snap["avg"] is None
     runs = [{"startedAt": 1, "suite": "full", "coverage": {"avg": 60.0, "endpoints": 9}},
             {"startedAt": 2, "suite": "full", "coverage": snap}]

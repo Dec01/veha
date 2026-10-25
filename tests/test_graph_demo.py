@@ -102,8 +102,8 @@ def test_ui_markers_come_from_config(tmp_path):
         "fullName": "src.ui.tests.orders.test_list.TestList#test_open",
         "name": "test_open", "status": "passed", "start": 1, "stop": 2}), encoding="utf-8")
 
-    assert sources.load_allure(tmp_path, [])["tests"][0]["isUi"] is False
-    assert sources.load_allure(tmp_path, ["src.ui"])["tests"][0]["isUi"] is True
+    assert sources.load_allure(d, [])["tests"][0]["isUi"] is False
+    assert sources.load_allure(d, ["src.ui"])["tests"][0]["isUi"] is True
 
 
 def test_agent_screen_form_is_normalised():

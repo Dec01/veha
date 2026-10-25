@@ -211,7 +211,7 @@ def test_startup_prints_the_optin_state(demo_root, monkeypatch, capsys):
 def test_snapshot_keeps_the_record_for_full_runs(demo_root):
     from veha import runner
 
-    snap = runner.coverage_snapshot(demo_root)
+    snap = runner.coverage_snapshot(demo_root / "coverage.json")
     assert snap["avg"] == 66.05 and snap["optin"] == SLOW_OFF
 
 
@@ -219,7 +219,7 @@ def test_snapshot_keeps_the_record_for_partial_runs_once(small_root):
     from veha import runner
 
     _set_selection(small_root, {"markexpr": "smoke", "optin": SLOW_OFF}, partialRun=True)
-    snap = runner.coverage_snapshot(small_root)
+    snap = runner.coverage_snapshot(small_root / "coverage.json")
     assert "avg" not in snap and snap["selection"] == {"markexpr": "smoke"}
     assert snap["optin"] == SLOW_OFF
 
@@ -228,7 +228,7 @@ def test_snapshot_without_the_key_has_no_record(small_root):
     from veha import runner
 
     _set_selection(small_root, None)
-    assert "optin" not in runner.coverage_snapshot(small_root)
+    assert "optin" not in runner.coverage_snapshot(small_root / "coverage.json")
 
 
 def test_run_records_the_optin_it_saw(small_root, fake_popen):  # noqa: F811

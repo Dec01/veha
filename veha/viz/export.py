@@ -382,11 +382,16 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
                                   f"из {tests['total']}")
         write("api/tests.json", dump(tests))
 
+        # Каталог Allure — тот же, что у сервера (`reports.allure`); может лежать и вне
+        # корня: файлы из него идут под тем же замком (`_read_inside`), что и из корня.
+        allure = srv.allure_dir
         sources: List[str] = []
         for t in g.get("tests") or []:
             fname = t.get("file") or ""
             try:
-                _read_inside(srv.allure_dir, fname)       # тот же замок, что у вложений
+                if allure is None:
+                    raise _Skip("путь reports.allure в atlas.yaml негоден")
+                _read_inside(allure, fname)       # тот же замок, что у вложений
                 detail = api["/api/test"](nodeid="", file=fname)
             except _Skip as why:
                 report.skipped.append(f"тест {fname!r}: {why}")
@@ -400,7 +405,9 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
 
         for source in sorted(set(sources)):
             try:
-                data = _read_inside(srv.allure_dir, source, ATTACHMENT_LIMIT)
+                if allure is None:
+                    raise _Skip("путь reports.allure в atlas.yaml негоден")
+                data = _read_inside(allure, source, ATTACHMENT_LIMIT)
                 if source.lower().endswith(".png"):
                     write(f"api/attachment/{source}", data)
                 else:

@@ -669,17 +669,30 @@ def optin_phrases(optin: Optional[Dict[str, Dict[str, Any]]], *,
     return out
 
 
-def load_coverage(root: Path) -> Tuple[Dict[str, dict], dict]:
-    """Эндпоинты по id + остальные срезы отчёта как есть (включая `meta`)."""
-    f = root / "coverage.json"
-    if not f.is_file():
-        return {}, {}
-    data = json.loads(f.read_text(encoding="utf-8"))
+def load_coverage(path: Optional[Path]) -> Tuple[Dict[str, dict], dict, str]:
+    """Эндпоинты по id + остальные срезы отчёта как есть (включая `meta`) + что не так.
+
+    *path* — :attr:`Config.coverage_file`. Нет файла (или путь в `atlas.yaml` негоден,
+    *path* — `None`) — пусто без жалобы: об отсутствии говорит `hasCoverage`, о негодной
+    настройке — :meth:`Config.report_problems`. Файл есть, но не JSON-объект, — пусто и
+    причина: сцена без покрытия с названной причиной, а не упавший сервер.
+    """
+    if path is None or not path.is_file():
+        return {}, {}, ""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        why = exc.strerror if isinstance(exc, OSError) and exc.strerror else type(exc).__name__
+        return {}, {}, f"{path.name}: не прочитан как JSON ({why})"
+    if not isinstance(data, dict):
+        return {}, {}, f"{path.name}: ожидался объект, получено {type(data).__name__}"
     out: Dict[str, dict] = {}
-    for e in data.get("endpoints", []):
-        out[api_id(e.get("method", ""), e.get("path", ""))] = e
+    endpoints = data.get("endpoints")
+    for e in endpoints if isinstance(endpoints, list) else []:
+        if isinstance(e, dict):
+            out[api_id(e.get("method", ""), e.get("path", ""))] = e
     extras = {k: v for k, v in data.items() if k != "endpoints"}
-    return out, extras
+    return out, extras, ""
 
 
 # ---------------------------------------------------------------------------
@@ -771,12 +784,15 @@ def _is_ui(full: str, labels: Dict[str, str], ui_markers: List[str]) -> bool:
     return any(m and m in hay for m in ui_markers)
 
 
-def load_allure(root: Path, ui_markers: Optional[List[str]] = None) -> Dict[str, Any]:
-    """Вызовы по эндпоинтам и список тестов. Что из них — последний прогон, решает граф."""
-    d = root / "allure-results"
+def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Dict[str, Any]:
+    """Вызовы по эндпоинтам и список тестов. Что из них — последний прогон, решает граф.
+
+    *d* — :attr:`Config.allure_dir`; `None` (путь в `atlas.yaml` негоден) и отсутствующий
+    каталог — «отчётов нет».
+    """
     calls: Dict[str, List[dict]] = defaultdict(list)
     tests: List[dict] = []
-    if not d.is_dir():
+    if d is None or not d.is_dir():
         return {"calls": calls, "tests": tests}
     markers = list(ui_markers or [])
 
@@ -859,11 +875,15 @@ class Sources:
     depends: List[dict]
     screens: List[dict]
     screen_alias: Dict[str, Any]
+    #: Что не так с отчётами прогона, кроме их отсутствия: негодный раздел `reports`,
+    #: путь не того вида, `coverage.json` не JSON. Без путей машины.
+    report_problems: List[str] = field(default_factory=list)
 
 
 def load(cfg: Config, scope: Optional[Scope] = None) -> Sources:
     arts = load_artifacts(cfg, scope)
-    cov, extras = load_coverage(cfg.root)
+    cov, extras, cov_problem = load_coverage(cfg.coverage_file)
+    problems = cfg.report_problems() + ([cov_problem] if cov_problem else [])
     tests_cfg = cfg.section("tests")
     return Sources(
         cfg=cfg,
@@ -871,11 +891,12 @@ def load(cfg: Config, scope: Optional[Scope] = None) -> Sources:
         app_map=app_map(cfg),
         coverage=cov,
         coverage_extras=extras,
-        allure=load_allure(cfg.root, list(tests_cfg.get("ui_markers") or [])),
+        allure=load_allure(cfg.allure_dir, list(tests_cfg.get("ui_markers") or [])),
         containers=containers(cfg),
         domains=domains(cfg),
         depends=list(cfg.raw.get("depends") or []),
         screens=screens(cfg),
         screen_alias=dict(cfg.screens.get("alias") or {}),
+        report_problems=problems,
     )
 

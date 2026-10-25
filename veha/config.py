@@ -26,6 +26,15 @@ from partest_atlas import config as atlas_config
 
 CONFIG_NAME = atlas_config.CONFIG_NAME
 
+#: Раздел `atlas.yaml`, где проект говорит, куда его прогон кладёт отчёты. Раздел и
+#: каждый ключ необязательны: нет ключа — прежняя раскладка корня данных.
+REPORTS_SECTION = "reports"
+#: Отчёты по умолчанию — относительно корня данных. Раскладка публичная (README,
+#: «Каталог данных»): умолчания не меняются, ключи только добавляются.
+DEFAULT_REPORTS = {"coverage": "coverage.json", "allure": "allure-results"}
+#: Чем отчёт является на диске: покрытие — файл, Allure — каталог.
+REPORT_KINDS = {"coverage": "file", "allure": "dir"}
+
 
 @dataclass
 class Container:
@@ -44,6 +53,43 @@ class Container:
     note: str = ""
     tier: int = 0                   # ярус: чем больше, тем выше палуба в виде «Объём»
     names: List[str] = field(default_factory=list)   # имена контейнеров в среде запуска
+
+
+@dataclass(frozen=True)
+class ReportPath:
+    """Где лежит отчёт прогона и откуда это известно.
+
+    `path` — `None`, когда значение в `atlas.yaml` негодно (не строка, пустая строка,
+    раздел не словарь). Негодная настройка не подменяется умолчанием: показать отчёт из
+    корня, когда проект указал другое место, значило бы молча показать не тот прогон.
+    """
+
+    key: str                        # coverage | allure
+    path: Optional[Path]
+    configured: bool = False        # задан в atlas.yaml, а не взят по умолчанию
+    error: str = ""                 # почему значение негодно
+
+    @property
+    def label(self) -> str:
+        """Как назвать отчёт человеку: имя по умолчанию и, если задан, ключ."""
+        name = DEFAULT_REPORTS[self.key]
+        return f"{name} ({REPORTS_SECTION}.{self.key})" if self.configured else name
+
+    def problem(self) -> str:
+        """Что с отчётом не так, кроме «его нет». Пусто — либо в порядке, либо отсутствует.
+
+        Без путей машины: строка уходит в вебморду и в статический снимок.
+        """
+        if self.error:
+            return self.error
+        if self.path is None:
+            return ""
+        want = REPORT_KINDS[self.key]
+        if want == "file" and self.path.is_dir():
+            return f"{self.label}: путь указывает на каталог, а нужен файл"
+        if want == "dir" and self.path.exists() and not self.path.is_dir():
+            return f"{self.label}: путь указывает на файл, а нужен каталог"
+        return ""
 
 
 @dataclass
@@ -78,6 +124,63 @@ class Config:
         if self.atlas is not None:
             return self.atlas.artifacts_dir
         return self.root / atlas_config.DEFAULT_ARTIFACTS_DIR
+
+    def report(self, key: str) -> ReportPath:
+        """Путь к отчёту прогона из раздела `reports` — или умолчание в корне.
+
+        Относительный путь — от корня данных (там же лежит `atlas.yaml`), абсолютный —
+        как есть. `~` не раскрывается — как у `artifacts_dir` и `app_map`.
+        """
+        default = DEFAULT_REPORTS[key]
+        where = f"{REPORTS_SECTION}.{key}"
+        section = self.raw.get(REPORTS_SECTION)
+        if section is None:
+            return ReportPath(key, self.root / default)
+        if not isinstance(section, dict):
+            return ReportPath(key, None, True, f"{REPORTS_SECTION}: ожидался словарь "
+                                               f"{{coverage: путь, allure: путь}}, получено "
+                                               f"{type(section).__name__}")
+        value = section.get(key)
+        if value is None:
+            return ReportPath(key, self.root / default)
+        if not isinstance(value, str):
+            return ReportPath(key, None, True,
+                              f"{where}: ожидалась строка пути, получено {type(value).__name__}")
+        if not value.strip() or "\x00" in value:
+            return ReportPath(key, None, True, f"{where}: пустой или недопустимый путь")
+        return ReportPath(key, self.path(value), True)
+
+    @property
+    def coverage_file(self) -> Optional[Path]:
+        """Отчёт покрытия partest (`reports.coverage`, по умолчанию `coverage.json` в корне).
+
+        Единственный источник этого пути: граф, срез покрытия раннера и снимок читают его
+        отсюда. `None` — значение в `atlas.yaml` негодно (:meth:`report_problems`).
+        """
+        return self.report("coverage").path
+
+    @property
+    def allure_dir(self) -> Optional[Path]:
+        """Каталог результатов Allure (`reports.allure`, по умолчанию `allure-results`).
+
+        Единственный источник этого пути: граф, карточка теста, вложения, очистка и снимок
+        читают его отсюда. `None` — значение в `atlas.yaml` негодно.
+        """
+        return self.report("allure").path
+
+    def report_problems(self) -> List[str]:
+        """Негодные значения `reports` и пути не того вида (каталог вместо файла и
+        наоборот). Отсутствующий отчёт — не проблема, а законное состояние: о нём
+        говорят `hasCoverage`/`hasAllure`."""
+        return [p for p in (self.report(k).problem() for k in DEFAULT_REPORTS) if p]
+
+    def inside_root(self, path: Path) -> bool:
+        """Лежит ли *path* после разрешения ссылок строго внутри корня данных."""
+        try:
+            real = Path(path).resolve()
+        except (OSError, RuntimeError, ValueError):
+            return False
+        return self.root in real.parents
 
     @property
     def containers(self) -> List[Container]:

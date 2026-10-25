@@ -44,6 +44,11 @@ def _root_with(small_root: Path, doc: dict) -> Path:
     return small_root
 
 
+def _cov_with(small_root: Path, doc: dict) -> Path:
+    """То же, но путь к самому отчёту — так его получает срез покрытия."""
+    return _root_with(small_root, doc) / "coverage.json"
+
+
 # ------------------------------------------------------------------ срез
 
 
@@ -61,7 +66,7 @@ def test_fixtures_are_what_partest_wrote():
 def test_snapshot_records_the_rule(small_root, version, rule, avg):
     from veha import runner
 
-    snap = runner.coverage_snapshot(_root_with(small_root, _doc(version)), suite_full=True)
+    snap = runner.coverage_snapshot(_cov_with(small_root, _doc(version)), suite_full=True)
     assert snap["avgRule"] == rule and snap["avg"] == avg
     if ATLAS_021:
         assert snap["exception"] == 3
@@ -104,7 +109,7 @@ def test_partial_run_drops_average_and_depth_shares(small_root):
     долей глубины — они посчитаны по части набора. Счётчики остаются."""
     from veha import runner
 
-    snap = runner.coverage_snapshot(_root_with(small_root, _doc("2.7.0")), suite_full=False)
+    snap = runner.coverage_snapshot(_cov_with(small_root, _doc("2.7.0")), suite_full=False)
     assert "avg" not in snap and snap["partialRun"] is True and snap["avgRule"] == 2
     depth = snap.get("depth") or {}
     assert not [k for k in depth if k.endswith("Pct")]
@@ -123,7 +128,7 @@ def test_snapshot_survives_meta_that_is_not_an_object(small_root, meta):
     from veha import runner
 
     doc = {**_doc("2.7.0"), "meta": meta}
-    snap = runner.coverage_snapshot(_root_with(small_root, doc), suite_full=True)
+    snap = runner.coverage_snapshot(_cov_with(small_root, doc), suite_full=True)
     assert snap.get("partialRun") or snap["avg"] == 50.0
     if isinstance(meta, dict):
         assert snap["partialReasons"] == ["много непосещённых"] and "selection" not in snap
@@ -132,7 +137,7 @@ def test_snapshot_survives_meta_that_is_not_an_object(small_root, meta):
 def test_snapshot_of_a_document_that_is_not_an_object(small_root):
     from veha import runner
 
-    assert runner.coverage_snapshot(_root_with(small_root, [1, 2])) == {}
+    assert runner.coverage_snapshot(_cov_with(small_root, [1, 2])) == {}
     assert runner.snapshot_of(None) == {} and runner.snapshot_of("x") == {}
 
 

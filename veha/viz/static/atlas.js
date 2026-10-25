@@ -1632,6 +1632,8 @@ function artifactWarning() {
   const bad = (a.artifacts || []).filter((x) => x.state !== 'ok' && x.state !== 'missing');
   const notes = bad.map((x) => `${x.file}: ${x.state} — ${(x.problems || []).join('; ')}`);
   if (G.meta.configError) notes.unshift(`atlas.yaml: ${G.meta.configError}`);
+  // отчёты прогона: негодный раздел reports, путь не того вида, coverage.json не JSON
+  (G.meta.reportProblems || []).forEach((x) => notes.push(String(x)));
   (a.ignored || []).forEach((x) => notes.push(x));
   if (notes.length) {
     out.push(chip(`артефакты: <b>${notes.length} не прочитано</b>`, notes, 'bad'));

@@ -699,13 +699,15 @@ def snapshot_of(document: Any, *, suite_full: Optional[bool] = None) -> Dict[str
     return snap
 
 
-def coverage_snapshot(root: Path, *, suite_full: Optional[bool] = None) -> Dict[str, Any]:
+def coverage_snapshot(path: Optional[Path], *,
+                      suite_full: Optional[bool] = None) -> Dict[str, Any]:
     """Срез покрытия на момент прогона — для тренда по истории (:func:`snapshot_of`).
 
-    Нет `coverage.json` или он не читается как JSON — пустой срез.
+    *path* — отчёт покрытия, :attr:`veha.config.Config.coverage_file`. Нет файла, путь в
+    `atlas.yaml` негоден (`None`) или файл не читается как JSON — пустой срез.
     """
-    f = Path(root) / "coverage.json"
-    if not f.is_file():
+    f = Path(path) if path is not None else None
+    if f is None or not f.is_file():
         return {}
     try:
         data = json.loads(f.read_text(encoding="utf-8"))
