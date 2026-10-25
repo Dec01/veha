@@ -5,7 +5,7 @@
 Сборка графа, эвристики соединения, сцена, показ расхождений. Управление ими (эталон,
 принятие, исключение из оценки) — следующий этап, `docs/architecture.md` §10.
 
-**Статус: alpha (0.2.0)**, что стабильно — в разделе «Статус» ниже. Лицензия — MIT.
+**Статус: alpha (0.2.1)**, что стабильно — в разделе «Статус» ниже. Лицензия — MIT.
 
 ## Быстрый старт
 
@@ -19,7 +19,7 @@ veha demo
 пакета; сервер над ним только показывает — прогоны не запускаются, на диск ничего не
 пишется. Сеть не нужна. Ключи `demo`: `--port` (по умолчанию 8770), `--no-browser`.
 
-Что смотреть и в каком порядке — [обход демонстрации на 7 шагов](https://github.com/Dec01/veha/blob/v0.2.0/demo/README.md).
+Что смотреть и в каком порядке — [обход демонстрации на 7 шагов](https://github.com/Dec01/veha/blob/v0.2.1/demo/README.md).
 Та же карта без сервера — [демо на сайте](https://partest.ru/veha/demo/).
 
 Свой проект: `veha serve --root <каталог>`, где лежат `atlas.yaml`, артефакты
@@ -64,16 +64,16 @@ CLI), а конфликт имён на чужой машине ловится �
 сведённый граф, находки и эталон — то, чего агент не знает. FastAPI отдаёт и `/api/*`, и
 статику; отрисовка — в браузере: карта по слоям на SVG, объёмный вид на Canvas 2D; ни npm,
 ни WebGL, ни внешних шрифтов, ни единого внешнего запроса.
-Подробности и недостающая аутентификация — [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.2.0/docs/architecture.md) §4.6.
+Подробности и недостающая аутентификация — [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.2.1/docs/architecture.md) §4.6.
 
 ## Документация
 
 | Документ | О чём |
 |---|---|
-| [docs/architecture.md](https://github.com/Dec01/veha/blob/v0.2.0/docs/architecture.md) | проектный документ: модель данных, несколько систем и контуров, управление расхождениями, подключение к тестам, вебморда |
-| [docs/wiki/index.md](https://github.com/Dec01/veha/blob/v0.2.0/docs/wiki/index.md) | каталог вики: состояние, решения, спорное |
-| [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.2.0/docs/wiki/status.md) | что сделано, чего нет, известные ограничения |
-| [demo/README.md](https://github.com/Dec01/veha/blob/v0.2.0/demo/README.md) | демонстрация на вымышленных данных |
+| [docs/architecture.md](https://github.com/Dec01/veha/blob/v0.2.1/docs/architecture.md) | проектный документ: модель данных, несколько систем и контуров, управление расхождениями, подключение к тестам, вебморда |
+| [docs/wiki/index.md](https://github.com/Dec01/veha/blob/v0.2.1/docs/wiki/index.md) | каталог вики: состояние, решения, спорное |
+| [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.2.1/docs/wiki/status.md) | что сделано, чего нет, известные ограничения |
+| [demo/README.md](https://github.com/Dec01/veha/blob/v0.2.1/demo/README.md) | демонстрация на вымышленных данных |
 
 ## Красные линии
 
@@ -86,7 +86,7 @@ CLI), а конфликт имён на чужой машине ловится �
 3. **В consumer group не входим.** Смещения читаются, чужие консьюмеры не задеты.
 4. **Пишем только в свой каталог.** Артефакты — в `artifacts_dir`, ничего другого в
    тестируемой системе не создаётся и не меняется (о файле отметок МР —
-   [docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.2.0/docs/wiki/proposals.md)).
+   [docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.2.1/docs/wiki/proposals.md)).
 5. **Секреты не показываем.** Всё, что уходит в интерфейс, проходит через `redact`.
 6. **Аудит-лог обращений** к базе, шине и логам — в открытом виде, доступен тому, чью
    систему читают.
@@ -95,7 +95,7 @@ CLI), а конфликт имён на чужой машине ловится �
    эндпоинту, по таблице, по названию фичи); связь «эндпоинт — таблица» подписана окном
    теста, в котором снята, а «топик — таблица» — выводом из тишины записей. Единое поле
    `evidence` (`measured`, `inferred`, `declared`) на каждой связи — план, а не то, что
-   уже есть ([docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.2.0/docs/wiki/proposals.md)).
+   уже есть ([docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.2.1/docs/wiki/proposals.md)).
 8. **В ядре нет домена конкретного проекта.** Всё проектное — в `atlas.yaml`.
 
 ## Установка
@@ -149,7 +149,11 @@ veha export-static --root <каталог> --out <каталог>   # стати
 `export-static` пишет снимок вебморды, которому сервер не нужен: страницу, статику и
 ответы API JSON-файлами. Он открывается из любого подкаталога статического сайта под
 CSP без `'unsafe-inline'`; действия, которым нужен сервер (перезапуск, раннер, опрос
-«Live», отметки МР), в нём выключены с подписью «в демо недоступно». **Снимок публикует
+«Live», отметки МР), в нём выключены с подписью «в демо недоступно». Скрипты и стили
+страница грузит с версией по содержимому в адресе (`static/api.js?v=<хеш>`), так что
+долгий кеш JS и CSS на хостинге не мешает обновлению; саму страницу и `api/*.json`
+хостинг кешировать надолго не должен; при выкладке `static/` кладут раньше `index.html`,
+иначе новый адрес может закрепиться в кеше за старым файлом. **Снимок публикует
 всё, что видно в вебморде** — контейнеры, логи, merge request'ы, шаги и вложения тестов;
 снимок настоящих данных наружу не выкладывают, для витрины есть вымышленный набор
 `veha demo` (из исходников — `--root veha/demo_data`).
@@ -177,7 +181,7 @@ Alpha: сервер — устанавливаемый пакет и потре�
 **Что стабильно.** Версии — [Semantic Versioning](https://semver.org/) с поправкой на
 линию `0.x`: пока она не кончилась, ломающее изменение поднимает **минорную** цифру и
 записывается в журнале изменений разделом «Сломано». Таблица — в начале
-[CHANGELOG.md](https://github.com/Dec01/veha/blob/v0.2.0/CHANGELOG.md).
+[CHANGELOG.md](https://github.com/Dec01/veha/blob/v0.2.1/CHANGELOG.md).
 
 - **Публичное** — то, на что можно опираться: команды `veha serve`, `veha demo`,
   `veha export-static` и их ключи; порт по умолчанию 8770; переменные `ATLAS_SYSTEM` и
@@ -187,9 +191,9 @@ Alpha: сервер — устанавливаемый пакет и потре�
   `live/mr_checks.json`.
 - **Внутреннее** — меняется в любой версии без записи в «Сломано»: импорт `veha.*`
   (кроме `veha.__version__`), HTTP-интерфейс `/api/*`, раскладка статического снимка. Подробно, с
-тем, чего нет, и с ближайшими шагами, — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.2.0/docs/wiki/status.md).
-Проектное направление дальше — этапы в [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.2.0/docs/architecture.md) §10.
+тем, чего нет, и с ближайшими шагами, — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.2.1/docs/wiki/status.md).
+Проектное направление дальше — этапы в [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.2.1/docs/architecture.md) §10.
 
 ## Лицензия
 
-MIT — см. [LICENSE](https://github.com/Dec01/veha/blob/v0.2.0/LICENSE).
+MIT — см. [LICENSE](https://github.com/Dec01/veha/blob/v0.2.1/LICENSE).

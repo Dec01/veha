@@ -182,6 +182,16 @@ def test_listening_socket_is_not_inherited():
         sock.close()
 
 
+def _free_port() -> int:
+    """Свободный сейчас порт loopback: жёстко заданный бывает занят посторонним процессом."""
+    probe = socket.socket()
+    try:
+        probe.bind(("127.0.0.1", 0))
+        return probe.getsockname()[1]
+    finally:
+        probe.close()
+
+
 def test_server_listens_on_loopback_only(demo_root, monkeypatch, capsys):
     """Проверяется то, что реально уходит в uvicorn, а не константа в модуле."""
     import uvicorn
@@ -198,11 +208,12 @@ def test_server_listens_on_loopback_only(demo_root, monkeypatch, capsys):
     monkeypatch.setattr(uvicorn.Server, "run", fake_run)
     monkeypatch.delenv("ATLAS_SYSTEM", raising=False)
     monkeypatch.delenv("ATLAS_ENV", raising=False)
-    assert cli.main(["serve", "--root", str(demo_root), "--port", "8791",
+    port = _free_port()
+    assert cli.main(["serve", "--root", str(demo_root), "--port", str(port),
                      "--no-browser"]) == 0
-    assert seen["host"] == "127.0.0.1" and seen["port"] == 8791
+    assert seen["host"] == "127.0.0.1" and seen["port"] == port
     # uvicorn получает уже занятый сокет — проверяется, где он на самом деле слушает
-    assert seen["bound"] == [("127.0.0.1", 8791)]
-    assert seen["app"].state.allowed_hosts == {"127.0.0.1:8791", "localhost:8791"}
+    assert seen["bound"] == [("127.0.0.1", port)]
+    assert seen["app"].state.allowed_hosts == {f"127.0.0.1:{port}", f"localhost:{port}"}
     assert seen["app"].state.veha.readonly is True
     assert "только просмотр" in capsys.readouterr().out

@@ -19,7 +19,7 @@ merge request'ы, шаги и вложения тестов, схему базы
 
 Раскладка снимка::
 
-    index.html                   страница с меткой режима
+    index.html                   страница с меткой режима; статика — `static/<имя>?v=<хеш>`
     static/                      скрипты и стили вебморды (белый список STATIC_FILES)
     screens/                     снимки экранов, на которые ссылается граф
     api/graph.json               /api/graph
@@ -62,11 +62,11 @@ from partest_atlas.artifacts import Scope
 from veha import __version__
 from veha import config as veha_config
 from veha.core import sources as core_sources
+from veha.viz import assets
 
 STATIC = Path(__file__).resolve().parent / "static"
-#: Что из `static/` уезжает в снимок. Белый список, а не «всё из каталога»: случайный
-#: файл рядом со статикой (заметки, бэкап редактора) не должен попасть на сайт.
-STATIC_FILES = ("api.js", "scene3d.js", "map2d.js", "atlas.js", "dock.js", "style.css")
+#: Что из `static/` уезжает в снимок — белый список, общий с сервером (`veha.viz.assets`).
+STATIC_FILES = assets.STATIC_FILES
 #: Метка снимка: по ней экспорт узнаёт свой каталог и только его перезаписывает.
 MARKER = "api/export.json"
 #: То, из чего состоит снимок. Каталог, где есть что-то ещё, — не снимок.
@@ -225,8 +225,15 @@ def _read_inside(base: Path, name: str, limit: int = FILE_LIMIT) -> bytes:
     return data
 
 
-def _page() -> bytes:
-    html = (STATIC / "index.html").read_bytes().decode("utf-8").replace("\r\n", "\n")
+def _page(files: Dict[str, bytes]) -> bytes:
+    """Страница снимка: адреса статики с версией по байтам *files*, которые пишутся рядом
+    (`veha.viz.assets`), и метка режима. Если хостинг кеширует JS и CSS надолго, без
+    версии в адресе новая страница встретилась бы со старыми скриптами из кеша. Саму
+    страницу и `api/*.json` хостинг не должен кешировать надолго — это настройка сайта."""
+    try:
+        html = assets.page(STATIC, files)
+    except ValueError as exc:
+        raise ExportError(str(exc)) from None
     marker = '<meta charset="utf-8">'
     if marker not in html:
         raise ExportError("index.html: нет <meta charset> — некуда поставить метку режима")
@@ -333,11 +340,13 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
     try:
         g = srv.graph(refresh=True)
 
-        write("index.html", _page())
-        for name in STATIC_FILES:
-            # Переводы строк — как в репозитории, а не как в рабочей копии: из чекаута с
-            # CRLF и из `git archive` снимок обязан выйти побайтно одинаковым.
-            write(f"static/{name}", (STATIC / name).read_bytes().replace(b"\r\n", b"\n"))
+        # Переводы строк — как в репозитории, а не как в рабочей копии: из чекаута с
+        # CRLF и из `git archive` снимок обязан выйти побайтно одинаковым. Версии в
+        # адресах страницы считаются от этих же байтов.
+        files = assets.read_static(STATIC)
+        write("index.html", _page(files))
+        for name, data in files.items():
+            write(f"static/{name}", data)
 
         write("api/graph.json", dump(_relative_assets(api["/api/graph"](refresh=False))))
         artifacts = api["/api/artifacts"](refresh=False)

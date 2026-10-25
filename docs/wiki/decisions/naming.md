@@ -1,7 +1,7 @@
 ---
 title: Имена проекта, пакета, команды и формата
 status: current
-verified: 2026-10-19
+verified: 2026-10-25
 sources: [README.md]
 audience: maintainer
 ---

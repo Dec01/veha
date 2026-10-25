@@ -1,7 +1,7 @@
 ---
 title: Визуальный язык вебморды
 status: current
-verified: 2026-10-19
+verified: 2026-10-25
 sources: [veha/viz/static/style.css, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/scene3d.js, veha/viz/static/dock.js, veha/viz/static/index.html]
 audience: maintainer
 ---

@@ -425,3 +425,233 @@ def test_snapshot_does_not_depend_on_checkout_line_endings(demo_root, tmp_path, 
     assert snaps["crlf"] == snaps["lf"]
     assert all(b"\r\n" not in b for k, b in snaps["crlf"].items()
                if k.startswith("static/") or k == "index.html")
+
+
+# ------------------------------------------------- версия статики в адресах
+
+_ASSET_REF = re.compile(r'"(static/[^"]*)"')
+
+
+def _refs(html: str) -> dict:
+    """`static/<имя>` → версия из `?v=`; адрес без версии — `None`."""
+    found = {}
+    for ref in _ASSET_REF.findall(html):
+        path, _, query = ref.partition("?")
+        found[path.split("/", 1)[1]] = query[2:] if query.startswith("v=") else None
+    return found
+
+
+def _outside_comments(html: str) -> str:
+    """Разметка без содержимого HTML-комментариев — линейным поиском, без регулярок.
+    Незакрытый комментарий — сломанная страница, а не повод что-то пропустить."""
+    parts, pos = [], 0
+    while True:
+        start = html.find("<!--", pos)
+        if start < 0:
+            parts.append(html[pos:])
+            return "".join(parts)
+        end = html.find("-->", start + 4)
+        assert end >= 0, f"незакрытый комментарий в странице с позиции {start}"
+        parts.append(html[pos:start])
+        pos = end + 3
+
+
+def _stray_static(html: str, versioned: bool) -> list:
+    """Вхождения `static/` (без учёта регистра) вне комментариев, которые не являются
+    одним из шести адресов страницы: `"static/<имя>"` или, после подстановки,
+    `"static/<имя>?v=<10 hex>"`. Каждый из шести — ровно один раз."""
+    from veha.viz.assets import STATIC_FILES
+
+    bare = _outside_comments(html)
+    names = "|".join(re.escape(n) for n in STATIC_FILES)
+    tail = r"\?v=[0-9a-f]{10}" if versioned else ""
+    good = re.compile(rf'"static/({names}){tail}"')
+    stray, seen = [], []
+    for m in re.finditer("static/", bare, re.I):
+        g = good.match(bare, m.start() - 1) if m.start() > 0 else None
+        if g:
+            seen.append(g.group(1))
+        else:
+            stray.append(bare[max(0, m.start() - 20):m.end() + 20])
+    if sorted(seen) != sorted(STATIC_FILES):
+        stray.append(f"адреса страницы: {sorted(seen)}")
+    return stray
+
+
+def test_packaged_page_links_static_only_by_the_six_addresses():
+    """Гарантия «других ссылок на статику нет» — здесь, над упакованной страницей и над
+    тем, что из неё делает `assets.page`: подстановка во время работы ищет только точные
+    строки `"static/<имя>"` и разметку не разбирает."""
+    from veha.viz import assets
+
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    assert _stray_static(html, versioned=False) == []
+    assert _stray_static(assets.page(STATIC, assets.read_static(STATIC)), versioned=True) == []
+
+
+def test_snapshot_page_versions_every_static_file_by_written_bytes(snapshot):
+    """Если JS и CSS снимка на хостинге кешируются надолго, без версии в адресе новая
+    страница встречалась со старыми скриптами из кеша и падала до Ctrl+F5. Версия —
+    хеш тех байтов, что лежат в снимке рядом со страницей."""
+    import hashlib
+
+    from veha.viz.export import STATIC_FILES
+
+    out, _ = snapshot
+    html = (out / "index.html").read_text(encoding="utf-8")
+    refs = _refs(html)
+    assert set(refs) == set(STATIC_FILES)
+    for name in STATIC_FILES:
+        written = (out / "static" / name).read_bytes()
+        assert refs[name] == hashlib.sha256(written).hexdigest()[:10], name
+        assert f'"static/{name}?v={refs[name]}"' in html
+    assert _stray_static(html, versioned=True) == []
+
+
+def _static_copy(tmp_path) -> Path:
+    d = tmp_path / "static"
+    d.mkdir()
+    for f in STATIC.iterdir():
+        (d / f.name).write_bytes(f.read_bytes())
+    return d
+
+
+@pytest.mark.parametrize("ref", [
+    "<script src='static/api.js'></script>",
+    '<script src = "./static/api.js"></script>',
+    '<SCRIPT SRC="static/api.js"></SCRIPT>',
+    '<script data-src="static/api.js"></script>',
+    '<script src="/static/api.js"></script>',
+    '<script src="static/api.js?x=1"></script>',
+    '<link rel="stylesheet" href="static/style.css#a">',
+    '<script src="static/extra.js"></script>',
+    "<script src=static/api.js></script>",
+    '<img srcset="static/api.js 1x">',
+    '<p>файлы лежат в Static/ рядом</p>',
+])
+def test_any_other_static_link_is_refused_or_caught(tmp_path, ref):
+    """Любая иная форма ссылки на статику: либо `assets.page` отказывает (адрес
+    встретился не ровно один раз), либо её ловит гарантия над страницей. Без версии и
+    незамеченной она не проходит."""
+    from veha.viz import assets
+
+    d = _static_copy(tmp_path)
+    html = (d / "index.html").read_text(encoding="utf-8")
+    (d / "index.html").write_text(html.replace("</body>", ref + "\n</body>"),
+                                  encoding="utf-8")
+    try:
+        page = assets.page(d, assets.read_static(d))
+    except ValueError as exc:
+        assert "ровно" in str(exc) and "один" in str(exc)
+        return
+    assert _stray_static(page, versioned=True), ref
+
+
+def test_static_word_in_page_text_does_not_break_the_server(demo_root, tmp_path,
+                                                            monkeypatch):
+    """Слово `static/` в тексте или комментарии страницы — не адрес: сервер отдаёт
+    страницу (200, не 500), шесть адресов — с версией."""
+    from veha.viz import app as app_module
+
+    d = _static_copy(tmp_path)
+    html = (d / "index.html").read_text(encoding="utf-8")
+    (d / "index.html").write_text(html.replace(
+        "</body>", "<!-- <script src=static/x.js> --><p>каталог static/ и Static/</p>\n"
+                   "</body>"), encoding="utf-8")
+    monkeypatch.setattr(app_module, "STATIC", d)
+    r = make_client(demo_root).get("/")
+    assert r.status_code == 200
+    assert all(_refs(r.text).values()) and len(_refs(r.text)) == 6
+
+
+def test_static_version_changes_only_with_the_file(tmp_path):
+    """Изменённый файл — новый адрес, неизменный — прежний; перевод строк рабочей копии
+    адреса не меняет."""
+    from veha.viz import assets
+
+    d = _static_copy(tmp_path)
+    before = _refs(assets.page(d, assets.read_static(d)))
+    assert before == _refs(assets.page(d, assets.read_static(d)))
+    assert all(before.values())
+
+    dock = d / "dock.js"
+    dock.write_bytes(dock.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
+    assert _refs(assets.page(d, assets.read_static(d))) == before
+
+    dock.write_bytes(dock.read_bytes() + b"\n// changed\n")
+    after = _refs(assets.page(d, assets.read_static(d)))
+    assert after["dock.js"] != before["dock.js"]
+    assert {k: v for k, v in after.items() if k != "dock.js"} == \
+        {k: v for k, v in before.items() if k != "dock.js"}
+
+
+def test_changed_static_file_gets_a_new_address_in_the_snapshot(demo_root, tmp_path,
+                                                                monkeypatch):
+    """Два экспорта одного дерева — одни байты; правка одного файла меняет в снимке
+    адрес только его."""
+    from veha.viz import export
+
+    d = _static_copy(tmp_path)
+    monkeypatch.setattr(export, "STATIC", d)
+
+    def page_of(label):
+        out = tmp_path / f"snap-{label}"
+        export.export_static(demo_root, out)
+        return (out / "index.html").read_bytes()
+
+    first, second = page_of("a"), page_of("b")
+    assert first == second
+    (d / "style.css").write_bytes((d / "style.css").read_bytes() + b"\n/* changed */\n")
+    third = page_of("c")
+    old, new = _refs(first.decode("utf-8")), _refs(third.decode("utf-8"))
+    assert new["style.css"] != old["style.css"]
+    assert {k: v for k, v in new.items() if k != "style.css"} == \
+        {k: v for k, v in old.items() if k != "style.css"}
+
+
+def test_page_without_an_exact_address_stops_the_export(demo_root, tmp_path, monkeypatch):
+    """Адреса файла нет в странице или он встретился дважды — версию ставить некуда или
+    неоднозначно: отказ экспорта, а не страница без версии."""
+    from veha.viz import export
+
+    d = _static_copy(tmp_path)
+    html = (d / "index.html").read_text(encoding="utf-8")
+    (d / "index.html").write_text(html.replace('"static/dock.js"', '"static/dock2.js"'),
+                                  encoding="utf-8")
+    monkeypatch.setattr(export, "STATIC", d)
+    with pytest.raises(export.ExportError, match=r'"static/dock\.js" должен встретиться в '
+                                                 r"index\.html ровно один раз, а встретился: 0"):
+        export.export_static(demo_root, tmp_path / "snap")
+    assert not (tmp_path / "snap").exists()
+
+
+def test_server_page_carries_the_same_versions_as_the_snapshot(snapshot, client):
+    """`veha serve` отдаёт ту же страницу тем же кодом: адреса с теми же версиями, и по
+    ним отвечает статика сервера (запрос с `?v=` — тот же файл)."""
+    out, _ = snapshot
+    served = client.get("/")
+    assert served.headers["content-type"].startswith("text/html")
+    assert served.headers["cache-control"] == "no-store, must-revalidate"
+    snap = (out / "index.html").read_text(encoding="utf-8")
+    assert _refs(served.text) == _refs(snap)
+    assert served.text == snap.replace('<meta name="veha-mode" content="static">\n', "")
+    for name, v in _refs(served.text).items():
+        r = client.get(f"/static/{name}?v={v}")
+        assert r.status_code == 200
+        assert r.content.replace(b"\r\n", b"\n") == (out / "static" / name).read_bytes()
+
+
+def test_nothing_else_loads_static_files_by_address(snapshot):
+    """Страница — единственное место, где адреса статики: стили не грузят файлов
+    (`url()`, `@import`), скрипты не подгружают `static/…` сами, ответы API на статику
+    не ссылаются. Появится такая ссылка — её тоже нужно версионировать."""
+    out, _ = snapshot
+    css = (STATIC / "style.css").read_text(encoding="utf-8")
+    assert "url(" not in css and "@import" not in css
+    for f in STATIC.glob("*.js"):
+        text = f.read_text(encoding="utf-8")
+        assert "static/" not in text, f.name
+        assert not re.search(r"importScripts|new\s+Worker|import\s*\(|"
+                             r"createElement\(\s*['\"](?:script|link)", text), f.name
+    for f in (out / "api").rglob("*.json"):
+        assert "static/" not in f.read_text(encoding="utf-8"), f.relative_to(out)

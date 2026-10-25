@@ -33,7 +33,7 @@ from typing import Any, Dict, Optional
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from partest_atlas.artifacts import Scope
 from partest_atlas.collect import history as atlas_history
@@ -44,6 +44,7 @@ from veha import config as veha_config
 from veha import runner as veha_runner
 from veha.core import graph as core_graph
 from veha.core import sources as core_sources
+from veha.viz import assets
 from veha.viz.live import Live
 
 STATIC = Path(__file__).resolve().parent / "static"
@@ -652,8 +653,12 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
     if shots:
         app.mount("/screens", StaticFiles(directory=str(shots)), name="screens")
 
-    @app.get("/")
-    def index() -> FileResponse:
-        return FileResponse(str(STATIC / "index.html"))
+    @app.get("/", response_class=HTMLResponse)
+    def index() -> HTMLResponse:
+        # Та же страница, что у снимка, — с версией по содержимому в адресах статики
+        # (`veha.viz.assets`). Считается на каждый запрос: поправленный на диске скрипт
+        # сразу получает новый адрес. У сервера кеш и так выключен (`no-store` выше),
+        # версия — второй замок и один код со снимком.
+        return HTMLResponse(assets.page(STATIC, assets.read_static(STATIC)))
 
     return app
