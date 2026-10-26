@@ -1647,7 +1647,12 @@ function artifactWarning() {
   // потеря, а очистка: так и сказано.
   const col = G.collected || {};
   const lost = Object.entries(col.lostRecords || {}).filter(([, n]) => n > 0);
-  if (col.reportsCleared && (lost.length || col.dbEffects)) {
+  if (col.reportsMissing) {
+    // каталога результатов нет вовсе — не очистка и не потеря: путь никуда не ведёт
+    out.push(chip('<b>нет каталога Allure</b>',
+      [`${String(col.reportsMissing)} — проверки и обмен не показаны, записи агента не с чем соединить`],
+      'warn'));
+  } else if (col.reportsCleared && (lost.length || col.dbEffects)) {
     out.push(chip('<b>отчёты очищены</b>',
       ['отчётов Allure нет — записи агента не с чем соединить; связи появятся после прогона'],
       'warn'));

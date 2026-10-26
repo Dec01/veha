@@ -100,6 +100,9 @@ class ExportReport:
     bytes: int = 0
     counts: Dict[str, int] = field(default_factory=dict)
     skipped: List[str] = field(default_factory=list)
+    #: Что не так с отчётами прогона (`meta.reportProblems` графа) — для консоли, как у
+    #: `serve` при старте. В манифест снимка не пишется: в снимке это видно под шапкой.
+    report_problems: List[str] = field(default_factory=list)
 
     def as_dict(self) -> dict:
         return {"files": self.files, "bytes": self.bytes, "counts": dict(self.counts),
@@ -339,6 +342,7 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
     api = _endpoints(app)
     try:
         g = srv.graph(refresh=True)
+        report.report_problems = [str(p) for p in g["meta"].get("reportProblems") or []]
 
         # Переводы строк — как в репозитории, а не как в рабочей копии: из чекаута с
         # CRLF и из `git archive` снимок обязан выйти побайтно одинаковым. Версии в
@@ -407,6 +411,10 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
             try:
                 if allure is None:
                     raise _Skip("путь reports.allure в atlas.yaml негоден")
+                if not srv.attachment_allowed(source):
+                    # та же выборка, что у `/api/attachment` сервера: имя вложения
+                    # Allure, названное тестом этого каталога
+                    raise _Skip("не вложение Allure")
                 data = _read_inside(allure, source, ATTACHMENT_LIMIT)
                 if source.lower().endswith(".png"):
                     write(f"api/attachment/{source}", data)

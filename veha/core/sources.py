@@ -692,7 +692,16 @@ def load_coverage(path: Optional[Path]) -> Tuple[Dict[str, dict], dict, str]:
         if isinstance(e, dict):
             out[api_id(e.get("method", ""), e.get("path", ""))] = e
     extras = {k: v for k, v in data.items() if k != "endpoints"}
-    return out, extras, ""
+    # Без списка `endpoints` покрытия по эндпоинтам нет (`hasCoverage` ложно) — и это
+    # называется, как у читателя самого partest (`partest.reports`: 'endpoints' is not a
+    # list), а не выглядит как «отчёта нет».
+    why = ""
+    if "endpoints" not in data:
+        why = f"{path.name}: нет списка endpoints — покрытие по эндпоинтам не показано"
+    elif not isinstance(endpoints, list):
+        why = (f"{path.name}: endpoints — ожидался список, получено "
+               f"{type(endpoints).__name__}; покрытие по эндпоинтам не показано")
+    return out, extras, why
 
 
 # ---------------------------------------------------------------------------
@@ -784,16 +793,54 @@ def _is_ui(full: str, labels: Dict[str, str], ui_markers: List[str]) -> bool:
     return any(m and m in hay for m in ui_markers)
 
 
+#: Файлы, которые пишет Allure (allure-pytest и другие адаптеры): результаты, контейнеры
+#: фикстур, вложения `<uuid>-attachment.<расширение>` и три служебных файла отчёта.
+#: Каталог `reports.allure` может быть общим с проектом (`tests`, `.`), поэтому очистка
+#: удаляет только такие имена, а вложение отдаётся, только если имя — имя вложения.
+_ALLURE_ATTACHMENT_RE = re.compile(r"^[^/\\:]{1,200}-attachment(?:\.[A-Za-z0-9_-]{1,32})?$")
+_ALLURE_FILE_RE = re.compile(
+    r"^[^/\\:]{1,200}-(?:result|container)\.json$"
+    r"|^(?:executor\.json|environment\.properties|categories\.json)$")
+
+
+def is_allure_attachment(name: str) -> bool:
+    """Имя вложения Allure: `<что-то>-attachment` с необязательным расширением."""
+    return bool(_ALLURE_ATTACHMENT_RE.match(name or "")) and ".." not in name
+
+
+def is_allure_file(name: str) -> bool:
+    """Файл, который пишет Allure, — и только он годится в очистку."""
+    return is_allure_attachment(name) or bool(_ALLURE_FILE_RE.match(name or ""))
+
+
+def attachment_sources(result: Any, depth: int = 0) -> List[str]:
+    """Имена файлов вложений результата Allure — у теста и во всём дереве шагов."""
+    found: List[str] = []
+    if not isinstance(result, dict) or depth > 64:
+        return found
+    for a in result.get("attachments") if isinstance(result.get("attachments"), list) else []:
+        src = a.get("source") if isinstance(a, dict) else None
+        if isinstance(src, str) and src:
+            found.append(src)
+    for st in result.get("steps") if isinstance(result.get("steps"), list) else []:
+        found += attachment_sources(st, depth + 1)
+    return found
+
+
 def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Dict[str, Any]:
-    """Вызовы по эндпоинтам и список тестов. Что из них — последний прогон, решает граф.
+    """Вызовы по эндпоинтам, список тестов и имена вложений, которые тесты называют.
+    Что из тестов — последний прогон, решает граф.
 
     *d* — :attr:`Config.allure_dir`; `None` (путь в `atlas.yaml` негоден) и отсутствующий
-    каталог — «отчётов нет».
+    каталог — «отчётов нет». `attachments` — единственный список файлов, которые сервер и
+    снимок отдают как вложения: имя названо тестом этого каталога и похоже на вложение
+    Allure. Иначе при `reports.allure: .` по имени отдавался бы любой файл корня.
     """
     calls: Dict[str, List[dict]] = defaultdict(list)
     tests: List[dict] = []
+    attachments: set = set()
     if d is None or not d.is_dir():
-        return {"calls": calls, "tests": tests}
+        return {"calls": calls, "tests": tests, "attachments": attachments}
     markers = list(ui_markers or [])
 
     for f in sorted(d.glob("*result.json")):
@@ -830,6 +877,7 @@ def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Di
         }
         if status in ("failed", "broken"):
             test["error"] = short_error(r.get("statusDetails") or {})
+        attachments.update(a for a in attachment_sources(r) if is_allure_attachment(a))
         flat: List[dict] = []
         _walk_steps(r.get("steps") or [], flat)
 
@@ -854,7 +902,7 @@ def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Di
                     {"name": redact.text(st["name"]), "status": st["status"]}
                 )
         tests.append(test)
-    return {"calls": calls, "tests": tests}
+    return {"calls": calls, "tests": tests, "attachments": attachments}
 
 
 # ---------------------------------------------------------------------------

@@ -1160,6 +1160,15 @@ def build(s: Sources) -> dict:
     optin = src.optin_record(cov_meta)
 
     tests = allure["tests"]
+    # «Очищены» — только когда каталог есть и пуст: очистка из окна раннера оставляет
+    # каталог. Каталога нет вовсе — другое состояние: путь (свой или по умолчанию) никуда
+    # не ведёт. Негодный путь — не здесь, его называет `reportProblems`. Без путей машины.
+    allure_path = s.cfg.allure_dir
+    allure_there = allure_path is not None and allure_path.is_dir()
+    allure_missing = ""
+    if allure_path is not None and not allure_path.exists():
+        allure_missing = ("по пути reports.allure каталога нет"
+                          if s.cfg.report("allure").configured else "каталога allure-results нет")
     known = set(nodes)
     edge_sets = {
         "structure": [e.__dict__ for e in edges],
@@ -1218,7 +1227,8 @@ def build(s: Sources) -> dict:
             "lostLabels": dict(LOSS_REASONS),
             # записи от тестов, которых нет в текущих отчётах Allure, — сведение
             "notInReports": loss.get("unjoined", 0),
-            "reportsCleared": not allure["tests"],
+            "reportsCleared": allure_there and not allure["tests"],
+            "reportsMissing": allure_missing,
             "logEdges": len(observed_logs),
             "hasSchema": bool(db.get("databases")),
         },

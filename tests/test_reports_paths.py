@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import shutil
 import time
 from pathlib import Path
@@ -125,7 +126,18 @@ def test_missing_configured_reports_are_just_missing(small_root, capsys):
 @pytest.mark.parametrize("body, needle", [
     ("  coverage: 12\n", "reports.coverage: ожидалась строка пути, получено int"),
     ("  coverage: [a, b]\n", "reports.coverage: ожидалась строка пути, получено list"),
-    ('  coverage: ""\n', "reports.coverage: пустой или недопустимый путь"),
+    ('  coverage: ""\n', "reports.coverage: пустой путь"),
+    # `\t` и `\n` в двойных кавычках YAML — табуляция и перевод строки посреди пути
+    ('  coverage: "C:\\temp\\new.json"\n',
+     "reports.coverage: управляющий символ в пути — путь Windows в двойных кавычках? "
+     "пишите C:/… или в одинарных кавычках"),
+    *[(f"  coverage: '{unc}'\n",
+       "reports.coverage: сетевой путь (UNC) не читается — открыть его значит обратиться "
+       "по сети; отчёт кладут на локальный диск")
+      for unc in (r"\\host\share\coverage.json", "//host/share/coverage.json",
+                  r"\\?\C:\coverage.json", r"\\.\pipe\x", r"/\host\share")],
+    ("  coverage: 'C:coverage.json'\n",
+     "reports.coverage: диск без косой черты (C:отчёт) уводит из корня; пишите C:/…"),
 ])
 def test_bad_value_is_named_not_replaced_by_the_default(small_root, body, needle):
     """Негодный путь не подменяется умолчанием: coverage.json в корне есть, но проект
@@ -338,3 +350,139 @@ def test_export_reads_allure_at_the_configured_path(small_root, tmp_path):
     att = json.loads((out / "api" / "attachment" / "a1-attachment.txt.json")
                      .read_text(encoding="utf-8"))
     assert att["text"] == "тело ответа"
+
+
+# ------------------------------------------------- раунд исправлений по ревью
+
+
+def test_windows_drive_path_on_posix_is_named(small_root, monkeypatch):
+    from veha import config
+
+    monkeypatch.setattr(config, "_WINDOWS", False)
+    _reports(small_root, "  coverage: 'C:/ci/coverage.json'\n")
+    assert config.load(small_root).report_problems() == [
+        "reports.coverage: путь Windows; на этой машине он не абсолютный"]
+
+
+def test_unknown_key_in_reports_is_named(small_root):
+    _reports(small_root, "  coverge: out/coverage.json\n")
+    m = _meta(small_root)
+    assert m["reportProblems"] == [
+        "reports.coverge: неизвестный ключ (есть coverage, allure)"]
+    assert m["hasCoverage"]          # умолчание в корне по-прежнему читается
+
+
+def test_missing_allure_dir_is_not_called_cleared(small_root, capsys):
+    """Каталога нет — не «очищены»: путь никуда не ведёт, и это сказано без пути машины."""
+    from veha.cli import _report
+    from veha.core.graph import build_root
+
+    g = build_root(small_root)                      # каталога по умолчанию нет
+    assert g["collected"]["reportsCleared"] is False
+    assert g["collected"]["reportsMissing"] == "каталога allure-results нет"
+
+    _reports(small_root, "  allure: nowhere/allure\n")
+    g = build_root(small_root)
+    assert g["collected"]["reportsCleared"] is False
+    assert g["collected"]["reportsMissing"] == "по пути reports.allure каталога нет"
+    _report(g, small_root)
+    out = capsys.readouterr().out
+    assert "очищены" not in out
+    if g["collected"]["dbEffects"]:
+        assert "! по пути reports.allure каталога нет — записи агента не с чем соединить" in out
+
+    (small_root / "nowhere" / "allure").mkdir(parents=True)
+    g = build_root(small_root)
+    assert g["collected"]["reportsCleared"] is True and g["collected"]["reportsMissing"] == ""
+
+
+def test_clean_in_a_directory_shared_with_the_project_removes_only_allure_files(small_root):
+    """`reports.allure: tests` — каталог тестов проекта: очистка не трогает conftest.py,
+    модули тестов, отчёт покрытия и подкаталоги."""
+    d = _allure(small_root / "tests")
+    project = ["conftest.py", "test_orders.py", "coverage.json", "notes-attachment-list.md"]
+    for name in project:
+        (d / name).write_text("# проект\n", encoding="utf-8")
+    allure = ["c1-container.json", "a2-attachment", "a3-attachment.png", "executor.json",
+              "environment.properties", "categories.json"]
+    for name in allure:
+        (d / name).write_text("{}", encoding="utf-8")
+    (d / "sub").mkdir()
+    (d / "sub" / "x-result.json").write_text("{}", encoding="utf-8")
+    _reports(small_root, "  allure: tests\n")
+    c = make_client(small_root, readonly=False)
+    r = c.post("/api/runner/clean")
+    assert r.status_code == 200 and r.json()["removed"] == 2 + len(allure)
+    assert sorted(p.name for p in d.iterdir()) == sorted(project + ["sub"])
+    assert (d / "sub" / "x-result.json").is_file()
+
+
+def _shared_root(small_root: Path) -> None:
+    """`reports.allure: .`: результат лежит в корне и называет вложениями файлы корня."""
+    (small_root / ".env").write_text("DB_PASSWORD=hunter2\n", encoding="utf-8")
+    result = dict(RESULT, attachments=[
+        {"name": "ответ", "source": "a1-attachment.txt"},
+        {"name": "конфиг", "source": "atlas.yaml"},
+        {"name": "окружение", "source": ".env"},
+    ])
+    (small_root / "r1-result.json").write_text(json.dumps(result, ensure_ascii=False),
+                                               encoding="utf-8")
+    (small_root / "a1-attachment.txt").write_text("тело ответа", encoding="utf-8")
+    (small_root / "z9-attachment.txt").write_text("никем не назван", encoding="utf-8")
+    _reports(small_root, "  allure: .\n")
+
+
+def test_attachment_is_served_only_if_a_test_names_it_as_an_allure_attachment(small_root):
+    _shared_root(small_root)
+    c = make_client(small_root)
+    assert c.get("/api/attachment/a1-attachment.txt").json()["text"] == "тело ответа"
+    for name in ("atlas.yaml", ".env", "z9-attachment.txt", "coverage.json"):
+        assert c.get(f"/api/attachment/{name}").status_code == 404, name
+
+
+def test_export_takes_only_named_allure_attachments(small_root, tmp_path):
+    from veha.viz.export import export_static
+
+    _shared_root(small_root)
+    out = tmp_path / "site"
+    rep = export_static(small_root, out)
+    assert rep.counts.get("attachments") == 1
+    names = sorted(p.name for p in (out / "api" / "attachment").iterdir())
+    assert names == ["a1-attachment.txt.json"]
+    assert not any("hunter2" in p.read_text(encoding="utf-8", errors="replace")
+                   for p in out.rglob("*") if p.is_file())
+    assert any("atlas.yaml" in s and "не вложение Allure" in s for s in rep.skipped)
+
+
+@pytest.mark.parametrize("payload, needle", [
+    ({"endpoints": "oops", "summary": {}}, "endpoints — ожидался список, получено str"),
+    ({"summary": {"avg": 50}}, "нет списка endpoints"),
+])
+def test_coverage_without_an_endpoint_list_says_why(small_root, payload, needle):
+    (small_root / "coverage.json").write_text(json.dumps(payload), encoding="utf-8")
+    m = _meta(small_root)
+    assert not m["hasCoverage"]
+    assert len(m["reportProblems"]) == 1 and needle in m["reportProblems"][0]
+    assert m["reportProblems"][0].startswith("coverage.json: ")      # без пути машины
+
+
+def test_export_static_prints_report_problems(small_root, tmp_path, capsys):
+    from veha.cli import main
+
+    _reports(small_root, "  coverge: x.json\n")
+    assert main(["export-static", "--root", str(small_root),
+                 "--out", str(tmp_path / "site")]) == 0
+    out = capsys.readouterr().out
+    assert "  ! reports.coverge: неизвестный ключ (есть coverage, allure)" in out
+
+
+def test_clean_refuses_a_default_dir_that_links_outside(small_root, tmp_path):
+    foreign = _allure(tmp_path / "foreign")
+    try:
+        os.symlink(foreign, small_root / "allure-results", target_is_directory=True)
+    except (OSError, NotImplementedError):
+        pytest.skip("символические ссылки здесь не создать")
+    c = make_client(small_root, readonly=False)
+    r = c.post("/api/runner/clean")
+    assert r.status_code == 409 and "вне корня" in r.json()["detail"]
+    assert sorted(p.name for p in foreign.iterdir()) == ["a1-attachment.txt", "r1-result.json"]

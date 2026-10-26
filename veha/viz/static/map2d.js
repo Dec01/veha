@@ -172,9 +172,11 @@ window.Map2D = (function () {
     const col = G.collected || {};
     // нет ни одной записи агента о БД или шине — «не задели» сказать нельзя
     // очищенные отчёты: записи агента есть, но соединить их не с чем — замера тоже нет
-    measuredDb = !col.reportsCleared
+    // нет каталога Allure — то же: соединять записи агента не с чем
+    const noReports = col.reportsCleared || !!col.reportsMissing;
+    measuredDb = !noReports
       && (num(col.dbEffects) > 0 || G.nodes.some((n) => n.kind === 'table' && n.meta.sessionTouched));
-    measuredBus = !col.reportsCleared && (num(col.busEvents) > 0 || num(col.busEdges) > 0);
+    measuredBus = !noReports && (num(col.busEvents) > 0 || num(col.busEdges) > 0);
   }
 
   /* Сколько колонок блоков доменов помещается в ширину. */

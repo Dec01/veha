@@ -160,6 +160,14 @@ class Server:
     def sources(self) -> core_sources.Sources:
         return core_sources.load(self.cfg, self.requested_scope)
 
+    def attachment_allowed(self, source: str) -> bool:
+        """Отдаётся ли файл как вложение: имя вложения Allure, названное тестом текущего
+        каталога результатов. Сервер и снимок решают одним этим вызовом."""
+        self.graph()
+        sources = self.last_sources
+        named = (sources.allure.get("attachments") or set()) if sources is not None else set()
+        return core_sources.is_allure_attachment(source) and source in named
+
     def graph(self, refresh: bool = False) -> dict:
         with self._lock:
             if refresh or self._graph is None:
@@ -426,6 +434,10 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         if not source or Path(source).name != source or ":" in source or ".." in source:
             raise HTTPException(400, "недопустимое имя вложения")
         base = srv.require_allure_dir().resolve()
+        if not srv.attachment_allowed(source):
+            # Каталог `reports.allure` может быть общим с проектом (`.`, `tests`): по
+            # имени отдаётся только то, что тест назвал своим вложением.
+            raise HTTPException(404, "вложение не найдено")
         path = (base / source).resolve()
         if path.parent != base:
             raise HTTPException(400, "недопустимое имя вложения")
@@ -690,12 +702,14 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
     def runner_clean() -> dict:
         """Очистить allure-results: иначе прогоны копятся, и сводка склеивает их.
 
-        Удаляются файлы прямо в каталоге (подкаталоги не трогаются) — и только если
-        каталог после разрешения ссылок лежит **строго внутри** корня данных. Путь
-        `reports.allure` может указывать куда угодно; удалять на диске пользователя то,
-        что лежит вне каталога, который он отдал серверу, Веха не берётся — и сам корень
-        тоже не чистит (`reports.allure: .` стёр бы `atlas.yaml`). Отчёт покрытия, если
-        лежит в том же каталоге, не удаляется.
+        Удаляются только файлы Allure прямо в каталоге (`*-result.json`,
+        `*-container.json`, `*-attachment.*`, `executor.json`, `environment.properties`,
+        `categories.json`; подкаталоги не трогаются) — и только если каталог после
+        разрешения ссылок лежит **строго внутри** корня данных. Путь `reports.allure`
+        может указывать куда угодно; удалять на диске пользователя то, что лежит вне
+        каталога, который он отдал серверу, Веха не берётся — и сам корень тоже не чистит.
+        Каталог бывает общим с проектом (`reports.allure: tests`): `conftest.py`, отчёт
+        покрытия и всё прочее, что не похоже на файл Allure, остаётся.
         """
         srv.require_writable("набор результатов не очищается")
         if srv.runner.busy or srv.rerun_lock.locked():
@@ -709,11 +723,9 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
             raise HTTPException(409, "каталог результатов Allure (reports.allure) вне корня "
                                      "данных — Веха не удаляет файлы вне корня; очистите "
                                      "его средствами проекта")
-        keep = {p.resolve() for p in (srv.cfg.coverage_file,
-                                      srv.root / veha_config.CONFIG_NAME) if p is not None}
         if d.is_dir():
             for f in d.iterdir():
-                if f.is_file() and f.resolve() not in keep:
+                if core_sources.is_allure_file(f.name) and f.is_file():
                     try:
                         f.unlink()
                         removed += 1

@@ -4,6 +4,7 @@
     veha serve --root <каталог> [--port 8770] [--no-browser]
                [--system S --env E] [--allow-run]
     veha export-static --root <каталог> --out <каталог> [--system S --env E]
+    veha init [--root <каталог проекта>] [--system S] [--env E]
 
 Сервер слушает только 127.0.0.1: аутентификации во вебморде пока нет, а показывает она
 сведённый граф всей тестируемой системы.
@@ -21,10 +22,9 @@ from typing import Any, Callable, List, Optional
 
 from partest_atlas.artifacts import DEFAULT_SCOPE_KEY, Scope
 
-from veha import __version__
+from veha import __version__, scaffold
 from veha.core.sources import valid_segment
 from veha.listen import HOST, bind_socket
-
 
 
 class ScopeError(ValueError):
@@ -78,7 +78,11 @@ def _report(g: dict, root: Path, out=None, cfg: Any = None) -> None:
         print(f"  ! {note}", file=out)
     collected = g.get("collected") or {}
     lost = {k: v for k, v in (collected.get("lostRecords") or {}).items() if v}
-    if collected.get("reportsCleared") and (lost or collected.get("dbEffects")):
+    if collected.get("reportsMissing"):
+        if lost or collected.get("dbEffects"):
+            print(f"  ! {collected['reportsMissing']} — записи агента не с чем соединить",
+                  file=out)
+    elif collected.get("reportsCleared") and (lost or collected.get("dbEffects")):
         print("  ! отчёты Allure очищены — записи агента не с чем соединить, связи "
               "появятся после прогона", file=out)
     else:
@@ -212,8 +216,54 @@ def export_static(args: argparse.Namespace) -> int:
     print("  ! снимок публикует всё, что видно в вебморде: на настоящих данных наружу "
           "не выкладывать")
     print(f"  файлов {rep.files}, {rep.bytes / 1_000_000:.1f} МБ; {counts}")
+    for problem in rep.report_problems:
+        print(f"  ! {problem}")
     for note in rep.skipped:
         print(f"  ! пропущено: {note}")
+    return 0
+
+
+def init(args: argparse.Namespace) -> int:
+    """Заготовка `atlas.yaml` для существующего проекта. Код проекта не выполняется.
+
+    Существующий файл не перезаписывается, ключа `--force` нет: в `atlas.yaml` ручная
+    работа, и вернуть заготовку — одно явное действие человека (удалить или переименовать
+    файл), а не флаг, который легко добавить по привычке и потерять настройку.
+    """
+    root = Path(args.root).resolve()
+    if not root.is_dir():
+        print(f"нет каталога: {root}", file=sys.stderr)
+        return 2
+    for label, value in (("система", args.system), ("контур", args.env)):
+        if value and not valid_segment(value):
+            print(f"{label} {value!r}: допустим один сегмент [A-Za-z0-9._-]+ без '..'",
+                  file=sys.stderr)
+            return 2
+    p = scaffold.plan(root, system=args.system, env=args.env)
+    try:
+        target = scaffold.write(p)
+    except scaffold.Exists as exc:
+        print(f"{exc} уже есть — не перезаписываю: в нём может быть ручная настройка. "
+              f"Чтобы получить заготовку заново, переименуйте или удалите файл.",
+              file=sys.stderr)
+        return 2
+    except OSError as exc:
+        print(f"atlas.yaml не записан: {exc.strerror or exc}", file=sys.stderr)
+        return 2
+    print(f"Веха {__version__}: заготовка → {target}")
+    services = [s for s in p.spec.services if s.kind]
+    if services:
+        print("  спецификации из confpartest.swagger_files: "
+              + ", ".join(f"{s.name} ({s.kind})" for s in services))
+    for key, found, value in (("coverage", p.coverage, p.coverage_path),
+                              ("allure", p.allure, p.allure_path)):
+        how = f"из {found.where}" if found.usable else "по умолчанию"
+        print(f"  reports.{key}: {value} — {how}")
+    for warning in p.warnings():
+        print(f"  ! {warning}")
+    print("Дальше:")
+    for i, step in enumerate(scaffold.next_steps(p), 1):
+        print(f"  {i}. {step}")
     return 0
 
 
@@ -302,6 +352,21 @@ def build_parser() -> argparse.ArgumentParser:
     e.add_argument("--system", default="", help="система (по умолчанию — ATLAS_SYSTEM)")
     e.add_argument("--env", default="", help="контур (по умолчанию — ATLAS_ENV)")
     e.set_defaults(func=export_static)
+
+    i = sub.add_parser("init", help="заготовка atlas.yaml для проекта на pytest + partest",
+                       description="Записать atlas.yaml в корень проекта: спецификации из "
+                                   "confpartest.swagger_files (разбором файла, без импорта "
+                                   "и без выполнения кода проекта), пути отчётов из "
+                                   "настроек pytest, набор full для тренда, шаблоны "
+                                   "остальных разделов. Существующий atlas.yaml не "
+                                   "перезаписывается.")
+    i.add_argument("--root", default=".",
+                   help="корень проекта: confpartest.py, pytest.ini (по умолчанию — текущий)")
+    i.add_argument("--system", default="",
+                   help="система для подсказок (по умолчанию — имя каталога)")
+    i.add_argument("--env", default="",
+                   help=f"контур для подсказок (по умолчанию — {scaffold.DEFAULT_ENV})")
+    i.set_defaults(func=init)
     return p
 
 

@@ -261,11 +261,13 @@ def test_method_filter_loss_is_counted_separately(small_root):
 
 
 def test_cleared_reports_are_not_called_a_loss(small_root, capsys, monkeypatch):
-    """allure-results нет — записи агента не с чем соединить: это «отчёты очищены»."""
+    """allure-results пуст — записи агента не с чем соединить: это «отчёты очищены».
+    Каталога нет вовсе — другое состояние (`reportsMissing`, test_reports_paths.py)."""
     import uvicorn
 
     from veha import cli
 
+    (small_root / "allure-results").mkdir()
     g = build_root(small_root)
     assert g["collected"]["reportsCleared"] is True
     monkeypatch.setattr(uvicorn.Server, "run", lambda self, *a, **kw: None)

@@ -138,7 +138,9 @@ def leaky_root(small_root):
                           "trace": f"Authorization: Bearer {TOKEN}"},
         "parameters": [{"name": "api_key", "value": SECRET}],
         "steps": [{"name": f"HTTP GET /api/v1/x?token={SECRET}", "status": "failed",
-                   "steps": [{"name": f"cookie: sid={SECRET}", "status": "failed"}]}],
+                   "steps": [{"name": f"cookie: sid={SECRET}", "status": "failed"}],
+                   # вложение шага: сервер отдаёт только то, что назвал тест
+                   "attachments": [{"name": "curl", "source": "att-2-attachment.txt"}]}],
         "attachments": [{"name": "req", "source": "att-1-attachment.json"}],
     }), encoding="utf-8")
     logs = small_root / "logs"

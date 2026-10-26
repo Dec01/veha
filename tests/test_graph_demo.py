@@ -72,7 +72,7 @@ def test_contract_and_collected(demo_graph):
     assert collected == {
         "uiLinks": 75, "dbEffects": 133, "busEvents": 18, "busEdges": 96,
         "lostRecords": {"emptyJoin": 0, "filtered": 0, "malformed": 0}, "notInReports": 0,
-        "reportsCleared": False, "logEdges": 42, "hasSchema": True}
+        "reportsCleared": False, "reportsMissing": "", "logEdges": 42, "hasSchema": True}
     assert demo_graph["db"]["stats"] == {"tables": 52, "columns": 369, "foreignKeys": 60}
 
 

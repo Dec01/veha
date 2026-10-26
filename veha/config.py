@@ -18,6 +18,8 @@
 from __future__ import annotations
 
 import fnmatch
+import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -34,6 +36,39 @@ REPORTS_SECTION = "reports"
 DEFAULT_REPORTS = {"coverage": "coverage.json", "allure": "allure-results"}
 #: Чем отчёт является на диске: покрытие — файл, Allure — каталог.
 REPORT_KINDS = {"coverage": "file", "allure": "dir"}
+
+#: Два разделителя в начале — UNC (`\\сервер\ресурс`, `//сервер`, `\\?\`, `\\.\`): на
+#: Windows открыть такой путь — значит обратиться по сети.
+_UNC_RE = re.compile(r"^[\\/]{2}")
+#: Буква диска: `C:/…` и `C:\…` — абсолютный путь Windows; `C:отчёт` — путь от текущего
+#: каталога диска C, который `Path` при склейке с корнем уводит на другой диск.
+_DRIVE_RE = re.compile(r"^[A-Za-z]:")
+_DRIVE_ABS_RE = re.compile(r"^[A-Za-z]:[\\/]")
+#: Где путь с буквой диска абсолютен. Отдельным именем — чтобы проверка POSIX-ветки не
+#: подменяла `os.name` всему процессу.
+_WINDOWS = os.name == "nt"
+
+
+def report_path_problem(where: str, value: str) -> str:
+    """Почему строка из `reports` не годится в путь; пусто — годится.
+
+    Без самого значения в тексте: причина уходит в вебморду и в статический снимок.
+    """
+    if not value.strip():
+        return f"{where}: пустой путь"
+    if any(ord(c) < 0x20 for c in value):
+        # `"C:\new\report"` в двойных кавычках YAML — перевод строки посреди пути
+        return (f"{where}: управляющий символ в пути — путь Windows в двойных кавычках? "
+                f"пишите C:/… или в одинарных кавычках")
+    if _UNC_RE.match(value):
+        return (f"{where}: сетевой путь (UNC) не читается — открыть его значит обратиться "
+                f"по сети; отчёт кладут на локальный диск")
+    if _DRIVE_RE.match(value):
+        if not _DRIVE_ABS_RE.match(value):
+            return f"{where}: диск без косой черты (C:отчёт) уводит из корня; пишите C:/…"
+        if not _WINDOWS:
+            return f"{where}: путь Windows; на этой машине он не абсолютный"
+    return ""
 
 
 @dataclass
@@ -146,8 +181,9 @@ class Config:
         if not isinstance(value, str):
             return ReportPath(key, None, True,
                               f"{where}: ожидалась строка пути, получено {type(value).__name__}")
-        if not value.strip() or "\x00" in value:
-            return ReportPath(key, None, True, f"{where}: пустой или недопустимый путь")
+        problem = report_path_problem(where, value)
+        if problem:
+            return ReportPath(key, None, True, problem)
         return ReportPath(key, self.path(value), True)
 
     @property
@@ -171,8 +207,15 @@ class Config:
     def report_problems(self) -> List[str]:
         """Негодные значения `reports` и пути не того вида (каталог вместо файла и
         наоборот). Отсутствующий отчёт — не проблема, а законное состояние: о нём
-        говорят `hasCoverage`/`hasAllure`."""
-        return [p for p in (self.report(k).problem() for k in DEFAULT_REPORTS) if p]
+        говорят `hasCoverage`/`hasAllure`. Неизвестный ключ раздела тоже называется:
+        опечатка (`coverge`) иначе молча оставила бы умолчание."""
+        out = [p for p in (self.report(k).problem() for k in DEFAULT_REPORTS) if p]
+        section = self.raw.get(REPORTS_SECTION)
+        if isinstance(section, dict):
+            known = ", ".join(DEFAULT_REPORTS)
+            out += [f"{REPORTS_SECTION}.{str(k)[:40]}: неизвестный ключ (есть {known})"
+                    for k in section if k not in DEFAULT_REPORTS]
+        return out
 
     def inside_root(self, path: Path) -> bool:
         """Лежит ли *path* после разрешения ссылок строго внутри корня данных."""

@@ -2,7 +2,7 @@
 title: Статус «Вехи»
 status: current
 verified: 2026-10-25
-sources: [README.md, pyproject.toml, CHANGELOG.md, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in]
+sources: [README.md, pyproject.toml, CHANGELOG.md, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in, veha/scaffold.py, tests/test_init.py]
 audience: agent
 allow_version_literals: true
 ---
@@ -17,8 +17,8 @@ allow_version_literals: true
 | | |
 |---|---|
 | Стадия | alpha: сервер — устанавливаемый пакет и потребитель `partest-atlas`; демонстрация — `veha demo` из пакета |
-| Код | пакет `veha/`: `config.py`, `core/` (чтение и вывод), `viz/` (FastAPI + статика), `runner.py`, `redact.py`, `cli.py`, `listen.py` (слушающий сокет — единственный модуль с `socket`), `demo.py`, данные `demo_data/` |
-| Тесты | `tests/`, pytest, без сети и без стенда; на 2026-10-25 — 548 проверок: 547 проходят, 1 пропускается по окружению (например, символические ссылки там, где их нельзя создать; сверка среднего вебморды с partest — там, где нет node) (partest 2.6.0; partest-atlas 0.2.0 и 0.2.1 — набор зелёный на обоих; с путями отчётов — на 0.2.0 и на исходниках 0.2.2) |
+| Код | пакет `veha/`: `config.py`, `core/` (чтение и вывод), `viz/` (FastAPI + статика), `runner.py`, `redact.py`, `cli.py`, `listen.py` (слушающий сокет — единственный модуль с `socket`), `demo.py`, `scaffold.py` (`veha init`), данные `demo_data/` |
+| Тесты | `tests/`, pytest, без сети и без стенда; на 2026-10-25 — 595 проверок: 592 проходят, 3 пропускаются по окружению (например, символические ссылки там, где их нельзя создать; сверка среднего вебморды с partest — там, где нет node) (partest 2.6.0; partest-atlas 0.2.0 и 0.2.1 — набор зелёный на обоих; с путями отчётов — на 0.2.0 и на исходниках 0.2.2; с `veha init` и исправлениями путей — на 0.2.0) |
 | Версия | 0.2.2 — 2026-10-25, alpha (правило среднего partest 2.7.0 в тренде и вебморде); 0.2.1 — 2026-10-25 (версия в адресах статики снимка); 0.2.0 — 2026-10-19 (вебморда в языке partest.ru); на PyPI: `pip install veha`. Номер — только в `veha.__version__` (`pyproject.toml` берёт его динамически). Политика версий и граница публичного — в начале `CHANGELOG.md` |
 | Зависимости | `partest-atlas>=0.1.0,<0.3` (формат артефактов, схема 2; 0.2 формат не менял — поменял, когда и какие записи пишутся, см. ниже; 0.2.1 пол не поднимает — правило среднего сервер дописывает в срез сам, непонятый файл истории проверяет сам, а пропуск записи узнаёт по пустому возврату `append`; 0.2.1 нужна только генератору демонстрации), `partest>=2.6.0,<3` (`redact.mask_secret`; пол 2.6.0 — ноль исходящего трафика: раньше импорт `partest` читал `confpartest` с `sys.path` и грузил спецификации по URL, держит `tests/test_import_egress.py`; `meta.selection.optin` и форма отчёта 2.7.0 пол не поднимают — их пишет partest проекта, сервер читает JSON обеих эпох), `fastapi>=0.132.0,<1` (`strict_content_type`), `uvicorn>=0.27,<1`, `pydantic>=2.7,<3`, `PyYAML>=6.0.2,<7` (пол — как у partest и partest-atlas); сверка правила opt-in с `compare_payloads` в `dev` отдельной строки не требует — пол основной зависимости выше |
 | Выпуск | открытый проект, MIT (решение 2026-10-18); 0.1.0 — 2026-10-19, первый выпуск на PyPI (`pip install veha`); 0.2.0 — 2026-10-19, вебморда в языке partest.ru, без «Сломано»; 0.2.1 — 2026-10-25, версия по содержимому в адресах статики снимка (патч); 0.2.2 — 2026-10-25, правило среднего partest 2.7.0 в тренде и в средних групп, запись истории не теряется молча (патч); колесо с демонстрационным набором, метаданные (лицензия SPDX `MIT`, классификаторы Python — только проверенные 3.10, 3.11, 3.14), `CHANGELOG.md`, sdist с тестами, которые проходят из распакованного архива. Колесо собирается только из чистого клона, не из рабочей копии (в ней `veha/demo_data/` мог измениться). Ссылки README и CHANGELOG ведут на тег `v<версия>` выпуска |
@@ -318,14 +318,41 @@ connect-src 'self'` из подкаталога: ни одного наруше�
 словарь) умолчанием не подменяется: отчёт не читается, причина — в `meta.reportProblems`
 графа, под шапкой и при старте, без путей машины; так же называются каталог на месте файла
 покрытия, файл на месте каталога Allure и `coverage.json`, который не JSON-объект (раньше
-он ронял сборку графа). Очистка из окна раннера удаляет файлы, только если каталог Allure
-после разрешения ссылок лежит строго внутри корня, и не удаляет отчёт покрытия в том же
-каталоге; вне корня и сам корень — 409 с причиной. Снимок берёт результаты и вложения из
-каталога вне корня под тем же замком `_read_inside` (простое имя, не ссылка, внутри
-каталога) — в отличие от экранов вне корня, которые снимок пропускает. Ключей командной
+он ронял сборку графа). Очистка из окна раннера удаляет только файлы Allure (`is_allure_file`:
+`*-result.json`, `*-container.json`, `*-attachment.*`, `executor.json`,
+`environment.properties`, `categories.json`) и только если каталог после разрешения ссылок
+лежит строго внутри корня; вне корня, сам корень и ссылка наружу — 409 с причиной; в
+каталоге, общем с проектом (`reports.allure: tests`), остальное цело. Вложение отдаётся
+(`/api/attachment`, снимок) одной проверкой `attachment_allowed`: имя вложения Allure,
+названное в `attachments` тестом текущего каталога (`load_allure` собирает их при сборке
+графа) — при `reports.allure: .` файлы корня по имени не отдаются. Снимок берёт результаты
+и вложения из каталога вне корня под тем же замком `_read_inside` (простое имя, не ссылка,
+внутри каталога) — в отличие от экранов вне корня, которые снимок пропускает. Пути
+`reports.*` проверяет `report_path_problem`: сетевой путь UNC отвергается (на Windows его
+открытие — обращение по сети), управляющий символ, диск без косой черты и буква диска не на
+Windows — причиной; неизвестный ключ раздела — тоже. Каталога Allure нет — отдельное
+состояние `collected.reportsMissing` (чип «нет каталога Allure», строка при старте), а
+«отчёты очищены» — только при существующем пустом каталоге. `coverage.json` без списка `endpoints` — причина в `reportProblems`; `export-static` печатает `reportProblems` в консоль, как `serve` при старте. Битый `atlas.yaml` даёт
+умолчания для отчётов, как и для `artifacts_dir`, — осознанно: настройки, которую не
+прочитать, нет. Ключей командной
 строки для путей нет — путь свойство проекта, а не запуска. `partest-atlas` раздел
 `reports` не читает и не отвергает (`config.load` разделы не проверяет). Пути общие для
 всех областей — вопрос «отчёты по области» по-прежнему открыт в [[proposals]].
+
+**Заготовка `atlas.yaml`** (не выпущено) — `veha init [--root] [--system] [--env]`
+(`veha/scaffold.py`). Код проекта не выполняется: `confpartest.py` разбирается `ast`, из
+него берётся только литерал `swagger_files`; не литерал (целиком или запись) — заготовка с
+подсказкой, изменение кодом ниже по файлу — пометка. Адрес спецификации — без учётных
+данных, запроса и фрагмента, остаток через `redact.text`; чужой текст попадает в файл
+только комментарием в одну строку, значения — скалярами в кавычках. Пути отчётов —
+текстом из `pytest.ini`, `pyproject.toml`, `tox.ini`, `setup.cfg` (без строк-комментариев;
+`{toxinidir}/` снимается, другие подстановки не угадываются); в `reports` — только
+относительные внутри корня, путь вне корня — закомментированным с предупреждением.
+Раздел `database` — закомментированный шаблон (`dsn_env`, `schemas: auto`), набор
+`runner.suites.full` с `full: true` и пустыми `args`. Файл создаётся открытием `x`:
+существующий (и висячая ссылка) — отказ с кодом 2, `--force` нет. Итог проверен разбором
+`partest_atlas.config.load` и `veha.config.load` (`tests/test_init.py`). Команды `collect`
+в подсказках — у partest-atlas 0.3.0, которого ещё нет.
 
 ## Что сервер берёт у partest-atlas
 
@@ -422,11 +449,11 @@ connect-src 'self'` из подкаталога: ни одного наруше�
 
 ## Что дальше
 
-Не выпущено: пути к отчётам (`reports`, шаг 3а этапа 2 дорожной карты), номер не
-поднят. Демо на сайте (`/veha/demo/`) пересобирается из тега выпуска вместе со
+Не выпущено: пути к отчётам (`reports`, шаг 3а этапа 2 дорожной карты) с раундом
+исправлений по ревью и `veha init` (шаг 3б), номер не поднят. Демо на сайте (`/veha/demo/`) пересобирается из тега выпуска вместе со
 страницами Вехи на сайте.
 
-Ближайшее: переход `core/` на `partest.path_match`; `examples/` и `templates/atlas.yaml`;
+Ближайшее: переход `core/` на `partest.path_match`; `examples/`;
 подключение сервера к настоящему проекту как внешней зависимости и полный цикл на
 настоящих артефактах агента — единственная настоящая проверка, что ядро переносимо.
 Дальше — этапы `docs/architecture.md` §10, начиная с идентичности и состояния находок.
