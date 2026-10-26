@@ -285,6 +285,70 @@ def test_runner_does_not_take_the_root_file_when_another_path_is_configured(
     assert _run_full(small_root)["coverage"] == {"note": "покрытие этим прогоном не записано"}
 
 
+class WritesCoverageInThePast(WritesCoverage):
+    """pytest, чей отчёт получает mtime раньше момента запуска: так бывает на Windows,
+    где время изменения файла и `time.time()` идут с разной гранулярностью."""
+
+    def __init__(self, args, **kwargs):
+        super().__init__(args, **kwargs)
+        past = time.time_ns() - 60 * 10**9
+        os.utime(WritesCoverage.target, ns=(past, past))
+
+
+def test_runner_takes_its_own_report_even_with_an_mtime_before_the_start(
+        small_root, tmp_path, monkeypatch):
+    """Свежесть — по отпечатку файла до запуска, а не по часам: отчёт, который прогон
+    записал, берётся, даже если его mtime меньше `started` (была нестабильность на 3.14:
+    `KeyError: 'avg'` примерно раз на 40 прогонов)."""
+    from veha import runner
+
+    target = tmp_path / "ci" / "coverage.json"
+    WritesCoverage.target = target
+    WritesCoverage.source = (small_root / "coverage.json").read_bytes()
+    monkeypatch.setattr(runner.subprocess, "Popen", WritesCoverageInThePast)
+    _reports(small_root, f"  coverage: {target.as_posix()}\n")
+
+    assert _run_full(small_root)["coverage"]["avg"] == 66.05
+
+
+class WritesNothing(WritesCoverage):
+    def __init__(self, args, **kwargs):
+        self.stdout = io.StringIO(
+            "collecting ... collected 1 item\n"
+            "t.py::test_x PASSED                                       [100%]\n"
+            "============================== 1 passed in 0.01s ==============================\n")
+
+
+def test_runner_ignores_an_untouched_report_even_with_a_future_mtime(small_root, monkeypatch):
+    """Обратное: отчёт с прошлого раза, которого прогон не касался, не берётся, даже если
+    его mtime позже запуска (часы сдвинуты, файл скопирован с другой машины)."""
+    from veha import runner
+
+    cov = small_root / "coverage.json"
+    future = time.time_ns() + 3600 * 10**9
+    os.utime(cov, ns=(future, future))
+    monkeypatch.setattr(runner.subprocess, "Popen", WritesNothing)
+
+    assert _run_full(small_root)["coverage"] == {"note": "покрытие этим прогоном не записано"}
+
+
+def test_run_state_wrote_compares_signatures(tmp_path):
+    from veha.runner import RunState, file_signature
+
+    f = tmp_path / "coverage.json"
+    assert file_signature(f) is None and file_signature(None) is None
+    absent = RunState(id="a", suite="s", label="s", args=[], started=0.0)
+    assert not absent.wrote(f)                         # не было и нет
+    f.write_text("{}", encoding="utf-8")
+    assert absent.wrote(f)                             # появился
+    before = RunState(id="b", suite="s", label="s", args=[], started=0.0,
+                      coverage_before=file_signature(f))
+    assert not before.wrote(f)                         # не тронут
+    f.write_text('{"a": 1}', encoding="utf-8")
+    assert before.wrote(f)                             # изменился
+    assert file_signature(tmp_path) is None            # каталог — не отчёт
+
+
 def test_runner_with_a_bad_coverage_value_says_so(small_root, monkeypatch):
     from veha import runner
 

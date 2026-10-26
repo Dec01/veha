@@ -245,6 +245,20 @@ class RunState:
     note: str = ""
     #: после любой рамки, кроме начала сессии и итога, результаты больше не разбираются
     results_closed: bool = False
+    #: отпечаток отчёта покрытия до запуска (:func:`file_signature`); `None` — файла не
+    #: было. Свежесть отчёта решает сравнение с ним, а не с часами (:meth:`wrote`).
+    coverage_before: Optional[Tuple[int, int, int]] = None
+
+    def wrote(self, path: Optional[Path]) -> bool:
+        """Записал ли этот прогон файл *path*: файл есть и его отпечаток не тот, что был
+        до запуска (появился или изменился).
+
+        Не `mtime >= started`: время изменения файла и `time.time()` идут от разных часов
+        с разной гранулярностью (на Windows mtime быстро записанного файла бывает чуть
+        меньше момента запуска), и быстрый прогон счёл бы свой отчёт старым.
+        """
+        now = file_signature(path)
+        return now is not None and now != self.coverage_before
 
     @property
     def complete(self) -> bool:
@@ -514,6 +528,7 @@ class Runner:
             self._state = RunState(
                 id=uuid.uuid4().hex[:12], suite=suite.key, label=suite.label,
                 args=args[3:], started=time.time(), context=dict(context or {}),
+                coverage_before=file_signature(self.cfg.coverage_file),
             )
             self._on_finish = on_finish
             self._stopping = False
@@ -585,6 +600,21 @@ class Runner:
             except Exception as exc:
                 st.note = "; ".join(filter(None, [
                     st.note, f"после прогона: {type(exc).__name__}"]))
+
+
+def file_signature(path: Optional[Path]) -> Optional[Tuple[int, int, int]]:
+    """Отпечаток файла: (время изменения в наносекундах, размер, inode). `None` — пути
+    нет, это не файл или он не читается. Перезапись файла меняет хотя бы одно из трёх:
+    замена через `os.replace` — inode, запись поверх — размер или время."""
+    if path is None:
+        return None
+    try:
+        st = os.stat(path)
+    except (OSError, ValueError):
+        return None
+    if not os.path.isfile(path):
+        return None
+    return (st.st_mtime_ns, st.st_size, st.st_ino)
 
 
 def scope_env(scope: Scope) -> Dict[str, str]:

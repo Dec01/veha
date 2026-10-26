@@ -540,7 +540,10 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         # прерывания (`-x`, `--maxfail`, ошибка сбора), а не пересчёт строк: под
         # xdist строки другие, и пересчёт молча давал нули.
         finished = state.status == "done" and state.complete
-        fresh = cov is not None and cov.is_file() and cov.stat().st_mtime >= state.started
+        # «Записан этим прогоном» — файл появился или изменился с момента запуска, по
+        # отпечатку (`RunState.wrote`), а не по часам: mtime быстрого отчёта на Windows
+        # бывает меньше `started`.
+        fresh = cov is not None and state.wrote(cov)
         if cov is None:
             entry["coverage"] = {"note": "покрытие не прочитано: путь reports.coverage "
                                          "в atlas.yaml негоден"}

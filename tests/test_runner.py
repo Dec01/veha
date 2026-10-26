@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import shutil
 import time
 from collections import Counter
@@ -20,9 +21,18 @@ class FakeProc:
     """Подпроцесс pytest, который сразу закончился: проверяем, с чем его позвали."""
 
     calls: list = []
+    #: отчёт, который «прогон» перезаписывает (`_fresh_coverage`); `None` — не пишет
+    rewrite = None
 
     def __init__(self, args, **kwargs):
         FakeProc.calls.append({"args": args, **kwargs})
+        if FakeProc.rewrite is not None:
+            # как настоящий прогон: новый файл на месте старого (os.replace меняет inode),
+            # свежесть раннер узнаёт по отпечатку файла, а не по часам
+            target = FakeProc.rewrite
+            tmp = target.with_name(target.name + ".tmp")
+            tmp.write_bytes(target.read_bytes())
+            os.replace(tmp, target)
         self.stdout = io.StringIO(
             "collecting ... collected 1 item\n"
             "t.py::test_x PASSED                                       [100%]\n"
@@ -40,8 +50,18 @@ def fake_popen(monkeypatch):
     from veha import runner
 
     FakeProc.calls = []
+    FakeProc.rewrite = None
     monkeypatch.setattr(runner.subprocess, "Popen", FakeProc)
-    return FakeProc.calls
+    yield FakeProc.calls
+    FakeProc.rewrite = None
+
+
+@pytest.fixture(autouse=True)
+def _no_leftover_rewrite():
+    """`FakeProc.rewrite` — атрибут класса: следующий тест не должен переписывать отчёт
+    в чужом, уже удалённом корне."""
+    yield
+    FakeProc.rewrite = None
 
 
 def _wait_for_history(path, before=None, timeout=5.0):
@@ -334,11 +354,8 @@ def test_trend_is_built_from_full_runs_only(client):
 
 
 def _fresh_coverage(root):
-    """coverage.json, записанный «этим прогоном»: время изменения — после старта."""
-    import os
-
-    future = time.time() + 60
-    os.utime(root / "coverage.json", (future, future))
+    """coverage.json, записанный «этим прогоном»: поддельный pytest перезапишет его."""
+    FakeProc.rewrite = root / "coverage.json"
 
 
 def test_run_records_whether_its_suite_is_full(small_root, fake_popen):
