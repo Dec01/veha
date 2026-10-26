@@ -70,8 +70,14 @@ class Live:
     def __init__(self, cfg: Config):
         self.cfg = cfg
         self.section = cfg.section("live")
-        self.snapshot_dir = cfg.path(self.section.get("snapshot_dir"))
-        self.logs_dir = cfg.path(self.section.get("container_logs_dir"))
+        # только внутри корня данных, без ссылок по дороге (`Config.local`): иначе
+        # `../…` отдавал бы файлы машины; причина — в `meta.reportProblems`
+        self.snapshot_dir, snap_why = cfg.local("live.snapshot_dir",
+                                                self.section.get("snapshot_dir"))
+        self.logs_dir, logs_why = cfg.local("live.container_logs_dir",
+                                            self.section.get("container_logs_dir"))
+        self._snap_missing = snap_why or "в atlas.yaml не задан live.snapshot_dir"
+        self._logs_missing = logs_why or "в atlas.yaml не задан live.container_logs_dir"
         self._cache: Dict[str, Dict[str, Any]] = {}
         self._lock = threading.Lock()
 
@@ -103,7 +109,7 @@ class Live:
             if self.snapshot_dir is None:
                 return {"enabled": False, "containers": [], "total": 0,
                         "down": 0, "restarting": 0,
-                        "note": "в atlas.yaml не задан live.snapshot_dir — состояние "
+                        "note": f"{self._snap_missing} — состояние "
                                 "контейнеров не показывается"}
             # Снимок кладёт адаптер; состояние и образ — свободный текст, маскируется.
             doc = redact.strings(_read_json(self._file(CONTAINERS_FILE)),
@@ -144,7 +150,7 @@ class Live:
     def container_logs(self, container_id: str, tail: int = 200) -> Dict[str, Any]:
         """Хвост лога контейнера из файла в `live.container_logs_dir`."""
         if self.logs_dir is None:
-            return {"lines": [], "note": "в atlas.yaml не задан live.container_logs_dir"}
+            return {"lines": [], "note": self._logs_missing}
         safe = re.sub(r"[^a-zA-Z0-9._-]", "", container_id or "")
         path = self.logs_dir / f"{safe}.log"
         if not safe or not path.is_file():
@@ -168,7 +174,7 @@ class Live:
         """
         path = self._file(CHECKS_FILE)
         if path is None:
-            raise RuntimeError("в atlas.yaml не задан live.snapshot_dir — отметку некуда записать")
+            raise RuntimeError(f"{self._snap_missing} — отметку некуда записать")
         with self._lock:
             checks = self._checks()
             checks[str(iid)] = {"status": status, "note": note, "at": time.time()}
@@ -182,7 +188,7 @@ class Live:
         def produce() -> Dict[str, Any]:
             if self.snapshot_dir is None:
                 return {"enabled": False, "mrs": [],
-                        "note": "в atlas.yaml не задан live.snapshot_dir — очереди нет"}
+                        "note": f"{self._snap_missing} — очереди нет"}
             doc = redact.strings(_read_json(self._file(MRS_FILE)),
                                  skip=frozenset({"iid", "state"}))
             raw = doc.get("mrs") or []

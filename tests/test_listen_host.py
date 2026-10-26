@@ -51,6 +51,8 @@ def test_listen_address_refuses_names_and_ipv6(text):
 @pytest.mark.parametrize("text, want", [
     ("Veha.Example", "veha.example:8770"), ("veha.example:9000", "veha.example:9000"),
     ("10.0.0.5", "10.0.0.5:8770"), ("localhost:9000", "localhost:9000"),
+    # `имя:` — Host без порта: так его шлёт браузер на 80/443 (за своим прокси)
+    ("veha.internal:", "veha.internal"),
 ])
 def test_allowed_host_is_normalised(text, want):
     from veha.cli import allowed_hosts_from
@@ -65,6 +67,33 @@ def test_allowed_host_refuses_patterns_and_junk(text):
 
     with pytest.raises(argparse.ArgumentTypeError):
         allowed_host(text, 8770)
+
+
+def test_bare_name_form_survives_the_argument_parser():
+    from veha.cli import allowed_host, allowed_hosts_from
+
+    parsed = allowed_host("Veha.Internal:")          # как его вернёт argparse
+    assert allowed_hosts_from([parsed], "veha.other:", 8770) == ["veha.internal", "veha.other"]
+
+
+def test_bare_name_is_served_without_a_port(demo_root):
+    from fastapi.testclient import TestClient
+
+    from veha.viz.app import create_app
+
+    c = TestClient(create_app(demo_root, port=8770, allowed_hosts=["veha.internal"]))
+    assert c.get("/api/graph", headers={"host": "veha.internal"}).status_code == 200
+    assert c.get("/api/graph", headers={"host": "veha.internal:8770"}).status_code == 400
+
+
+def test_allow_run_refuses_a_non_loopback_host(demo_root, monkeypatch, capsys):
+    """Изменяющие маршруты защищены от браузера, а не от любого клиента: без входа по
+    токену запуск и запись — только на loopback, ключа-обхода нет."""
+    code, seen = _serve(monkeypatch, demo_root, "--host", "0.0.0.0", "--allow-run")
+    assert code == 2 and "bind" not in seen
+    assert "--allow-run не сочетается с --host 0.0.0.0" in capsys.readouterr().err
+    code, seen = _serve(monkeypatch, demo_root, "--host", "127.0.0.2", "--allow-run")
+    assert code == 0 and seen["bind"] == ("127.0.0.2", 8770)    # loopback — можно
 
 
 def test_allowed_hosts_come_from_flags_and_environment():
@@ -227,7 +256,7 @@ def test_read_only_mode_writes_nothing_under_the_root(small_root, write_spy):
     for url, body in POST_ROUTES:
         kw = {"content": json.dumps(body), "headers": {"content-type": "application/json"}} \
             if body is not None else {}
-        assert c.post(url, **kw).status_code in (409, 422), url
+        assert c.post(url, **kw).status_code == 409, url
     root = os.path.abspath(small_root)
     inside = [p for p in write_spy if p == root or p.startswith(root + os.sep)]
     assert inside == []

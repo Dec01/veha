@@ -371,9 +371,10 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         rel = allowed.get(key)
         if rel is None:
             raise HTTPException(404, f"нет лога {key}")
-        path = (srv.root / rel).resolve()
-        if srv.root not in path.parents and path != srv.root:
-            raise HTTPException(400, "путь вне проекта")
+        # строго внутри корня, без ссылок и сетевых путей — до любого обращения к файлу
+        path, why = srv.cfg.local(f"logs.{str(key)[:40]}", rel)
+        if path is None:
+            raise HTTPException(400, why or "путь вне проекта")
         if not path.is_file():
             return {"files": list(allowed), "name": key, "lines": [],
                     "note": f"файла нет: {rel}"}

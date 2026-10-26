@@ -141,16 +141,22 @@ def test_listening_module_only_listens():
                 tuple(a.name for a in n.names))
                for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))]
     assert sorted(imports, key=str) == sorted(
-        [("__future__", ("annotations",)), (None, ("socket",))], key=str), imports
+        [("__future__", ("annotations",)), (None, ("socket",)), (None, ("ipaddress",))],
+        key=str), imports
 
     used = {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)
             and isinstance(n.value, ast.Name) and n.value.id == "socket"}
     extra = {a for a in used if a not in _SOCKET_NAMES and not a.startswith("SO_")}
     assert not extra, f"из socket взято лишнее: {sorted(extra)}"
+    # из ipaddress — только проверка литерала IPv4
+    from_ip = {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)
+               and isinstance(n.value, ast.Name) and n.value.id == "ipaddress"}
+    assert from_ip == {"IPv4Address"}, from_ip
 
     calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)]
     methods = [c.func.attr for c in calls if isinstance(c.func, ast.Attribute)
-               and not (isinstance(c.func.value, ast.Name) and c.func.value.id == "socket")]
+               and not (isinstance(c.func.value, ast.Name)
+                        and c.func.value.id in ("socket", "ipaddress"))]
     assert set(methods) <= _METHODS, f"вызовы вне белого списка: {sorted(set(methods) - _METHODS)}"
     builtins = {c.func.id for c in calls if isinstance(c.func, ast.Name)}
     assert builtins <= _BUILTINS, builtins
@@ -173,6 +179,26 @@ def test_listening_module_only_listens():
     hosts = [n.value.value for n in ast.walk(tree) if isinstance(n, ast.Assign)
              and [getattr(t, "id", None) for t in n.targets] == ["HOST"]]
     assert hosts == ["127.0.0.1"], hosts
+    # первая инструкция функции после docstring — проверка, что host — литерал IPv4:
+    # до сокета и до bind, иначе bind разрешил бы имя через DNS
+    body = [st for st in func.body
+            if not (isinstance(st, ast.Expr) and isinstance(st.value, ast.Constant))]
+    check = body[0]
+    assert (isinstance(check, ast.Expr) and isinstance(check.value, ast.Call)
+            and ast.unparse(check.value) == "ipaddress.IPv4Address(host)"), \
+        "bind_socket начинается с ipaddress.IPv4Address(host)"
+
+
+@pytest.mark.parametrize("host", ["localhost", "example.invalid", "::1", "", "0.0.0.0:80"])
+def test_listening_socket_refuses_names_before_any_socket(host, monkeypatch):
+    """Имя узла до сокета не доходит: `bind` разрешил бы его через DNS."""
+    from veha import listen
+
+    created = []
+    monkeypatch.setattr(listen.socket, "socket", lambda *a, **k: created.append(a))
+    with pytest.raises(ValueError):
+        listen.bind_socket(0, host)
+    assert created == []
 
 
 def test_listening_socket_is_not_inherited():

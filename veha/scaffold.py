@@ -38,7 +38,6 @@ import json
 import os
 import posixpath
 import re
-import stat
 # Только разбор файла дочерним интерпретатором (`_parse_isolated`): свой код, без оболочки.
 import subprocess  # nosec B404
 import sys
@@ -52,7 +51,7 @@ from urllib.parse import urlsplit
 from partest_atlas.artifacts import DEFAULT_SCOPE_KEY
 
 from veha import __version__, redact
-from veha.config import CONFIG_NAME, DEFAULT_REPORTS, report_path_problem
+from veha.config import CONFIG_NAME, DEFAULT_REPORTS, is_link, local_to, report_path_problem
 
 CONFPARTEST = "confpartest.py"
 #: Виды источника, которые принимает partest (`validate_confpartest`): `file` и `path` —
@@ -169,40 +168,6 @@ def segment(value: str, fallback: str = "project") -> str:
     s = _SEGMENT_BAD.sub("-", value).strip("-.")
     s = re.sub(r"\.{2,}", ".", s)
     return s or fallback
-
-
-def is_link(path: Path) -> bool:
-    """Ссылка ли это — символическая или точка повторной обработки Windows (junction,
-    ссылка на сетевой ресурс). Смотрит `lstat`: сама ссылка не разворачивается, и
-    обращения по ней нет. Не прочитать `lstat` — тоже «ссылка»: закрываемся на отказ."""
-    try:
-        st = os.lstat(path)
-    except FileNotFoundError:
-        return False
-    except OSError:
-        return True
-    if stat.S_ISLNK(st.st_mode):
-        return True
-    return bool(getattr(st, "st_file_attributes", 0)
-                & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
-
-
-def local_to(root: Path, path: Path) -> bool:
-    """Путь внутри *root* без единой ссылки по дороге — его можно открывать. Каждая часть
-    от корня до файла проверяется `lstat`; `resolve` — уже после, когда ссылок нет."""
-    try:
-        rel = path.relative_to(root)
-    except ValueError:
-        return False
-    current = root
-    for part in rel.parts:
-        current = current / part
-        if is_link(current):
-            return False
-    try:
-        return root.resolve() in path.resolve().parents
-    except (OSError, RuntimeError):
-        return False
 
 
 def _read(path: Path, notes: Optional[List[str]] = None, label: str = "",

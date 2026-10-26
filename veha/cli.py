@@ -141,6 +141,16 @@ def serve(args: argparse.Namespace) -> int:
         print(f"{ALLOWED_HOSTS_ENV}: {exc}", file=sys.stderr)
         return 2
     if not ipaddress.ip_address(args.host).is_loopback:
+        if args.allow_run:
+            # Изменяющие маршруты (запуск набора, очистка, перезапуск, отметки) защищены
+            # от браузера — `Origin`/`Referer`; клиент без них (curl, скрипт в сети) с
+            # подставленным `Host: 127.0.0.1:<порт>` прошёл бы. Пока нет входа по токену
+            # (этап 3), запись и запуск — только на loopback, без ключа-обхода.
+            print(f"--allow-run не сочетается с --host {args.host}: входа в вебморду нет, "
+                  f"и запускать наборы и чистить отчёты смог бы любой клиент в сети. "
+                  f"Запуск из вебморды — только на loopback (--host 127.0.0.1).",
+                  file=sys.stderr)
+            return 2
         print(f"! слушаю {args.host}:{args.port} — не только loopback. Входа в вебморду "
               f"нет: любой, кто дотянется до этого адреса, увидит граф и логи. Наружу — "
               f"только за своей сетью (контейнер с портом на 127.0.0.1 хоста, VPN).",
@@ -372,8 +382,13 @@ def listen_address(text: str) -> str:
 
 
 def allowed_host(text: str, port: Optional[int] = None) -> str:
-    """Значение `Host` для `--allowed-host`: `имя` или `имя:порт`, в нижнем регистре.
-    Без порта — порт сервера (*port*); `None` — оставить как есть, порт добавят позже."""
+    """Значение `Host` для `--allowed-host`, в нижнем регистре.
+
+    `имя:порт` — как есть; `имя` — с портом сервера (*port*); `имя:` — заголовок без
+    порта: так его шлёт браузер на стандартный порт (80, 443) — например, за своим
+    обратным прокси. *port* `None` — форма сохраняется, порт подставит
+    :func:`allowed_hosts_from`.
+    """
     value = text.strip().lower()
     name, sep, tail = value.rpartition(":")
     if not sep:
@@ -391,6 +406,8 @@ def allowed_host(text: str, port: Optional[int] = None) -> str:
             f"(`*`) не принимаются")
     if tail:
         return f"{name}:{int(tail)}"
+    if sep:
+        return name if port is not None else f"{name}:"   # без порта — нарочно
     return name if port is None else f"{name}:{port}"
 
 
@@ -441,8 +458,10 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--allowed-host", action="append", type=lambda t: allowed_host(t),
                    metavar="ИМЯ[:ПОРТ]",
                    help="ещё одно допустимое значение заголовка Host (повторяемый; также "
-                        f"{ALLOWED_HOSTS_ENV} через запятую). Без порта — порт сервера. "
-                        "127.0.0.1 и localhost разрешены всегда")
+                        f"{ALLOWED_HOSTS_ENV} через запятую). Без порта — порт сервера; "
+                        "`имя:` — заголовок без порта, как его шлёт браузер на 80/443. "
+                        "127.0.0.1 и localhost разрешены всегда; --allow-run — только при "
+                        "--host на loopback")
     s.add_argument("--no-browser", action="store_true", help="не открывать браузер")
     s.add_argument("--system", default="", help="система (по умолчанию — ATLAS_SYSTEM)")
     s.add_argument("--env", default="", help="контур (по умолчанию — ATLAS_ENV)")

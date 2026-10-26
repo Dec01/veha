@@ -20,9 +20,10 @@ from __future__ import annotations
 import fnmatch
 import os
 import re
+import stat
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from partest_atlas import config as atlas_config
 
@@ -69,6 +70,40 @@ def report_path_problem(where: str, value: str) -> str:
         if not _WINDOWS:
             return f"{where}: путь Windows; на этой машине он не абсолютный"
     return ""
+
+
+def is_link(path: Path) -> bool:
+    """Ссылка ли это — символическая или точка повторной обработки Windows (junction,
+    ссылка на сетевой ресурс). Смотрит `lstat`: сама ссылка не разворачивается, и
+    обращения по ней нет. Не прочитать `lstat` — тоже «ссылка»: закрываемся на отказ."""
+    try:
+        st = os.lstat(path)
+    except FileNotFoundError:
+        return False
+    except OSError:
+        return True
+    if stat.S_ISLNK(st.st_mode):
+        return True
+    return bool(getattr(st, "st_file_attributes", 0)
+                & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
+
+
+def local_to(root: Path, path: Path) -> bool:
+    """Путь внутри *root* без единой ссылки по дороге — его можно открывать. Каждая часть
+    от корня до файла проверяется `lstat`; `resolve` — уже после, когда ссылок нет."""
+    try:
+        rel = path.relative_to(root)
+    except ValueError:
+        return False
+    current = root
+    for part in rel.parts:
+        current = current / part
+        if is_link(current):
+            return False
+    try:
+        return root.resolve() in path.resolve().parents
+    except (OSError, RuntimeError):
+        return False
 
 
 @dataclass
@@ -252,6 +287,55 @@ class Config:
             return None
         p = Path(value)
         return p if p.is_absolute() else self.root / p
+
+    def local(self, where: str, value: Any) -> Tuple[Optional[Path], str]:
+        """Путь, чьё содержимое сервер отдаёт по HTTP, — только строго внутри корня.
+
+        Возвращает путь и пустую причину, либо `None` и причину без самого значения (она
+        уходит в вебморду). Ключа нет — `None` без причины. Отвергается: не строка;
+        то, что не годится и для `reports` (UNC — открыть его на Windows значит обратиться
+        по сети, управляющие символы, диск без косой черты); путь вне корня — `..`,
+        абсолютный, сам корень; путь, который идёт через ссылку (символическую или
+        junction). Ссылки проверяются `lstat` по каждой части до `resolve`: разрешение
+        ссылки на сетевой ресурс само было бы обращением по сети. В контейнере это и
+        граница тома: `images_dir: ../…` отдавал бы `/proc/self/environ`.
+        """
+        if value is None or value == "":
+            return None, ""
+        if not isinstance(value, str):
+            return None, f"{where}: ожидалась строка пути, получено {type(value).__name__}"
+        problem = report_path_problem(where, value)
+        if problem:
+            return None, problem
+        outside = f"{where}: путь вне корня данных — не отдаётся"
+        norm = Path(os.path.normpath(self.path(value)))
+        try:
+            rel = norm.relative_to(self.root)
+        except ValueError:
+            return None, outside
+        if not rel.parts or rel.parts[0] == "..":
+            return None, outside
+        if not local_to(self.root, norm):
+            return None, f"{where}: путь идёт через ссылку или вне корня — не отдаётся"
+        return norm, ""
+
+    def served_paths(self) -> List[Tuple[str, Any]]:
+        """Пути из `atlas.yaml`, чьё содержимое сервер отдаёт: (где, значение)."""
+        live = self.section("live")
+        out: List[Tuple[str, Any]] = [
+            ("screens.images_dir", self.screens.get("images_dir")),
+            ("screens.manifest", self.screens.get("manifest")),
+            ("live.snapshot_dir", live.get("snapshot_dir")),
+            ("live.container_logs_dir", live.get("container_logs_dir")),
+            ("app_map", self.raw.get("app_map")),
+        ]
+        out += [(f"logs.{str(name)[:40]}", rel) for name, rel in self.section("logs").items()]
+        return out
+
+    def path_problems(self) -> List[str]:
+        """Причины для путей из :meth:`served_paths`, которые сервер не отдаёт."""
+        return [why for where, value in self.served_paths()
+                for why in [self.local(where, value)[1]] if why]
 
     # ------------------------------------------------------------- поведение
     def container_for(self, path: str) -> str:

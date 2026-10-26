@@ -5,12 +5,14 @@
 `tests/test_no_egress.py`.
 
 Адрес — loopback по умолчанию. Другой адрес (`veha serve --host`, нужен внутри
-контейнера) приходит уже проверенным литералом IPv4 (`veha.cli.listen_address`): имя
-узла сюда не попадает, потому что его разрешение — обращение к DNS.
+контейнера) — только литерал IPv4: его проверяет и командная строка, и сама
+:func:`bind_socket` до создания сокета. Имя узла сюда не проходит: его разрешение —
+обращение к DNS.
 """
 
 from __future__ import annotations
 
+import ipaddress
 import socket
 
 #: Аутентификации во вебморде нет — по умолчанию слушаем только loopback.
@@ -24,7 +26,11 @@ def bind_socket(port: int, host: str = HOST) -> socket.socket:
     браузер откроет чужой процесс на этом порту. Исключительное владение — потому что
     на Windows `SO_REUSEADDR` (его ставит uvicorn) разрешает второй сокет на занятом
     порту, и занятость не обнаружилась бы вовсе.
+
+    *host* — только литерал IPv4, проверяется здесь же, до сокета: имя узла `bind`
+    разрешил бы через DNS, а это обращение по сети. Не литерал — `ValueError`.
     """
+    ipaddress.IPv4Address(host)
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         # Явно, а не по умолчанию PEP 446: раннер запускает pytest и всё, что тот

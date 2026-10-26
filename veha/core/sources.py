@@ -464,7 +464,7 @@ def variant_of(nodeid: str, name: str) -> str:
 
 def screens(cfg: Config) -> List[dict]:
     """Экраны из манифеста скриншотов, путь к которому назван в `screens.manifest`."""
-    f = cfg.path(cfg.screens.get("manifest"))
+    f = cfg.local("screens.manifest", cfg.screens.get("manifest"))[0]
     if f is None or not f.is_file():
         return []
     try:
@@ -493,7 +493,8 @@ def screens(cfg: Config) -> List[dict]:
 
 
 def screens_dir(cfg: Config) -> Optional[Path]:
-    d = cfg.path(cfg.screens.get("images_dir"))
+    # отдаётся целиком через StaticFiles — только каталог строго внутри корня
+    d = cfg.local("screens.images_dir", cfg.screens.get("images_dir"))[0]
     return d if d is not None and d.is_dir() else None
 
 
@@ -503,7 +504,7 @@ def app_map(cfg: Config) -> Dict[str, Any]:
     Это данные проекта, а не часть сервера: сервер не знает ничьего ландшафта, пока
     его не назвали в конфигурации.
     """
-    f = cfg.path(cfg.raw.get("app_map"))
+    f = cfg.local("app_map", cfg.raw.get("app_map"))[0]
     if f is None or not f.is_file():
         return {}
     data = yaml.safe_load(f.read_text(encoding="utf-8"))
@@ -938,7 +939,8 @@ class Sources:
 def load(cfg: Config, scope: Optional[Scope] = None) -> Sources:
     arts = load_artifacts(cfg, scope)
     cov, extras, cov_problem = load_coverage(cfg.coverage_file)
-    problems = cfg.report_problems() + ([cov_problem] if cov_problem else [])
+    problems = (cfg.report_problems() + cfg.path_problems()
+                + ([cov_problem] if cov_problem else []))
     tests_cfg = cfg.section("tests")
     return Sources(
         cfg=cfg,

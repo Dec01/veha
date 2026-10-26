@@ -76,7 +76,10 @@ ATLAS_ENV`, как у агента; имя — один сегмент `[A-Za-z0
 
 **Защита вебморды.** `Host` — только `127.0.0.1:<порт>`, `localhost:<порт>` и точные
 значения из `--allowed-host`/`VEHA_ALLOWED_HOSTS` (`имя[:порт]`, без шаблонов; сравнение
-без учёта регистра) — DNS rebinding; изменяющие запросы — только с того же источника (`Origin`, иначе `Referer`);
+без учёта регистра) — DNS rebinding; изменяющие запросы с чужой страницы отсекаются по `Origin` (иначе `Referer`) — это
+защита от браузера: клиент без этих заголовков проходит, поэтому изменяющие маршруты
+есть только с `--allow-run`, а `--allow-run` — только на loopback (с `--host` не на
+loopback `serve` не стартует, код 2);
 тело без `Content-Type` как JSON не разбирается (`strict_content_type`); CSP
 (`default-src 'self'`, скрипты только из файлов), `X-Frame-Options: DENY`,
 `X-Content-Type-Options: nosniff`. Ничего inline — ни скриптов, ни стилей: стиль в
@@ -405,10 +408,25 @@ Windows — причиной; неизвестный ключ раздела —
 
 **Образ Docker** (не выпущено) — `Dockerfile`, `.dockerignore`, `compose.example.yaml`,
 [[howto/docker]]. `python:3.14-slim` (минорная закреплена аргументом `PYTHON_VERSION`),
-пакет из дерева (`pip install .`), uid 10001, `veha serve --root /data --host 0.0.0.0
---no-browser`; ни `--allow-run`, ни pytest. Контекст сборки — разрешающим списком
-(`pyproject.toml`, `README.md`, `LICENSE`, `veha/`). Пример compose: порт
-`127.0.0.1:8770:8770`, том `:ro`, `read_only`, `cap_drop: ALL`, `no-new-privileges`.
+пакет из рабочего дерева (`pip install .`; для выпуска — чистый клон или `git archive`),
+uid 10001, `veha serve --root /data --host 0.0.0.0 --no-browser` без `--allow-run`. pytest
+и allure-pytest в образе есть (их тянет partest): барьер для запуска — не состав образа, а
+отсутствие `--allow-run` и отказ `serve` сочетать его с адресом не на loopback. Исходящий
+трафик контейнера ничем не ограничен — ноль трафика держит код Вехи. Контекст сборки —
+разрешающим списком (`pyproject.toml`, `README.md`, `LICENSE`, `veha/`; без `.env*`,
+`.private-names`, `_tmp_*`, `*.local.*`, кэшей). Пример compose: порт
+`127.0.0.1:8770:8770`, том `:ro`, `read_only`, `cap_drop: ALL`, `no-new-privileges`,
+`pids_limit: 128`, `mem_limit: 1g`. `bind_socket` сама проверяет, что адрес — литерал IPv4.
+
+**Пути, которые сервер отдаёт по HTTP** (`screens.images_dir` — статикой целиком,
+`screens.manifest`, `live.snapshot_dir`, `live.container_logs_dir`, `app_map`, `logs.*`), —
+только строго внутри корня (`Config.local`): строка проверяется как у `reports` (UNC,
+управляющие символы, диск без косой черты), затем лексически внутри корня (не сам
+корень), затем `lstat` каждой части — ссылка (символическая или junction) отвергается до
+`resolve`. Негодный путь — раздел не отдаётся, причина в `meta.reportProblems`
+(`Config.path_problems`) без значения. `reports.*` и `artifacts_dir` под это правило не
+подпадают: по контракту `atlas-config` абсолютные пути там допустимы при чтении (вложения
+Allure ограничены отдельно — UUID и имя из теста).
 **Записи сервера:** в режиме просмотра — ни одной (`tests/test_listen_host.py` ловит любое
 открытие на запись, создание, переименование и удаление под корнем на всех маршрутах);
 отдельный каталог состояния образу не нужен. С `--allow-run` пишутся `runs.json` области,
