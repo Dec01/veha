@@ -702,9 +702,10 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
     def runner_clean() -> dict:
         """Очистить allure-results: иначе прогоны копятся, и сводка склеивает их.
 
-        Удаляются только файлы Allure прямо в каталоге (`*-result.json`,
-        `*-container.json`, `*-attachment.*`, `executor.json`, `environment.properties`,
-        `categories.json`; подкаталоги не трогаются) — и только если каталог после
+        Удаляются только файлы прогона Allure прямо в каталоге (`<UUID>-result.json`,
+        `<UUID>-container.json`, `<UUID>-attachment.*`; подкаталоги не трогаются, как и
+        `executor.json`, `environment.properties`, `categories.json` — их кладёт
+        пользователь или плагин) — и только если каталог после
         разрешения ссылок лежит **строго внутри** корня данных. Путь `reports.allure`
         может указывать куда угодно; удалять на диске пользователя то, что лежит вне
         каталога, который он отдал серверу, Веха не берётся — и сам корень тоже не чистит.

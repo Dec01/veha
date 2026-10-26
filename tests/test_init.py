@@ -96,9 +96,10 @@ def test_literal_spec_local_and_url_without_secrets(tmp_path, capsys):
     assert "#   schemas: auto" in text and "dsn_env: DATABASE_URL" in text
     for later in ("# containers:", "# logs:", "# screens:", "# container_logs:"):
         assert later in text
-    # область — по имени каталога, в файл не пишется
+    # имя каталога — только подпись проекта; область — умолчания всех команд, в файл не
+    # пишется
     assert agent.raw["project"]["name"] == "shop-tests"
-    assert "ATLAS_SYSTEM=shop-tests  ATLAS_ENV=local" in text
+    assert "ATLAS_SYSTEM=default  ATLAS_ENV=default" in text
 
 
 def test_next_steps_name_the_commands(tmp_path, capsys):
@@ -123,9 +124,15 @@ def test_next_steps_name_the_commands(tmp_path, capsys):
 
 
 def test_scope_defaults_come_from_the_environment_first(tmp_path, capsys, monkeypatch):
-    """Как у всех команд обоих пакетов: ключ, иначе ATLAS_SYSTEM/ATLAS_ENV; имя каталога
-    и `local` — только если не задано ни то ни другое."""
+    """Как у всех команд обоих пакетов (контракт atlas-config): ключ, иначе
+    ATLAS_SYSTEM/ATLAS_ENV, иначе `default` — то же, что возьмут collect и serve без ключей."""
     root = _project(tmp_path, LITERAL)
+    assert _init(root) == 0
+    out = capsys.readouterr().out
+    assert "область для подсказок: default/default" in out
+    assert "--system default --env default" in out
+    (root / "atlas.yaml").unlink()
+
     monkeypatch.setenv("ATLAS_SYSTEM", "from-env")
     monkeypatch.setenv("ATLAS_ENV", "ci")
     assert _init(root) == 0
@@ -231,8 +238,7 @@ def test_local_path_outside_the_confpartest_dir_is_never_touched(tmp_path, monke
     root = _project(tmp_path)
     monkeypatch.setattr(Path, "is_file", spy_is_file)
     monkeypatch.setattr(Path, "stat", spy_stat)
-    service = scaffold._entry("api", scaffold.ast.parse(repr(["local", where])).body[0].value,
-                              root)
+    service = scaffold._entry("api", "local", where, root)
     assert service.note and "файла нет" not in service.note
     assert not any("evil" in t or "abs" in t or "outside" in t or "\t" in t for t in touched)
 
@@ -599,3 +605,166 @@ def test_quoted_is_readable_by_yaml_for_any_text():
                                        ("Тесты", "project"), ("a..b", "a.b")])
 def test_segment(name, seg):
     assert scaffold.segment(name) == seg
+
+
+# ------------------------------------------- перепроверка security по 4711f75
+
+
+@pytest.mark.parametrize("raw", [
+    "postgresql://user:p@ss/word@host.example.invalid:5432/db",
+    "postgresql://user:p@ss?word@host.example.invalid:5432/db",
+    "postgresql://user:p@ss#word@host.example.invalid:5432/db",
+])
+def test_safe_url_hides_an_address_with_at_after_the_host(raw):
+    """`@` в пути, запросе или фрагменте — разбор унёс туда хвост пароля: адрес скрыт
+    целиком, ни `ss`, ни `word` не показываются."""
+    shown = scaffold.safe_url(raw)
+    assert shown == "postgresql://<скрыто>"
+
+
+def _junction(link: Path, target: Path) -> None:
+    """Ссылка на каталог: junction на Windows (прав администратора не нужно), символическая
+    ссылка на POSIX."""
+    if os.name == "nt":
+        import _winapi
+
+        _winapi.CreateJunction(str(target), str(link))
+    else:
+        os.symlink(target, link, target_is_directory=True)
+
+
+def test_linked_directories_and_files_are_not_followed(tmp_path, capsys):
+    """Каталог-ссылка (junction, симлинк — в том числе на сетевой ресурс) за пределы
+    корня: confpartest.py и файлы зависимостей в нём не ищутся и не читаются."""
+    outside = tmp_path / "outside"
+    (outside / "req").mkdir(parents=True)
+    (outside / "confpartest.py").write_text('swagger_files = {"leak": ["local", "x"]}\n',
+                                            encoding="utf-8")
+    (outside / "req" / "base.txt").write_text("psycopg2\n", encoding="utf-8")
+    root = _project(tmp_path)
+    try:
+        _junction(root / "tests", outside)
+        _junction(root / "requirements", outside / "req")
+    except (OSError, NotImplementedError, ImportError, AttributeError):
+        pytest.skip("ссылку на каталог здесь не создать")
+    assert scaffold.find_confpartest(root) == (None, [])
+    assert scaffold._dependency_files(root) == []
+    assert _init(root) == 0
+    out = capsys.readouterr().out
+    assert "leak" not in out and "psycopg" not in out
+    assert not scaffold.local_to(root, root / "tests" / "confpartest.py")
+
+
+def test_link_instead_of_a_settings_file_is_not_read(tmp_path):
+    outside = tmp_path / "outside.ini"
+    outside.write_text("[pytest]\naddopts = --alluredir=leak\n", encoding="utf-8")
+    root = _project(tmp_path)
+    try:
+        os.symlink(outside, root / "pytest.ini")
+    except (OSError, NotImplementedError):
+        pytest.skip("символические ссылки здесь не создать")
+    assert scaffold.find_reports(root)[1].path == ""
+
+
+def test_odd_directory_names_are_not_put_into_commands(tmp_path, capsys):
+    """`$(…)` и обратные кавычки в имени каталога развернули бы bash и PowerShell внутри
+    двойных кавычек — путь заменяется заглушкой."""
+    root = tmp_path / "t$(calc)x`id`"
+    try:
+        root.mkdir()
+    except OSError:
+        pytest.skip("такое имя каталога здесь не создать")
+    (root / "confpartest.py").write_text(LITERAL, encoding="utf-8")
+    assert _init(root) == 0
+    out = capsys.readouterr().out
+    steps = out.split("Дальше:")[1]
+    assert "$(calc)" not in steps and "`id`" not in steps
+    assert "--root <путь к каталогу>" in steps
+    assert "имя каталога нестандартное" in out
+    assert scaffold.safe_dir("C:/Users/John Doe/proj") == '"C:/Users/John Doe/proj"'
+    assert scaffold.safe_dir("/home/u/%PATH%") == scaffold.DIR_PLACEHOLDER
+
+
+def test_relative_confpartest_path_is_printed_safely(tmp_path, capsys):
+    root = _project(tmp_path)
+    sub = root / "te\u202est"
+    try:
+        sub.mkdir()
+    except OSError:
+        pytest.skip("такое имя каталога здесь не создать")
+    (sub / "confpartest.py").write_text('swagger_files = {"a": ["local", "a.json"]}\n',
+                                        encoding="utf-8")
+    assert _init(root) == 0
+    out = capsys.readouterr().out
+    assert "\u202e" not in out and "\u202e" not in _text(root)
+    assert "спецификации из te?st/confpartest.py" in out
+
+
+def test_main_process_never_parses_confpartest(tmp_path, monkeypatch):
+    """Разбор один — в дочернем процессе. Основной `ast.parse` не зовёт вовсе: на 3.10
+    повторный разбор упал бы переполнением стека там, где дочерний ответил «ok»."""
+    import ast
+
+    def forbidden(*a, **kw):
+        raise AssertionError("ast.parse в основном процессе")
+
+    monkeypatch.setattr(ast, "parse", forbidden)
+    root = _project(tmp_path, LITERAL)
+    assert _init(root) == 0
+    assert "#   orders: local specs/orders.json" in _text(root)
+
+
+def test_child_answer_shape():
+    from veha import _spec_child
+
+    answer = _spec_child.analyse(b'swagger_files = {"a": ["url", "u"], 1: ["local", "p"], '
+                                 b'"b": f(), **x}\nswagger_files["c"] = 1\n')
+    assert answer["assignments"] == 1 and answer["touched"] and answer["unpack"]
+    assert [e["key"] for e in answer["entries"]] == ["a", None, "b"]
+    assert answer["entries"][0]["shape"] == "ok" and answer["entries"][2]["shape"] == "nonlit"
+    assert _spec_child.analyse(b"def (")["error"] == "SyntaxError"
+
+
+def test_no_interpreter_path_fails_closed(tmp_path, capsys, monkeypatch):
+    monkeypatch.setattr(scaffold.sys, "executable", "")
+    root = _project(tmp_path, LITERAL)
+    assert _init(root) == 0
+    out = capsys.readouterr().out
+    assert "разбор не выполнен: неизвестен путь к интерпретатору Python" in out
+    assert "Traceback" not in out
+    _both(root)
+
+
+def test_written_file_has_ordinary_permissions(tmp_path):
+    """mkstemp создаёт 0600; atlas.yaml должен читаться и контейнером Вехи под другим
+    пользователем — права как у обычного open(): 0o666 & ~umask."""
+    root = _project(tmp_path, LITERAL)
+    target = scaffold.write(scaffold.plan(root))
+    assert os.access(target, os.R_OK | os.W_OK)
+    if os.name == "nt":
+        return                      # на Windows права — ACL, режим не проверить
+    mask = os.umask(0o022)
+    os.umask(mask)
+    assert target.stat().st_mode & 0o777 == 0o666 & ~mask
+
+
+def test_format_characters_are_masked():
+    text = "a\u200bb\u2060c\U000E0041d\ufeffe\u00adf"
+    assert scaffold.one_line(text) == "a?b?c?d?e?f"
+
+
+def test_scope_segment_rejects_a_trailing_newline():
+    from veha.core.sources import valid_segment
+
+    assert valid_segment("shop") and not valid_segment("shop\n")
+
+
+def test_deep_sum_that_the_child_parses_is_read_once(tmp_path, capsys):
+    """Длинная сумма, которую дочерний разбор переживает, а повторный в основном процессе
+    на 3.10 — нет (переполнение стека): литерал читается, init доживает до конца."""
+    root = _project(tmp_path, "x = " + "1+" * 31400 + "1\n"
+                              'swagger_files = {"api": ["local", "openapi.json"]}\n')
+    assert _init(root) == 0
+    out = capsys.readouterr().out
+    assert "спецификации из confpartest.py: api (local)" in out or "не разбирается" in out
+    _both(root)

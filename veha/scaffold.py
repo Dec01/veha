@@ -9,9 +9,14 @@
 уровне, в том числе загрузку спецификации по адресу. Это та же дыра в красной линии «ноль
 исходящего трафика», что закрывал пол partest 2.6.0. Поэтому файл разбирается деревом
 (`ast`) и из него берётся только литерал `swagger_files = {"имя": ["local"|"url", место]}`;
-всё, что не литерал, становится заготовкой с подсказкой, что вписать и куда. Разбор идёт
-в отдельном процессе: на Python 3.10 `ast.parse` на глубоко вложенном выражении роняет
-интерпретатор целиком, а не бросает исключение.
+всё, что не литерал, становится заготовкой с подсказкой, что вписать и куда. Разбор —
+один и только в отдельном процессе (`veha/_spec_child.py`): на Python 3.10 `ast.parse` на
+глубоко вложенном выражении роняет интерпретатор целиком, а не бросает исключение, и
+основной процесс файл не разбирает вовсе — он получает от дочернего готовый ответ JSON.
+
+Каталоги и файлы проекта, которые оказались ссылкой (символической или junction), не
+открываются и не обходятся: ссылка может вести за пределы корня, в том числе на
+сетевой ресурс, и даже проверка существования стала бы обращением по сети.
 
 **Всё из файлов проекта — чужой текст.** Он ограничен по размеру до чтения, в `atlas.yaml`
 попадает только комментарием в одну строку без управляющих и bidi-символов, а значения —
@@ -28,19 +33,23 @@
 
 from __future__ import annotations
 
-import ast
+import fnmatch
 import json
 import os
 import posixpath
 import re
+import stat
 # Только разбор файла дочерним интерпретатором (`_parse_isolated`): свой код, без оболочки.
 import subprocess  # nosec B404
 import sys
 import tempfile
+import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlsplit
+
+from partest_atlas.artifacts import DEFAULT_SCOPE_KEY
 
 from veha import __version__, redact
 from veha.config import CONFIG_NAME, DEFAULT_REPORTS, report_path_problem
@@ -50,8 +59,12 @@ CONFPARTEST = "confpartest.py"
 #: то же, что `local`.
 LOCAL_KINDS = ("local", "file", "path")
 URL_KIND = "url"
-#: Контур, если ни `--env`, ни `ATLAS_ENV` не заданы: заготовка для машины разработчика.
-DEFAULT_ENV = "local"
+#: Система и контур, если ни ключа, ни `ATLAS_SYSTEM`/`ATLAS_ENV`: то же, что у всех
+#: команд обоих пакетов (контракт `atlas-config`), иначе собранное init-подсказками
+#: окажется в одной области, а `veha serve` без ключей покажет другую.
+DEFAULT_SCOPE = DEFAULT_SCOPE_KEY
+#: Код дочернего разбора `confpartest.py` — исходник модуля, передаётся через `-c`.
+_CHILD_SOURCE = Path(__file__).with_name("_spec_child.py")
 #: Где pytest ищет настройки — в том же порядке, в каком он их выбирает.
 SETTINGS_FILES = ("pytest.ini", "pyproject.toml", "tox.ini", "setup.cfg")
 #: Где искать зависимости проекта — только имена пакетов, текстом.
@@ -72,11 +85,16 @@ _SEGMENT_BAD = re.compile(r"[^A-Za-z0-9._-]+")
 _SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+\Z")
 #: Путь отчёта, годный и в YAML, и в команду любой оболочки без кавычек.
 _SAFE_PATH = re.compile(r"^[\w./+-]+\Z")
-#: Чего в строке комментария быть не должно: управляющие C0 и C1 (в том числе NEL —
-#: перевод строки для YAML), разделители строк и абзацев, bidi-переключатели (текст в
-#: терминале и редакторе читался бы не так, как записан), одиночные суррогаты.
-_UNSAFE = re.compile("[\x00-\x1f\x7f-\x9f\u061c\u200e\u200f\u2028\u2029"
-                     "\u202a-\u202e\u2066-\u2069\ud800-\udfff]")
+#: Путь каталога для печатаемой команды — `_SAFE_PATH` плюс то, без чего не бывает пути
+#: Windows (`C:`, `\`), и пробел (тогда путь в двойных кавычках). Ни `$`, ни обратной
+#: кавычки, ни `%`, ни `!`, ни кавычек: внутри двойных кавычек их разворачивают bash,
+#: PowerShell или cmd.
+_SAFE_DIR = re.compile(r"^[\w./\\:+ -]+\Z")
+DIR_PLACEHOLDER = "<путь к каталогу>"
+#: Категории Unicode, которым не место в строке комментария и терминала: управляющие C0/C1
+#: (в том числе NEL — перевод строки для YAML), форматирующие (нулевая ширина, bidi,
+#: U+2060–2064, теги U+E0000–E007F, BOM), разделители строк и абзацев, суррогаты.
+_UNSAFE_CATEGORIES = frozenset({"Cc", "Cf", "Zl", "Zp", "Cs"})
 #: `KEY=путь` (pytest-env в ini, setenv tox), `KEY = "путь"` и `KEY = { value = "путь" }`
 #: (таблица pytest-env в pyproject.toml).
 _COVERAGE_RE = re.compile(
@@ -99,9 +117,16 @@ _ALLURE_PYTEST = re.compile(r"(?i)\ballure[-_]pytest\b")
 
 
 def one_line(value: Any, limit: int = SHOWN_LIMIT) -> str:
-    """Значение из чужого файла — в одну безопасную строку комментария и терминала."""
-    s = _UNSAFE.sub("?", str(value))
+    """Значение из чужого файла — в одну безопасную строку комментария и терминала:
+    каждый символ из :data:`_UNSAFE_CATEGORIES` — `?`."""
+    s = str(value)[:limit + 1]
+    s = "".join("?" if unicodedata.category(c) in _UNSAFE_CATEGORIES else c for c in s)
     return s if len(s) <= limit else s[:limit - 1] + "…"
+
+
+def has_unsafe(value: str) -> bool:
+    """Есть ли в строке символ, которому не место в комментарии и терминале."""
+    return any(unicodedata.category(c) in _UNSAFE_CATEGORIES for c in value)
 
 
 def quoted(value: str) -> str:
@@ -115,22 +140,23 @@ def safe_url(value: str) -> str:
     """Адрес без учётных данных, параметров запроса и фрагмента.
 
     Остаются схема, узел с портом и путь; путь проходит через `veha.redact.text`. Если
-    адрес не разобрать однозначно, он закрывается целиком: `@` после схемы есть, а в
-    узле его нет (пароль с сырым `/`, `?` или `#` — разбор режет учётную запись в путь
-    или запрос), либо порт не число. Показать такой адрес — показать то, что в нём
-    спрятано.
+    адрес не разобрать однозначно, он закрывается целиком, без разбора: `@` где-либо
+    после узла — в пути, запросе или фрагменте (сырые `/ ? # @` в пароле разбор режет и
+    уносит хвост пароля туда: `user:p@ss/word@host` даёт узел `ss`), либо порт не
+    число. Показать такой адрес — показать то, что в нём спрятано. Правило то же, что у
+    готовящегося `partest.redact.redact_url`.
     """
     m = _SCHEME_RE.match(value.strip())
     if not m:
         return "<адрес не разобран>"
-    scheme, rest = m.group(1), m.group(2)
+    scheme = m.group(1)
     hidden = f"{scheme}://<скрыто>"
     try:
         parts = urlsplit(value.strip())
         parts.port  # noqa: B018 — ValueError, если порт не число
     except ValueError:
         return hidden
-    if "@" in rest and "@" not in parts.netloc:
+    if "@" in parts.path or "@" in parts.query or "@" in parts.fragment:
         return hidden
     host = parts.netloc.rpartition("@")[2]
     if not host:
@@ -145,10 +171,48 @@ def segment(value: str, fallback: str = "project") -> str:
     return s or fallback
 
 
-def _read(path: Path, notes: Optional[List[str]] = None, label: str = "") -> Optional[bytes]:
-    """Байты файла проекта не больше :data:`READ_LIMIT`; больше или не читается — `None`
-    (и строка в *notes*, если она передана)."""
+def is_link(path: Path) -> bool:
+    """Ссылка ли это — символическая или точка повторной обработки Windows (junction,
+    ссылка на сетевой ресурс). Смотрит `lstat`: сама ссылка не разворачивается, и
+    обращения по ней нет. Не прочитать `lstat` — тоже «ссылка»: закрываемся на отказ."""
     try:
+        st = os.lstat(path)
+    except FileNotFoundError:
+        return False
+    except OSError:
+        return True
+    if stat.S_ISLNK(st.st_mode):
+        return True
+    return bool(getattr(st, "st_file_attributes", 0)
+                & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
+
+
+def local_to(root: Path, path: Path) -> bool:
+    """Путь внутри *root* без единой ссылки по дороге — его можно открывать. Каждая часть
+    от корня до файла проверяется `lstat`; `resolve` — уже после, когда ссылок нет."""
+    try:
+        rel = path.relative_to(root)
+    except ValueError:
+        return False
+    current = root
+    for part in rel.parts:
+        current = current / part
+        if is_link(current):
+            return False
+    try:
+        return root.resolve() in path.resolve().parents
+    except (OSError, RuntimeError):
+        return False
+
+
+def _read(path: Path, notes: Optional[List[str]] = None, label: str = "",
+          root: Optional[Path] = None) -> Optional[bytes]:
+    """Байты файла проекта не больше :data:`READ_LIMIT`; больше или не читается — `None`
+    (и строка в *notes*, если она передана). Ссылка вместо файла или каталога по дороге
+    от *root* (по умолчанию — каталог файла) не открывается."""
+    try:
+        if not local_to(root or path.parent, path):
+            return None
         if not path.is_file():
             return None
         if path.stat().st_size > READ_LIMIT:
@@ -161,8 +225,9 @@ def _read(path: Path, notes: Optional[List[str]] = None, label: str = "") -> Opt
         return None
 
 
-def _text(path: Path, notes: Optional[List[str]] = None, label: str = "") -> str:
-    data = _read(path, notes, label)
+def _text(path: Path, notes: Optional[List[str]] = None, label: str = "",
+          root: Optional[Path] = None) -> str:
+    data = _read(path, notes, label, root)
     return data.decode("utf-8", errors="replace") if data is not None else ""
 
 
@@ -199,59 +264,44 @@ class Spec:
         return self.path is not None
 
 
+def _skip_dir(name: str) -> bool:
+    low = name.lower()
+    return name.startswith(".") or low in _SKIP_DIRS or low.startswith("venv")
+
+
+def _subdirs(path: Path) -> List[Path]:
+    """Подкаталоги без ссылок (символических и junction) — в них не заходим: ссылка может
+    вести за пределы корня, в том числе на сетевой ресурс."""
+    try:
+        entries = sorted(os.scandir(path), key=lambda e: e.name)
+    except OSError:
+        return []
+    out: List[Path] = []
+    for e in entries:
+        p = Path(e.path)
+        try:
+            if e.is_dir(follow_symlinks=False) and not is_link(p) and not _skip_dir(e.name):
+                out.append(p)
+        except OSError:
+            continue
+    return out
+
+
 def find_confpartest(root: Path) -> Tuple[Optional[Path], List[Path]]:
     """`confpartest.py`: в корне, иначе на один-два уровня глубже (`tests/`,
-    `src/tests/`), мимо окружений и каталогов сборки. Возвращает выбранный и остальные."""
-    if (root / CONFPARTEST).is_file():
+    `src/tests/`), мимо скрытых каталогов, окружений, сборки и ссылок; кандидат вне корня
+    после `resolve` отбрасывается. Возвращает выбранный и остальные."""
+    if local_to(root, root / CONFPARTEST) and (root / CONFPARTEST).is_file():
         return root / CONFPARTEST, []
     found: List[Path] = []
-    for pattern in (f"*/{CONFPARTEST}", f"*/*/{CONFPARTEST}"):
-        for p in sorted(root.glob(pattern)):
-            parts = p.relative_to(root).parts[:-1]
-            if any(x.startswith(".") or x.lower() in _SKIP_DIRS or x.lower().startswith(
-                    ("venv", ".venv")) for x in parts):
-                continue
-            if p.is_file():
-                found.append(p)
+    level = [root]
+    for _ in range(2):
+        level = [d for parent in level for d in _subdirs(parent)]
+        found = [d / CONFPARTEST for d in level
+                 if local_to(root, d / CONFPARTEST) and (d / CONFPARTEST).is_file()]
         if found:
             break
     return (found[0], found[1:]) if found else (None, [])
-
-
-def _is_name(node: ast.AST) -> bool:
-    return isinstance(node, ast.Name) and node.id == "swagger_files"
-
-
-def _assigned(stmt: ast.stmt) -> Optional[ast.AST]:
-    """Значение, присвоенное `swagger_files` этим оператором верхнего уровня."""
-    if isinstance(stmt, ast.Assign) and any(_is_name(t) for t in stmt.targets):
-        return stmt.value
-    if isinstance(stmt, ast.AnnAssign) and _is_name(stmt.target) and stmt.value is not None:
-        return stmt.value
-    return None
-
-
-#: Методы словаря, которые его меняют; `.get`, `.items` и прочее чтение — не изменение.
-_MUTATORS = frozenset({"update", "setdefault", "pop", "popitem", "clear", "__setitem__",
-                       "__delitem__", "__ior__"})
-
-
-def _touched_elsewhere(tree: ast.Module, top: List[ast.stmt]) -> bool:
-    """Меняется ли `swagger_files` где-то, кроме присваиваний верхнего уровня:
-    `swagger_files["x"] = …`, `.update(…)`, присваивание под `if`/`try`, `+=`.
-    Узлы присваиваний верхнего уровня собираются один раз — проход линейный."""
-    own = {id(n) for stmt in top for n in ast.walk(stmt)}
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Name) and node.id == "swagger_files" \
-                and isinstance(node.ctx, (ast.Store, ast.Del)) and id(node) not in own:
-            return True
-        if isinstance(node, ast.Subscript) and _is_name(node.value) \
-                and isinstance(node.ctx, (ast.Store, ast.Del)):
-            return True
-        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
-                and _is_name(node.func.value) and node.func.attr in _MUTATORS:
-            return True
-    return False
 
 
 def local_path_problem(where: str) -> str:
@@ -268,17 +318,8 @@ def local_path_problem(where: str) -> str:
     return ""
 
 
-def _entry(name: str, node: ast.AST, base: Path) -> Service:
-    try:
-        value = ast.literal_eval(node)
-    except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError):
-        return Service(name, note="не литерал — вид и место init не узнал; collect openapi "
-                                  "их разрешит сам")
-    if not isinstance(value, (list, tuple)) or len(value) < 2:
-        return Service(name, note="ожидалось [вид, путь_или_адрес]")
-    kind, where = value[0], value[1]
-    if not isinstance(kind, str) or not isinstance(where, str) or not where.strip():
-        return Service(name, note="ожидалось [вид, путь_или_адрес] строками")
+def _entry(name: str, kind: str, where: str, base: Path) -> Service:
+    """Запись `swagger_files` по ответу дочернего разбора: вид и место — строки."""
     kind = kind.lower()
     if kind == URL_KIND:
         return Service(name, URL_KIND, safe_url(where))
@@ -292,92 +333,104 @@ def _entry(name: str, node: ast.AST, base: Path) -> Service:
     problem = local_path_problem(where)
     if problem:
         return Service(name, "local", shown, note=problem)
+    target = base / inside_root(where)[1]
+    if not local_to(base, target):
+        return Service(name, "local", shown, note="путь ведёт через ссылку — не проверяю")
     note = ""
     try:
-        if not (base / inside_root(where)[1]).is_file():
+        if not target.is_file():
             note = "файла нет (путь — от каталога confpartest.py)"
     except (OSError, ValueError):
         note = "путь не проверить"
     return Service(name, "local", shown, note=note)
 
 
-#: Дочерний разбор: только `ast.parse` над байтами со стандартного входа, интерпретатор в
-#: изолированном режиме (`-I`: ни текущего каталога, ни пользовательских путей в
-#: `sys.path`). Код проекта не исполняется и здесь.
-_PARSE_CHILD = ("import ast, sys\n"
-                "try:\n"
-                "    ast.parse(sys.stdin.buffer.read())\n"
-                "except BaseException as exc:\n"
-                "    print(type(exc).__name__)\n"
-                "else:\n"
-                "    print('ok')\n")
+_SHAPE_NOTES = {"short": "ожидалось [вид, путь_или_адрес]",
+                "notstr": "ожидалось [вид, путь_или_адрес] строками",
+                "nonlit": "не литерал — вид и место init не узнал; collect openapi их "
+                          "разрешит сам"}
 
 
-def _parse_isolated(data: bytes) -> str:
-    """Переживёт ли разбор интерпретатор: `ok`, имя исключения или причина падения."""
+def _parse_isolated(data: bytes) -> Dict[str, Any]:
+    """Единственный разбор `confpartest.py` — в дочернем `python -I` (`_spec_child.py`).
+    Ответ — словарь из JSON; при любой неудаче — `{"error": причина}`, без трассировки."""
+    exe = sys.executable
+    if not exe:
+        return {"error": "разбор не выполнен: неизвестен путь к интерпретатору Python "
+                         "(sys.executable пуст)"}
+    try:
+        code = _CHILD_SOURCE.read_text(encoding="utf-8")
+    except OSError:
+        return {"error": "разбор не выполнен: нет модуля дочернего разбора"}
     try:
         # свой интерпретатор и свой код, список аргументов, без оболочки
         out = subprocess.run(  # nosec B603
-            [sys.executable, "-I", "-c", _PARSE_CHILD], input=data, capture_output=True,
+            [exe, "-I", "-c", code], input=data, capture_output=True,
             timeout=PARSE_TIMEOUT, check=False)
-    except (OSError, subprocess.TimeoutExpired) as exc:
-        return f"разбор не выполнен ({type(exc).__name__})"
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        return {"error": f"разбор не выполнен ({type(exc).__name__})"}
     if out.returncode != 0:
-        return "разбор уронил интерпретатор (слишком глубокая вложенность выражений)"
-    return out.stdout.decode("ascii", errors="replace").strip() or "разбор ничего не ответил"
+        return {"error": "разбор уронил интерпретатор (слишком глубокая вложенность "
+                         "выражений)"}
+    try:
+        answer = json.loads(out.stdout.decode("ascii"))
+    except (UnicodeDecodeError, ValueError):
+        return {"error": "разбор ответил не JSON"}
+    return answer if isinstance(answer, dict) else {"error": "разбор ответил не словарём"}
 
 
 def read_spec(root: Path) -> Spec:
-    """`swagger_files` из `confpartest.py` проекта — деревом разбора, без импорта."""
+    """`swagger_files` из `confpartest.py` проекта — по ответу дочернего разбора, без
+    импорта и без разбора в этом процессе."""
     path, others = find_confpartest(root)
     if path is None:
         return Spec(problem=f"нет {CONFPARTEST} ни в корне, ни в подкаталогах (tests/ и т. п.)")
     spec = Spec(path=path)
-    rel = path.relative_to(root).as_posix()
+    rel = one_line(path.relative_to(root).as_posix(), 120)
     if others:
         spec.notes.append(f"{CONFPARTEST} найден в нескольких местах — взят {rel}; ещё: "
-                          + ", ".join(p.relative_to(root).as_posix() for p in others[:5]))
-    data = _read(path, spec.notes, rel)
+                          + ", ".join(one_line(p.relative_to(root).as_posix(), 120)
+                                      for p in others[:5]))
+    data = _read(path, spec.notes, rel, root)
     if data is None:
         spec.problem = f"{rel} не прочитан"
         return spec
-    verdict = _parse_isolated(data)
-    if verdict != "ok":
-        spec.problem = f"{rel} не разбирается: {one_line(verdict, 80)}"
+    answer = _parse_isolated(data)
+    if "error" in answer:
+        spec.problem = f"{rel} не разбирается: {one_line(answer['error'], 120)}"
         return spec
-    try:
-        tree = ast.parse(data, filename=CONFPARTEST)
-    except (SyntaxError, ValueError, MemoryError, RecursionError) as exc:
-        spec.problem = f"{rel} не разбирается: {type(exc).__name__}"
-        return spec
-    top = [s for s in tree.body if _assigned(s) is not None]
-    if not top:
+    if not answer.get("assignments"):
         spec.problem = f"в {rel} нет присваивания swagger_files на верхнем уровне"
         return spec
-    if len(top) > 1:
+    if answer["assignments"] > 1:
         spec.notes.append("swagger_files присваивается несколько раз — взято последнее")
-    if _touched_elsewhere(tree, top):
+    if answer.get("touched"):
         spec.notes.append("swagger_files меняется и кодом (под условием, по ключу или "
                           "методом) — здесь только литерал верхнего уровня")
-    value = _assigned(top[-1])
-    if not isinstance(value, ast.Dict):
-        spec.problem = (f"swagger_files в {rel} вычисляется кодом ({type(value).__name__}), "
-                        "а init код проекта не выполняет")
+    if answer.get("value") != "Dict":
+        spec.problem = (f"swagger_files в {rel} вычисляется кодом "
+                        f"({one_line(answer.get('value'), 40)}), а init код проекта не "
+                        f"выполняет")
         return spec
     spec.literal = True
-    for i, (key, node) in enumerate(zip(value.keys, value.values), 1):
-        if key is None:
-            spec.notes.append("в swagger_files есть **распаковка — её записи не прочитаны")
+    if answer.get("unpack"):
+        spec.notes.append("в swagger_files есть **распаковка — её записи не прочитаны")
+    for i, e in enumerate(answer.get("entries") or [], 1):
+        e = e if isinstance(e, dict) else {}
+        key = e.get("key")
+        if not isinstance(key, str):
+            why = "имя — не литерал" if e.get("key_type") == "nonlit" else "имя — не строка"
+            spec.services.append(Service(f"<запись {i}>", note=why))
             continue
-        try:
-            name = ast.literal_eval(key)
-        except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError):
-            spec.services.append(Service(f"<запись {i}>", note="имя — не литерал"))
-            continue
-        if not isinstance(name, str):
-            spec.services.append(Service(f"<запись {i}>", note="имя — не строка"))
-            continue
-        spec.services.append(_entry(one_line(name, 80), node, path.parent))
+        name = one_line(key, 80)
+        if e.get("shape") == "ok" and isinstance(e.get("kind"), str) \
+                and isinstance(e.get("where"), str) and e["where"].strip():
+            spec.services.append(_entry(name, e["kind"], e["where"], path.parent))
+        else:
+            shape = e.get("shape") if e.get("shape") in _SHAPE_NOTES else "nonlit"
+            if shape == "ok":
+                shape = "notstr"
+            spec.services.append(Service(name, note=_SHAPE_NOTES[shape]))
     if not spec.services and not spec.notes:
         spec.problem = "swagger_files пуст"
     return spec
@@ -419,7 +472,7 @@ def _setting_lines(root: Path, notes: List[str]) -> List[Tuple[str, str]]:
     """Строки файлов настроек pytest без строк-комментариев: (файл, строка)."""
     out: List[Tuple[str, str]] = []
     for name in SETTINGS_FILES:
-        # по `\n`, а не `splitlines`: тот режет и по NEL, ` `, `\x0c` — и значение
+        # по `\n`, а не `splitlines`: тот режет и по NEL, `\u2028`, `\x0c` — и значение
         # с таким символом посередине выглядело бы обрезанным, но годным путём
         for line in _text(root / name, notes).split("\n"):
             line = line.rstrip("\r")
@@ -432,7 +485,7 @@ def _found(value: str, where: str) -> Found:
     value = _TOXINIDIR.sub("", value.strip())
     if not value:
         return Found(where=where, raw="пустое значение")
-    if _UNSAFE.search(value):
+    if has_unsafe(value):
         return Found(where=where, raw="управляющие символы в значении — впишите путь сами")
     if any(c in value for c in "{}$%"):
         # подстановка tox или оболочки — разворачивать её здесь значило бы гадать
@@ -474,13 +527,30 @@ class Signals:
     deps_read: List[str] = field(default_factory=list)
 
 
-def find_signals(root: Path, notes: List[str]) -> Signals:
-    sig = Signals()
+def _dependency_files(root: Path) -> List[Path]:
+    """Файлы зависимостей по :data:`DEPENDENCY_GLOBS` — без обхода ссылок: каталог
+    `requirements/` и сами файлы, оказавшиеся ссылкой, не открываются."""
     files: List[Path] = []
     for pattern in DEPENDENCY_GLOBS:
-        files += [p for p in sorted(root.glob(pattern)) if p not in files]
-    for f in files:
-        text = _text(f, notes, f.relative_to(root).as_posix())
+        head, _, name = pattern.rpartition("/")
+        base = root / head if head else root
+        if head and (is_link(base) or not base.is_dir()):
+            continue
+        try:
+            entries = sorted(os.scandir(base), key=lambda e: e.name)
+        except OSError:
+            continue
+        for e in entries:
+            p = Path(e.path)
+            if fnmatch.fnmatchcase(e.name, name) and p not in files and local_to(root, p):
+                files.append(p)
+    return files
+
+
+def find_signals(root: Path, notes: List[str]) -> Signals:
+    sig = Signals()
+    for f in _dependency_files(root):
+        text = _text(f, notes, one_line(f.relative_to(root).as_posix(), 80), root)
         if not text:
             continue
         rel = f.relative_to(root).as_posix()
@@ -530,6 +600,7 @@ class Plan:
     signals: Signals = field(default_factory=Signals)
     notes: List[str] = field(default_factory=list)    # что не прочитано и почему
     parent: Optional[Path] = None
+    project: str = ""                                 # подпись проекта: имя каталога
 
     @property
     def coverage_path(self) -> str:
@@ -543,6 +614,11 @@ class Plan:
         """Что человеку стоит знать сразу: печатается после записи с «!»."""
         out: List[str] = []
         spec = self.spec
+        dirs = [self.root] + ([spec.path.parent] if spec.path else [])
+        if any(safe_dir(d) == DIR_PLACEHOLDER for d in dirs):
+            out.append(f"имя каталога нестандартное (символы, которые оболочка развернула бы "
+                       f"внутри кавычек) — в командах ниже {DIR_PLACEHOLDER}; подставьте путь "
+                       f"сами")
         if self.parent is not None:
             out.append(f"выше по дереву есть {self.parent} — агент partest-atlas из этого каталога "
                        f"брал его, теперь возьмёт новый; два atlas.yaml на один проект — "
@@ -573,14 +649,17 @@ class Plan:
 
 def plan(root: Path, *, system: str = "", env: str = "") -> Plan:
     """Собрать всё, что известно о проекте. *system* и *env* — уже выбранные значения
-    (ключ, иначе `ATLAS_SYSTEM`/`ATLAS_ENV`); пусто — имя каталога и :data:`DEFAULT_ENV`."""
+    (ключ, иначе `ATLAS_SYSTEM`/`ATLAS_ENV`); пусто — :data:`DEFAULT_SCOPE`, как у всех
+    команд обоих пакетов. Имя каталога идёт только в `project.name` — это подпись, а не
+    область."""
     root = Path(root).resolve()
     notes: List[str] = []
     coverage, allure = find_reports(root, notes)
     signals = find_signals(root, notes)
-    return Plan(root=root, system=system or segment(root.name), env=env or DEFAULT_ENV,
+    return Plan(root=root, system=system or DEFAULT_SCOPE, env=env or DEFAULT_SCOPE,
                 spec=read_spec(root), coverage=coverage, allure=allure, signals=signals,
-                notes=sorted(set(notes)), parent=parent_config(root))
+                notes=sorted(set(notes)), parent=parent_config(root),
+                project=segment(root.name))
 
 
 def _report_lines(found: Found, key: str, value: str, what: str, default_note: str) -> List[str]:
@@ -669,11 +748,11 @@ def render(p: Plan) -> str:
         "# необязателен: нет раздела — нет сборщика или пусто на карте.",
         "#",
         "# Область (система и контур) в файл не пишется — её задаёт окружение, одно на",
-        "# прогон pytest, сборщики и сервер:",
+        "# прогон pytest, сборщики и сервер (без него у всех команд — default):",
         f"#   ATLAS_SYSTEM={p.system}  ATLAS_ENV={p.env}",
         "",
         "project:",
-        f"  name: {quoted(p.system)}",
+        f"  name: {quoted(p.project or p.system)}",
         "",
         "# Куда агент пишет артефакты: <artifacts_dir>/<система>/<контур>/.",
         "artifacts_dir: atlas",
@@ -744,6 +823,9 @@ def write(p: Plan) -> Path:
     try:
         with os.fdopen(fd, "wb") as f:
             f.write(data)
+        # mkstemp создаёт файл 0600; atlas.yaml — обычный файл проекта, его читает и
+        # контейнер Вехи под другим пользователем: права как у open(), 0o666 & ~umask
+        os.chmod(name, 0o666 & ~_umask())
         try:
             os.link(name, target)
         except FileExistsError:
@@ -756,6 +838,14 @@ def write(p: Plan) -> Path:
         except OSError:
             pass
     return target
+
+
+def _umask() -> int:
+    """Текущая маска прав процесса. Узнать её можно только установив: ставим и тут же
+    возвращаем ту же — команда однопоточная."""
+    mask = os.umask(0o022)
+    os.umask(mask)
+    return mask
 
 
 def _write_exclusive(target: Path, data: bytes) -> None:
@@ -777,11 +867,14 @@ def _write_exclusive(target: Path, data: bytes) -> None:
 # ---------------------------------------------------------------- подсказки
 
 
-def _arg(value: Any) -> str:
-    """Путь для показа в команде: с пробелом или чем-то кроме букв, цифр и разделителей
-    пути — в двойных кавычках."""
-    s = one_line(value, 400)
-    return s if re.match(r"^[\w.:\\/-]+\Z", s) else f'"{s}"'
+def safe_dir(value: Any) -> str:
+    """Путь каталога для печатаемой команды. Проходит :data:`_SAFE_DIR` — печатается (с
+    пробелом — в двойных кавычках); нет — :data:`DIR_PLACEHOLDER`: `$(…)`, обратные
+    кавычки, `%…%` внутри двойных кавычек развернули бы bash, PowerShell или cmd."""
+    s = str(value)
+    if len(s) > 400 or not _SAFE_DIR.match(s):
+        return DIR_PLACEHOLDER
+    return f'"{s}"' if " " in s else s
 
 
 def env_forms(pairs: List[Tuple[str, str]]) -> Dict[str, str]:
@@ -796,7 +889,7 @@ def env_forms(pairs: List[Tuple[str, str]]) -> Dict[str, str]:
 
 def next_steps(p: Plan) -> List[str]:
     """Что делать после заготовки — командами, по порядку."""
-    root = _arg(p.root)
+    root = safe_dir(p.root)
     scope = f"--system {p.system} --env {p.env}"
     sig = p.signals
     package = "partest-atlas[postgres]>=0.3" if sig.db_postgres else "partest-atlas>=0.3"
@@ -818,7 +911,7 @@ def next_steps(p: Plan) -> List[str]:
                      "подключения — в переменную DATABASE_URL; пользователь — только на "
                      "чтение")
     if p.spec.found:
-        spec_root = _arg(p.spec.path.parent) if p.spec.path else root
+        spec_root = safe_dir(p.spec.path.parent) if p.spec.path else root
         named = [s for s in p.spec.services if not s.name.startswith("<")]
         if len(named) > 1:
             first = named[0]

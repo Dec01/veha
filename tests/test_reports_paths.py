@@ -402,11 +402,14 @@ def test_clean_in_a_directory_shared_with_the_project_removes_only_allure_files(
     d = _allure(small_root / "tests")
     project = ["conftest.py", "test_orders.py", "coverage.json", "notes-attachment-list.md",
                # похоже на Allure, но без UUID в начале — файлы проекта
-               "expected-result.json", "conftest-attachment.py", "a1-attachment.txt"]
+               "expected-result.json", "conftest-attachment.py", "a1-attachment.txt",
+               # их кладёт пользователь или плагин, не прогон
+               "executor.json", "environment.properties", "categories.json"]
     for name in project:
         (d / name).write_text("# проект\n", encoding="utf-8")
-    allure = ["0c100000-0000-4000-8000-000000000001-container.json", "0a200000-0000-4000-8000-000000000002-attachment", "0a300000000040008000000000000003-attachment.png", "executor.json",
-              "environment.properties", "categories.json"]
+    allure = ["0c100000-0000-4000-8000-000000000001-container.json",
+              "0a200000-0000-4000-8000-000000000002-attachment",
+              "0a300000000040008000000000000003-attachment.png"]
     for name in allure:
         (d / name).write_text("{}", encoding="utf-8")
     (d / "sub").mkdir()

@@ -231,8 +231,8 @@ def init(args: argparse.Namespace) -> int:
     файл), а не флаг, который легко добавить по привычке и потерять настройку.
 
     Система и контур — как у всех команд обоих пакетов: ключ, иначе `ATLAS_SYSTEM` /
-    `ATLAS_ENV`. Если не задано ни то ни другое, init предлагает имя каталога и `local`:
-    в файл область не пишется, она нужна только подсказкам.
+    `ATLAS_ENV`, иначе `default` — одинаково с `collect` и `serve` (контракт
+    `atlas-config`). В файл область не пишется, она нужна только подсказкам.
     """
     root = Path(args.root).resolve()
     if not root.is_dir():
@@ -262,7 +262,8 @@ def init(args: argparse.Namespace) -> int:
     print(f"  область для подсказок: {p.system}/{p.env}")
     services = [s for s in p.spec.services if s.kind]
     if services:
-        rel = p.spec.path.relative_to(root).as_posix() if p.spec.path else ""
+        rel = (scaffold.one_line(p.spec.path.relative_to(root).as_posix(), 120)
+               if p.spec.path else "")
         print(f"  спецификации из {rel}: "
               + ", ".join(f"{s.name} ({s.kind})" for s in services))
     read = [n for n in scaffold.SETTINGS_FILES if (root / n).is_file()]
@@ -382,11 +383,11 @@ def build_parser() -> argparse.ArgumentParser:
     i.add_argument("--root", default=".",
                    help="корень проекта: confpartest.py, pytest.ini (по умолчанию — текущий)")
     i.add_argument("--system", default="",
-                   help="система для подсказок (по умолчанию — ATLAS_SYSTEM, иначе имя "
-                        "каталога)")
+                   help="система для подсказок (по умолчанию — ATLAS_SYSTEM, иначе "
+                        f"{scaffold.DEFAULT_SCOPE}, как у serve и collect)")
     i.add_argument("--env", default="",
                    help=f"контур для подсказок (по умолчанию — ATLAS_ENV, иначе "
-                        f"{scaffold.DEFAULT_ENV})")
+                        f"{scaffold.DEFAULT_SCOPE})")
     i.set_defaults(func=init)
     return p
 

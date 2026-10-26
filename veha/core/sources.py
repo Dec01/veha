@@ -81,7 +81,9 @@ IDENTIFIER_KEYS = frozenset({
 
 #: Один сегмент пути: имя системы или контура. Никаких разделителей и `..`: область
 #: становится каталогом, и выход за `atlas/` через неё недопустим.
-_SEGMENT_RE = re.compile(r"^[A-Za-z0-9._-]+$")
+#: `\Z`, а не `$`: `$` пропускает перевод строки в конце имени, а имя области
+#: попадает в пути и в комментарий atlas.yaml.
+_SEGMENT_RE = re.compile(r"^[A-Za-z0-9._-]+\Z")
 
 
 def valid_segment(value: str) -> bool:
@@ -803,9 +805,9 @@ def _is_ui(full: str, labels: Dict[str, str], ui_markers: List[str]) -> bool:
 _UUID = r"(?:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" \
         r"|[0-9a-fA-F]{32})"
 _ALLURE_ATTACHMENT_RE = re.compile(r"^" + _UUID + r"-attachment(?:\.[A-Za-z0-9]{1,16})?\Z")
-_ALLURE_FILE_RE = re.compile(
-    r"^" + _UUID + r"-(?:result|container)\.json\Z"
-    r"|^(?:executor\.json|environment\.properties|categories\.json)\Z")
+#: Очистка — только эти файлы прогона. `executor.json`, `environment.properties`,
+#: `categories.json` не трогаются: их кладёт пользователь или плагин, а не прогон.
+_ALLURE_FILE_RE = re.compile(r"^" + _UUID + r"-(?:result|container)\.json\Z")
 
 
 def is_allure_attachment(name: str) -> bool:
