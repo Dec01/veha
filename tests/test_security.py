@@ -126,10 +126,10 @@ def leaky_root(small_root):
     """Набор, в котором секреты лежат везде, куда смотрит вебморда."""
     d = small_root / "allure-results"
     d.mkdir()
-    (d / "att-1-attachment.json").write_text(json.dumps({
+    (d / "0a110000-0000-4000-8000-000000000011-attachment.json").write_text(json.dumps({
         "request": {"headers": {"Authorization": f"Bearer {TOKEN}"},
                     "body": {"login": "a", "password": SECRET}}}), encoding="utf-8")
-    (d / "att-2-attachment.txt").write_text(
+    (d / "0a120000-0000-4000-8000-000000000012-attachment.txt").write_text(
         f"curl -H 'Authorization: Bearer {TOKEN}' -d password={SECRET}", encoding="utf-8")
     (d / "r-result.json").write_text(json.dumps({
         "fullName": "tests.t_x.TestX#test_y", "name": "test_y", "status": "failed",
@@ -140,8 +140,8 @@ def leaky_root(small_root):
         "steps": [{"name": f"HTTP GET /api/v1/x?token={SECRET}", "status": "failed",
                    "steps": [{"name": f"cookie: sid={SECRET}", "status": "failed"}],
                    # вложение шага: сервер отдаёт только то, что назвал тест
-                   "attachments": [{"name": "curl", "source": "att-2-attachment.txt"}]}],
-        "attachments": [{"name": "req", "source": "att-1-attachment.json"}],
+                   "attachments": [{"name": "curl", "source": "0a120000-0000-4000-8000-000000000012-attachment.txt"}]}],
+        "attachments": [{"name": "req", "source": "0a110000-0000-4000-8000-000000000011-attachment.json"}],
     }), encoding="utf-8")
     logs = small_root / "logs"
     (logs / "containers").mkdir(parents=True)
@@ -154,8 +154,8 @@ def leaky_root(small_root):
 def test_secrets_are_masked_in_every_answer(leaky_root):
     c = make_client(leaky_root)
     answers = [
-        c.get("/api/attachment/att-1-attachment.json").text,
-        c.get("/api/attachment/att-2-attachment.txt").text,
+        c.get("/api/attachment/0a110000-0000-4000-8000-000000000011-attachment.json").text,
+        c.get("/api/attachment/0a120000-0000-4000-8000-000000000012-attachment.txt").text,
         c.get("/api/log").text,
         c.get("/api/live/container/notifier/logs").text,
         c.get("/api/test", params={"file": "r-result.json"}).text,

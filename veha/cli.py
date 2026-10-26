@@ -229,17 +229,25 @@ def init(args: argparse.Namespace) -> int:
     Существующий файл не перезаписывается, ключа `--force` нет: в `atlas.yaml` ручная
     работа, и вернуть заготовку — одно явное действие человека (удалить или переименовать
     файл), а не флаг, который легко добавить по привычке и потерять настройку.
+
+    Система и контур — как у всех команд обоих пакетов: ключ, иначе `ATLAS_SYSTEM` /
+    `ATLAS_ENV`. Если не задано ни то ни другое, init предлагает имя каталога и `local`:
+    в файл область не пишется, она нужна только подсказкам.
     """
     root = Path(args.root).resolve()
     if not root.is_dir():
         print(f"нет каталога: {root}", file=sys.stderr)
         return 2
-    for label, value in (("система", args.system), ("контур", args.env)):
+    chosen = {}
+    for key, label, flag, env_name in (("system", "система", args.system, "ATLAS_SYSTEM"),
+                                       ("env", "контур", args.env, "ATLAS_ENV")):
+        value = flag or os.getenv(env_name) or ""
         if value and not valid_segment(value):
-            print(f"{label} {value!r}: допустим один сегмент [A-Za-z0-9._-]+ без '..'",
-                  file=sys.stderr)
+            print(f"{label} {scaffold.one_line(value, 80)!r} (--{key} или {env_name}): "
+                  f"допустим один сегмент [A-Za-z0-9._-]+ без '..'", file=sys.stderr)
             return 2
-    p = scaffold.plan(root, system=args.system, env=args.env)
+        chosen[key] = value
+    p = scaffold.plan(root, system=chosen["system"], env=chosen["env"])
     try:
         target = scaffold.write(p)
     except scaffold.Exists as exc:
@@ -251,16 +259,24 @@ def init(args: argparse.Namespace) -> int:
         print(f"atlas.yaml не записан: {exc.strerror or exc}", file=sys.stderr)
         return 2
     print(f"Веха {__version__}: заготовка → {target}")
+    print(f"  область для подсказок: {p.system}/{p.env}")
     services = [s for s in p.spec.services if s.kind]
     if services:
-        print("  спецификации из confpartest.swagger_files: "
+        rel = p.spec.path.relative_to(root).as_posix() if p.spec.path else ""
+        print(f"  спецификации из {rel}: "
               + ", ".join(f"{s.name} ({s.kind})" for s in services))
+    read = [n for n in scaffold.SETTINGS_FILES if (root / n).is_file()]
+    print("  пути отчётов искались в: " + (", ".join(read) if read else
+                                          "нигде — нет ни pytest.ini, ни pyproject.toml, "
+                                          "ни tox.ini, ни setup.cfg"))
     for key, found, value in (("coverage", p.coverage, p.coverage_path),
                               ("allure", p.allure, p.allure_path)):
         how = f"из {found.where}" if found.usable else "по умолчанию"
         print(f"  reports.{key}: {value} — {how}")
+    print("  база: " + (scaffold.one_line(p.signals.db, 120) if p.signals.db
+                        else "признаков не найдено — раздел database оставлен шаблоном"))
     for warning in p.warnings():
-        print(f"  ! {warning}")
+        print(f"  ! {scaffold.one_line(warning, 600)}")
     print("Дальше:")
     for i, step in enumerate(scaffold.next_steps(p), 1):
         print(f"  {i}. {step}")
@@ -359,13 +375,18 @@ def build_parser() -> argparse.ArgumentParser:
                                    "и без выполнения кода проекта), пути отчётов из "
                                    "настроек pytest, набор full для тренда, шаблоны "
                                    "остальных разделов. Существующий atlas.yaml не "
-                                   "перезаписывается.")
+                                   "перезаписывается.",
+                       epilog="Коды возврата: 0 — заготовка записана; 2 — ничего не "
+                              "записано: atlas.yaml уже есть, нет каталога, негодное имя "
+                              "системы или контура, файл не создать.")
     i.add_argument("--root", default=".",
                    help="корень проекта: confpartest.py, pytest.ini (по умолчанию — текущий)")
     i.add_argument("--system", default="",
-                   help="система для подсказок (по умолчанию — имя каталога)")
+                   help="система для подсказок (по умолчанию — ATLAS_SYSTEM, иначе имя "
+                        "каталога)")
     i.add_argument("--env", default="",
-                   help=f"контур для подсказок (по умолчанию — {scaffold.DEFAULT_ENV})")
+                   help=f"контур для подсказок (по умолчанию — ATLAS_ENV, иначе "
+                        f"{scaffold.DEFAULT_ENV})")
     i.set_defaults(func=init)
     return p
 

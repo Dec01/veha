@@ -797,15 +797,20 @@ def _is_ui(full: str, labels: Dict[str, str], ui_markers: List[str]) -> bool:
 #: фикстур, вложения `<uuid>-attachment.<расширение>` и три служебных файла отчёта.
 #: Каталог `reports.allure` может быть общим с проектом (`tests`, `.`), поэтому очистка
 #: удаляет только такие имена, а вложение отдаётся, только если имя — имя вложения.
-_ALLURE_ATTACHMENT_RE = re.compile(r"^[^/\\:]{1,200}-attachment(?:\.[A-Za-z0-9_-]{1,32})?$")
+#: Имя начинается с UUID — так их пишут адаптеры Allure (`uuid4()`, с дефисами или без):
+#: `expected-result.json` или `conftest-attachment.py` проекта под правило не попадают.
+#: `\Z`, а не `$`: `$` пропускает перевод строки в конце имени.
+_UUID = r"(?:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" \
+        r"|[0-9a-fA-F]{32})"
+_ALLURE_ATTACHMENT_RE = re.compile(r"^" + _UUID + r"-attachment(?:\.[A-Za-z0-9]{1,16})?\Z")
 _ALLURE_FILE_RE = re.compile(
-    r"^[^/\\:]{1,200}-(?:result|container)\.json$"
-    r"|^(?:executor\.json|environment\.properties|categories\.json)$")
+    r"^" + _UUID + r"-(?:result|container)\.json\Z"
+    r"|^(?:executor\.json|environment\.properties|categories\.json)\Z")
 
 
 def is_allure_attachment(name: str) -> bool:
-    """Имя вложения Allure: `<что-то>-attachment` с необязательным расширением."""
-    return bool(_ALLURE_ATTACHMENT_RE.match(name or "")) and ".." not in name
+    """Имя вложения Allure: `<UUID>-attachment` с необязательным расширением."""
+    return bool(_ALLURE_ATTACHMENT_RE.match(name or ""))
 
 
 def is_allure_file(name: str) -> bool:

@@ -1,7 +1,7 @@
 ---
 title: Статус «Вехи»
 status: current
-verified: 2026-10-25
+verified: 2026-10-26
 sources: [README.md, pyproject.toml, CHANGELOG.md, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in, veha/scaffold.py, tests/test_init.py]
 audience: agent
 allow_version_literals: true
@@ -319,7 +319,7 @@ connect-src 'self'` из подкаталога: ни одного наруше�
 графа, под шапкой и при старте, без путей машины; так же называются каталог на месте файла
 покрытия, файл на месте каталога Allure и `coverage.json`, который не JSON-объект (раньше
 он ронял сборку графа). Очистка из окна раннера удаляет только файлы Allure (`is_allure_file`:
-`*-result.json`, `*-container.json`, `*-attachment.*`, `executor.json`,
+`<UUID>-result.json`, `<UUID>-container.json`, `<UUID>-attachment.*`, `executor.json`,
 `environment.properties`, `categories.json`) и только если каталог после разрешения ссылок
 лежит строго внутри корня; вне корня, сам корень и ссылка наружу — 409 с причиной; в
 каталоге, общем с проектом (`reports.allure: tests`), остальное цело. Вложение отдаётся
@@ -340,19 +340,49 @@ Windows — причиной; неизвестный ключ раздела —
 всех областей — вопрос «отчёты по области» по-прежнему открыт в [[proposals]].
 
 **Заготовка `atlas.yaml`** (не выпущено) — `veha init [--root] [--system] [--env]`
-(`veha/scaffold.py`). Код проекта не выполняется: `confpartest.py` разбирается `ast`, из
-него берётся только литерал `swagger_files`; не литерал (целиком или запись) — заготовка с
-подсказкой, изменение кодом ниже по файлу — пометка. Адрес спецификации — без учётных
-данных, запроса и фрагмента, остаток через `redact.text`; чужой текст попадает в файл
-только комментарием в одну строку, значения — скалярами в кавычках. Пути отчётов —
-текстом из `pytest.ini`, `pyproject.toml`, `tox.ini`, `setup.cfg` (без строк-комментариев;
-`{toxinidir}/` снимается, другие подстановки не угадываются); в `reports` — только
-относительные внутри корня, путь вне корня — закомментированным с предупреждением.
-Раздел `database` — закомментированный шаблон (`dsn_env`, `schemas: auto`), набор
-`runner.suites.full` с `full: true` и пустыми `args`. Файл создаётся открытием `x`:
-существующий (и висячая ссылка) — отказ с кодом 2, `--force` нет. Итог проверен разбором
-`partest_atlas.config.load` и `veha.config.load` (`tests/test_init.py`). Команды `collect`
-в подсказках — у partest-atlas 0.3.0, которого ещё нет.
+(`veha/scaffold.py`).
+
+- **Код проекта не выполняется.** `confpartest.py` ищется в корне, иначе на один-два
+  уровня глубже (`tests/`, `src/tests/`; мимо скрытых каталогов, окружений и сборки) и
+  разбирается `ast` — в дочернем интерпретаторе `-I`, потому что на 3.10 `ast.parse` на
+  глубоко вложенном выражении роняет процесс (проверено: цепочка `[0]` длиной 40 000).
+  Берётся только литерал `swagger_files`; не литерал — подсказка, что вписывать ничего не
+  нужно (collect разрешит сам) и как сделать литерал, если хочется видеть службы в init.
+- **Чужой текст.** Файлы проекта читаются не больше 256 КБ (сверх — предупреждение, без
+  разбора). В комментарий и терминал — одной строкой без C0/C1, разделителей строк, bidi
+  и одиночных суррогатов (`one_line`); значения — JSON-строкой с `ensure_ascii` и
+  экранированным DEL (`quoted`), так что любой текст читается `yaml.safe_load`. Адрес
+  спецификации — без учётных данных, запроса и фрагмента; `@` после схемы, которого нет в
+  узле (сырые `/ ? #` в пароле), или нечисловой порт — адрес скрывается целиком
+  (`scheme://<скрыто>`). Своя реализация до публичного `partest.redact.redact_url`.
+  Локальный путь из `swagger_files` проверяется на диске, только если он относительный и
+  внутри каталога `confpartest.py` (`local_path_problem` поверх
+  `config.report_path_problem`): UNC при проверке существования обратился бы по сети.
+  Имя службы подставляется в команду, только если оно `[A-Za-z0-9._-]+`.
+- **Отчёты.** Пути — текстом из `pytest.ini`, `pyproject.toml`, `tox.ini`, `setup.cfg`
+  (строки по `\n`, значение до ASCII-пробела: NEL посередине не обрезает путь в «годный»);
+  `{toxinidir}/` снимается, другие подстановки не угадываются. В `reports` — только
+  относительные пути внутри корня из `[\w./+-]`; путь вне корня не пишется и не
+  печатается, только «вне корня».
+- **Признаки проекта.** Драйвер базы в `requirements*.txt`, `pyproject.toml`, `setup.cfg`,
+  `setup.py`, `Pipfile`, `tox.ini` или имя переменной подключения в настройках и
+  `conftest.py` корня — тогда шаг `collect db-schema` и `[postgres]` в установке; нет —
+  раздел `database` только шаблоном, без шага. `allure-pytest` в зависимостях не найден —
+  он добавлен в строку установки с объяснением.
+- **Подсказки.** Система и контур — ключ, иначе `ATLAS_SYSTEM`/`ATLAS_ENV` (как у всех
+  команд обоих пакетов), иначе имя каталога и `local`; негодное имя — код 2. Переменные —
+  строками для bash, cmd и PowerShell; `--system/--env` проброшены в команды `collect` и
+  `serve`; установка — `partest-atlas>=0.3`. Несколько служб — команда для первой и
+  предупреждение: `contract.openapi` один на область (см. [[proposals]]).
+- **Запись.** Текст собирается и кодируется до создания файла; временный файл рядом и
+  `os.link` — атомарно и без перезаписи; без жёстких ссылок — открытие `x` и удаление при
+  сбое. Существующий файл и висячая ссылка — отказ. `atlas.yaml` выше по дереву —
+  предупреждение. Коды возврата: 0 — записано, 2 — ничего не записано (файл есть, нет
+  каталога, негодное имя области, файл не создать); они же в `veha init --help`.
+- **Проверка.** Итог разбирается `partest_atlas.config.load` и `veha.config.load`;
+  раскомментированные шаблоны `container_logs` и `database` — кодом владельца
+  (`container_logs.rules_from`, `schemas_from`, где он есть) — `tests/test_init.py`.
+  Команды `collect` в подсказках — у partest-atlas 0.3.0, которого ещё нет.
 
 ## Что сервер берёт у partest-atlas
 

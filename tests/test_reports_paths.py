@@ -23,7 +23,7 @@ RESULT = {
     "uuid": "r1", "fullName": "src.api.tests.orders.test_list.TestList#test_open",
     "name": "test_open", "status": "passed", "start": 1_700_000_000_000,
     "stop": 1_700_000_001_000,
-    "attachments": [{"name": "ответ", "source": "a1-attachment.txt", "type": "text/plain"}],
+    "attachments": [{"name": "ответ", "source": "0a100000-0000-4000-8000-000000000001-attachment.txt", "type": "text/plain"}],
 }
 
 
@@ -36,9 +36,9 @@ def _reports(root: Path, body: str) -> None:
 
 def _allure(d: Path) -> Path:
     d.mkdir(parents=True, exist_ok=True)
-    (d / "r1-result.json").write_text(json.dumps(RESULT, ensure_ascii=False),
+    (d / "0e100000-0000-4000-8000-000000000001-result.json").write_text(json.dumps(RESULT, ensure_ascii=False),
                                       encoding="utf-8")
-    (d / "a1-attachment.txt").write_text("тело ответа", encoding="utf-8")
+    (d / "0a100000-0000-4000-8000-000000000001-attachment.txt").write_text("тело ответа", encoding="utf-8")
     return d
 
 
@@ -204,15 +204,15 @@ def test_test_card_and_attachment_come_from_the_configured_dir(small_root, tmp_p
     _allure(tmp_path / "ci" / "allure")
     _reports(small_root, f"  allure: {(tmp_path / 'ci' / 'allure').as_posix()}\n")
     c = make_client(small_root)
-    assert c.get("/api/test", params={"file": "r1-result.json"}).status_code == 200
-    r = c.get("/api/attachment/a1-attachment.txt")
+    assert c.get("/api/test", params={"file": "0e100000-0000-4000-8000-000000000001-result.json"}).status_code == 200
+    r = c.get("/api/attachment/0a100000-0000-4000-8000-000000000001-attachment.txt")
     assert r.status_code == 200 and r.json()["text"] == "тело ответа"
 
 
 def test_bad_allure_value_gives_404_not_500(small_root):
     _reports(small_root, "  allure: 7\n")
     c = make_client(small_root)
-    assert c.get("/api/attachment/a1-attachment.txt").status_code == 404
+    assert c.get("/api/attachment/0a100000-0000-4000-8000-000000000001-attachment.txt").status_code == 404
 
 
 # ---------------------------------------------------------------- раннер
@@ -306,7 +306,7 @@ def test_clean_outside_the_root_touches_nothing(small_root, tmp_path):
     c = make_client(small_root, readonly=False)
     r = c.post("/api/runner/clean")
     assert r.status_code == 409 and "вне корня" in r.json()["detail"]
-    assert sorted(p.name for p in foreign.iterdir()) == ["a1-attachment.txt", "r1-result.json"]
+    assert sorted(p.name for p in foreign.iterdir()) == ["0a100000-0000-4000-8000-000000000001-attachment.txt", "0e100000-0000-4000-8000-000000000001-result.json"]
 
 
 def test_clean_never_empties_the_root_itself(small_root):
@@ -346,8 +346,8 @@ def test_export_reads_allure_at_the_configured_path(small_root, tmp_path):
     out = tmp_path / "site"
     rep = export_static(small_root, out)
     assert rep.counts.get("tests") == 1 and rep.counts.get("attachments") == 1
-    assert (out / "api" / "test" / "r1-result.json").is_file()
-    att = json.loads((out / "api" / "attachment" / "a1-attachment.txt.json")
+    assert (out / "api" / "test" / "0e100000-0000-4000-8000-000000000001-result.json").is_file()
+    att = json.loads((out / "api" / "attachment" / "0a100000-0000-4000-8000-000000000001-attachment.txt.json")
                      .read_text(encoding="utf-8"))
     assert att["text"] == "тело ответа"
 
@@ -400,43 +400,47 @@ def test_clean_in_a_directory_shared_with_the_project_removes_only_allure_files(
     """`reports.allure: tests` — каталог тестов проекта: очистка не трогает conftest.py,
     модули тестов, отчёт покрытия и подкаталоги."""
     d = _allure(small_root / "tests")
-    project = ["conftest.py", "test_orders.py", "coverage.json", "notes-attachment-list.md"]
+    project = ["conftest.py", "test_orders.py", "coverage.json", "notes-attachment-list.md",
+               # похоже на Allure, но без UUID в начале — файлы проекта
+               "expected-result.json", "conftest-attachment.py", "a1-attachment.txt"]
     for name in project:
         (d / name).write_text("# проект\n", encoding="utf-8")
-    allure = ["c1-container.json", "a2-attachment", "a3-attachment.png", "executor.json",
+    allure = ["0c100000-0000-4000-8000-000000000001-container.json", "0a200000-0000-4000-8000-000000000002-attachment", "0a300000000040008000000000000003-attachment.png", "executor.json",
               "environment.properties", "categories.json"]
     for name in allure:
         (d / name).write_text("{}", encoding="utf-8")
     (d / "sub").mkdir()
-    (d / "sub" / "x-result.json").write_text("{}", encoding="utf-8")
+    (d / "sub" / "0e900000-0000-4000-8000-000000000009-result.json").write_text("{}", encoding="utf-8")
     _reports(small_root, "  allure: tests\n")
     c = make_client(small_root, readonly=False)
     r = c.post("/api/runner/clean")
     assert r.status_code == 200 and r.json()["removed"] == 2 + len(allure)
     assert sorted(p.name for p in d.iterdir()) == sorted(project + ["sub"])
-    assert (d / "sub" / "x-result.json").is_file()
+    assert (d / "sub" / "0e900000-0000-4000-8000-000000000009-result.json").is_file()
 
 
 def _shared_root(small_root: Path) -> None:
     """`reports.allure: .`: результат лежит в корне и называет вложениями файлы корня."""
     (small_root / ".env").write_text("DB_PASSWORD=hunter2\n", encoding="utf-8")
     result = dict(RESULT, attachments=[
-        {"name": "ответ", "source": "a1-attachment.txt"},
+        {"name": "ответ", "source": "0a100000-0000-4000-8000-000000000001-attachment.txt"},
         {"name": "конфиг", "source": "atlas.yaml"},
         {"name": "окружение", "source": ".env"},
+        {"name": "модуль", "source": "conftest-attachment.py"},
     ])
-    (small_root / "r1-result.json").write_text(json.dumps(result, ensure_ascii=False),
+    (small_root / "0e100000-0000-4000-8000-000000000001-result.json").write_text(json.dumps(result, ensure_ascii=False),
                                                encoding="utf-8")
-    (small_root / "a1-attachment.txt").write_text("тело ответа", encoding="utf-8")
-    (small_root / "z9-attachment.txt").write_text("никем не назван", encoding="utf-8")
+    (small_root / "0a100000-0000-4000-8000-000000000001-attachment.txt").write_text("тело ответа", encoding="utf-8")
+    (small_root / "0a900000-0000-4000-8000-000000000009-attachment.txt").write_text("никем не назван", encoding="utf-8")
     _reports(small_root, "  allure: .\n")
 
 
 def test_attachment_is_served_only_if_a_test_names_it_as_an_allure_attachment(small_root):
     _shared_root(small_root)
     c = make_client(small_root)
-    assert c.get("/api/attachment/a1-attachment.txt").json()["text"] == "тело ответа"
-    for name in ("atlas.yaml", ".env", "z9-attachment.txt", "coverage.json"):
+    assert c.get("/api/attachment/0a100000-0000-4000-8000-000000000001-attachment.txt").json()["text"] == "тело ответа"
+    (small_root / "conftest-attachment.py").write_text("SECRET = 1\n", encoding="utf-8")
+    for name in ("atlas.yaml", ".env", "conftest-attachment.py", "0a900000-0000-4000-8000-000000000009-attachment.txt", "coverage.json"):
         assert c.get(f"/api/attachment/{name}").status_code == 404, name
 
 
@@ -448,7 +452,7 @@ def test_export_takes_only_named_allure_attachments(small_root, tmp_path):
     rep = export_static(small_root, out)
     assert rep.counts.get("attachments") == 1
     names = sorted(p.name for p in (out / "api" / "attachment").iterdir())
-    assert names == ["a1-attachment.txt.json"]
+    assert names == ["0a100000-0000-4000-8000-000000000001-attachment.txt.json"]
     assert not any("hunter2" in p.read_text(encoding="utf-8", errors="replace")
                    for p in out.rglob("*") if p.is_file())
     assert any("atlas.yaml" in s and "не вложение Allure" in s for s in rep.skipped)
@@ -485,4 +489,4 @@ def test_clean_refuses_a_default_dir_that_links_outside(small_root, tmp_path):
     c = make_client(small_root, readonly=False)
     r = c.post("/api/runner/clean")
     assert r.status_code == 409 and "вне корня" in r.json()["detail"]
-    assert sorted(p.name for p in foreign.iterdir()) == ["a1-attachment.txt", "r1-result.json"]
+    assert sorted(p.name for p in foreign.iterdir()) == ["0a100000-0000-4000-8000-000000000001-attachment.txt", "0e100000-0000-4000-8000-000000000001-result.json"]
