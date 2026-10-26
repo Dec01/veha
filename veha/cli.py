@@ -3,18 +3,22 @@
     veha demo [--port 8770] [--no-browser]
     veha serve --root <каталог> [--port 8770] [--no-browser]
                [--system S --env E] [--allow-run]
+               [--host 127.0.0.1] [--allowed-host ИМЯ[:ПОРТ] ...]
     veha export-static --root <каталог> --out <каталог> [--system S --env E]
     veha init [--root <каталог проекта>] [--system S] [--env E]
 
-Сервер слушает только 127.0.0.1: аутентификации во вебморде пока нет, а показывает она
-сведённый граф всей тестируемой системы.
+Сервер слушает 127.0.0.1: аутентификации во вебморде пока нет, а показывает она
+сведённый граф всей тестируемой системы. Другой адрес (`--host`, нужен внутри
+контейнера) — только литералом IPv4 и с предупреждением.
 """
 
 from __future__ import annotations
 
 import argparse
 import atexit
+import ipaddress
 import os
+import re
 import sys
 import threading
 from pathlib import Path
@@ -25,6 +29,13 @@ from partest_atlas.artifacts import DEFAULT_SCOPE_KEY, Scope
 from veha import __version__, scaffold
 from veha.core.sources import valid_segment
 from veha.listen import HOST, bind_socket
+
+#: Дополнительные значения `Host` из окружения — через запятую, как `--allowed-host`.
+ALLOWED_HOSTS_ENV = "VEHA_ALLOWED_HOSTS"
+#: Имя узла в `--allowed-host`: метки DNS через точку или литерал IPv4. Без `*`: шаблон
+#: вернул бы DNS rebinding, от которого список и защищает.
+_HOST_NAME_RE = re.compile(r"^(?=.{1,253}\Z)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?"
+                           r"(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*\Z")
 
 
 class ScopeError(ValueError):
@@ -123,8 +134,19 @@ def serve(args: argparse.Namespace) -> int:
         print(f"область: {exc}", file=sys.stderr)
         return 2
 
+    try:
+        extra = allowed_hosts_from(args.allowed_host, os.getenv(ALLOWED_HOSTS_ENV, ""),
+                                   args.port)
+    except argparse.ArgumentTypeError as exc:
+        print(f"{ALLOWED_HOSTS_ENV}: {exc}", file=sys.stderr)
+        return 2
+    if not ipaddress.ip_address(args.host).is_loopback:
+        print(f"! слушаю {args.host}:{args.port} — не только loopback. Входа в вебморду "
+              f"нет: любой, кто дотянется до этого адреса, увидит граф и логи. Наружу — "
+              f"только за своей сетью (контейнер с портом на 127.0.0.1 хоста, VPN).",
+              file=sys.stderr)
     return _run(root, scope=scope, allow_run=args.allow_run, port=args.port,
-                no_browser=args.no_browser)
+                no_browser=args.no_browser, host=args.host, allowed_hosts=extra)
 
 
 def demo(args: argparse.Namespace) -> int:
@@ -148,30 +170,39 @@ def demo(args: argparse.Namespace) -> int:
 
 
 def _run(root: Path, *, scope: Optional[Scope], allow_run: bool, port: int,
-         no_browser: bool, note: str = "") -> int:
+         no_browser: bool, note: str = "", host: str = HOST,
+         allowed_hosts: Optional[List[str]] = None) -> int:
     try:
-        sock = bind_socket(port)
+        sock = bind_socket(port, host)
     except OSError as exc:
-        print(f"порт {port} на {HOST} занят или недоступен ({exc.strerror or exc}); "
+        print(f"порт {port} на {host} занят или недоступен ({exc.strerror or exc}); "
               f"укажите другой: --port N", file=sys.stderr)
         return 2
     try:
         return _run_bound(root, sock, scope=scope, allow_run=allow_run, port=port,
-                          no_browser=no_browser, note=note)
+                          no_browser=no_browser, note=note, host=host,
+                          allowed_hosts=allowed_hosts or [])
     finally:
         sock.close()
 
 
 def _run_bound(root: Path, sock, *, scope: Optional[Scope], allow_run: bool,
-               port: int, no_browser: bool, note: str) -> int:
+               port: int, no_browser: bool, note: str, host: str = HOST,
+               allowed_hosts: Optional[List[str]] = None) -> int:
     from veha.viz.app import create_app  # noqa: PLC0415 — тяжёлый импорт нужен серверу
 
-    app = create_app(root, scope=scope, readonly=not allow_run, port=port)
+    app = create_app(root, scope=scope, readonly=not allow_run, port=port,
+                     allowed_hosts=allowed_hosts or [])
     # Запасной путь к остановке дерева процессов, если lifespan не отработал
     # (жёсткий выход интерпретатора): прогон не должен пережить сервер.
     atexit.register(app.state.veha.shutdown)
     url = f"http://{HOST}:{port}"
     print(f"Веха {__version__} → {url}" + (f"  ({note})" if note else ""))
+    if host != HOST:
+        print(f"  слушает {host}:{port}")
+    extra = sorted(app.state.allowed_hosts - _default_hosts(port))
+    if extra:
+        print("  Host, кроме loopback: " + ", ".join(extra))
     print(f"  корень {root}")
     print("  режим: " + ("запуск прогонов разрешён" if allow_run else "только просмотр"))
     _report(app.state.veha.graph(refresh=True), root, cfg=app.state.veha.cfg)
@@ -182,8 +213,14 @@ def _run_bound(root: Path, sock, *, scope: Optional[Scope], allow_run: bool,
               "не будет")
     # Браузер — только когда сервер действительно поднялся (startup uvicorn прошёл).
     opener = None if no_browser else (lambda: _open_browser(url))
-    serve_app(app, port, sock=sock, on_started=opener)
+    serve_app(app, port, sock=sock, on_started=opener, host=host)
     return 0
+
+
+def _default_hosts(port: int) -> set:
+    from veha.viz.app import default_hosts  # noqa: PLC0415
+
+    return default_hosts(port)
 
 
 def _open_browser(url: str) -> None:
@@ -285,7 +322,7 @@ def init(args: argparse.Namespace) -> int:
 
 
 def serve_app(app, port: int, *, sock: Optional[Any] = None,
-              on_started: Optional[Callable[[], None]] = None) -> None:
+              on_started: Optional[Callable[[], None]] = None, host: str = HOST) -> None:
     """Запустить uvicorn так, чтобы сигнал остановки сначала убивал деревья процессов.
 
     uvicorn на SIGINT/SIGTERM (и SIGBREAK на Windows) ставит флаг выхода и ждёт, пока
@@ -297,10 +334,12 @@ def serve_app(app, port: int, *, sock: Optional[Any] = None,
     *sock* — уже занятый порт (:func:`bind_socket`); *on_started* вызывается, когда
     сервер принял сокет и прошёл startup.
     """
-    make_server(app, port, on_started=on_started).run(sockets=[sock] if sock else None)
+    make_server(app, port, on_started=on_started, host=host).run(
+        sockets=[sock] if sock else None)
 
 
-def make_server(app, port: int, on_started: Optional[Callable[[], None]] = None):
+def make_server(app, port: int, on_started: Optional[Callable[[], None]] = None,
+                host: str = HOST):
     """uvicorn.Server, у которого выход по сигналу сначала убивает деревья процессов."""
     import uvicorn  # noqa: PLC0415
 
@@ -315,7 +354,50 @@ def make_server(app, port: int, on_started: Optional[Callable[[], None]] = None)
             threading.Thread(target=app.state.veha.shutdown, daemon=True).start()
             super().handle_exit(sig, frame)
 
-    return VehaServer(uvicorn.Config(app, host=HOST, port=port, log_level="warning"))
+    return VehaServer(uvicorn.Config(app, host=host, port=port, log_level="warning"))
+
+
+def listen_address(text: str) -> str:
+    """Адрес для `--host`: литерал IPv4. Имя узла не принимается — его разрешение было бы
+    обращением к DNS; IPv6 — не поддержан (сокет `AF_INET`)."""
+    try:
+        addr = ipaddress.ip_address(text.strip())
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            f"{text!r}: ожидался адрес IPv4, например 127.0.0.1 или 0.0.0.0 (имя узла не "
+            f"принимается — его пришлось бы разрешать через DNS)") from None
+    if addr.version != 4:
+        raise argparse.ArgumentTypeError(f"{text!r}: IPv6 не поддержан, нужен адрес IPv4")
+    return str(addr)
+
+
+def allowed_host(text: str, port: Optional[int] = None) -> str:
+    """Значение `Host` для `--allowed-host`: `имя` или `имя:порт`, в нижнем регистре.
+    Без порта — порт сервера (*port*); `None` — оставить как есть, порт добавят позже."""
+    value = text.strip().lower()
+    name, sep, tail = value.rpartition(":")
+    if not sep:
+        name, tail = value, ""
+    if tail:
+        try:
+            number = int(tail)
+        except ValueError:
+            raise argparse.ArgumentTypeError(f"{text!r}: порт не число") from None
+        if not 1 <= number <= 65535:
+            raise argparse.ArgumentTypeError(f"{text!r}: порт вне 1..65535")
+    if not _HOST_NAME_RE.match(name):
+        raise argparse.ArgumentTypeError(
+            f"{text!r}: ожидалось имя узла или адрес IPv4, возможно с :порт; шаблоны "
+            f"(`*`) не принимаются")
+    if tail:
+        return f"{name}:{int(tail)}"
+    return name if port is None else f"{name}:{port}"
+
+
+def allowed_hosts_from(flags: Optional[List[str]], env_value: str, port: int) -> List[str]:
+    """Дополнительные `Host` из ключей и из `VEHA_ALLOWED_HOSTS` (через запятую)."""
+    raw = list(flags or []) + [x for x in env_value.split(",") if x.strip()]
+    return sorted({allowed_host(x, port) for x in raw})
 
 
 def port_number(text: str) -> int:
@@ -351,7 +433,16 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--root", required=True,
                    help="корень данных: atlas.yaml, atlas/, coverage.json, allure-results/ "
                         "(пути отчётов — раздел reports в atlas.yaml)")
-    s.add_argument("--port", type=port_number, default=8770, help="порт на 127.0.0.1, 1..65535")
+    s.add_argument("--port", type=port_number, default=8770, help="порт, 1..65535")
+    s.add_argument("--host", type=listen_address, default=HOST,
+                   help="адрес IPv4, на котором слушать (по умолчанию 127.0.0.1). Другой "
+                        "адрес — для контейнера: входа в вебморду нет, наружу только за "
+                        "своей сетью")
+    s.add_argument("--allowed-host", action="append", type=lambda t: allowed_host(t),
+                   metavar="ИМЯ[:ПОРТ]",
+                   help="ещё одно допустимое значение заголовка Host (повторяемый; также "
+                        f"{ALLOWED_HOSTS_ENV} через запятую). Без порта — порт сервера. "
+                        "127.0.0.1 и localhost разрешены всегда")
     s.add_argument("--no-browser", action="store_true", help="не открывать браузер")
     s.add_argument("--system", default="", help="система (по умолчанию — ATLAS_SYSTEM)")
     s.add_argument("--env", default="", help="контур (по умолчанию — ATLAS_ENV)")

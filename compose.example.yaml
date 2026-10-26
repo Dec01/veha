@@ -1,0 +1,34 @@
+# Пример: Веха над каталогом проекта в контейнере.
+#
+#   VEHA_PROJECT=/путь/к/проекту docker compose -f compose.example.yaml up --build
+#
+# Каталог проекта (корень с atlas.yaml) подключён только на чтение. Пути в atlas.yaml —
+# относительные внутри корня: абсолютных путей хоста в контейнере нет (`veha init` так и
+# пишет). Порт — только на 127.0.0.1 хоста: входа во вебморду нет, и наружу без своей
+# сети её не выставляют.
+
+services:
+  veha:
+    build: .
+    image: veha:local
+    ports:
+      - "127.0.0.1:8770:8770"
+    volumes:
+      - "${VEHA_PROJECT:-./project}:/data:ro"
+    environment:
+      # Host, кроме 127.0.0.1:8770 и localhost:8770: например, если порт хоста другой —
+      # "localhost:9000" при ports "127.0.0.1:9000:8770". Через запятую, без шаблонов.
+      VEHA_ALLOWED_HOSTS: ""
+      # Область, если на диске их несколько: как ATLAS_SYSTEM/ATLAS_ENV у агента.
+      # ATLAS_SYSTEM: "shop"
+      # ATLAS_ENV: "stage"
+    # Сервер в режиме просмотра ничего не пишет — файловая система контейнера тоже
+    # только на чтение, привилегий нет.
+    # Сервер работает под uid 10001. На Linux файлы проекта должны читаться «прочими»
+    # (atlas.yaml от `veha init` — 0666 & ~umask, обычно 0644; каталоги — с o+x). Если
+    # каталог проекта закрыт (0700), запускайте под своим uid:
+    # user: "${UID}:${GID}"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped

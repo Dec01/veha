@@ -34,7 +34,8 @@ def started(monkeypatch):
     """Приложение, которое `veha demo` отдал бы uvicorn, и порт."""
     seen = {}
 
-    def fake_serve(app, port, *, sock=None, on_started=None):
+    def fake_serve(app, port, *, sock=None, on_started=None, host="127.0.0.1"):
+        seen["host"] = host
         seen["app"], seen["port"] = app, port
         seen["sock"], seen["on_started"] = sock, on_started
         seen["bound"] = sock.getsockname() if sock else None

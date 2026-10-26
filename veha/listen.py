@@ -1,20 +1,24 @@
 """Слушающий сокет сервера — единственное место пакета, где есть `socket`.
 
-Только серверная сторона: занять порт на loopback и отдать сокет uvicorn. Исходящих
-соединений здесь нет и быть не может — клиентских вызовов в модуле не должно быть ни
-одного, это держит `tests/test_no_egress.py`.
+Только серверная сторона: занять порт и отдать сокет uvicorn. Исходящих соединений здесь
+нет и быть не может — клиентских вызовов в модуле не должно быть ни одного, это держит
+`tests/test_no_egress.py`.
+
+Адрес — loopback по умолчанию. Другой адрес (`veha serve --host`, нужен внутри
+контейнера) приходит уже проверенным литералом IPv4 (`veha.cli.listen_address`): имя
+узла сюда не попадает, потому что его разрешение — обращение к DNS.
 """
 
 from __future__ import annotations
 
 import socket
 
-#: Аутентификации во вебморде нет — слушаем только loopback.
+#: Аутентификации во вебморде нет — по умолчанию слушаем только loopback.
 HOST = "127.0.0.1"
 
 
-def bind_socket(port: int) -> socket.socket:
-    """Занять порт на loopback сейчас, до баннера и до uvicorn.
+def bind_socket(port: int, host: str = HOST) -> socket.socket:
+    """Занять порт на *host* сейчас, до баннера и до uvicorn.
 
     Занятый порт должен выясняться раньше, чем напечатан адрес и открыт браузер: иначе
     браузер откроет чужой процесс на этом порту. Исключительное владение — потому что
@@ -30,7 +34,7 @@ def bind_socket(port: int) -> socket.socket:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
         else:                                                  # POSIX: TIME_WAIT не мешает
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind((HOST, port))
+        sock.bind((host, port))
     except OSError:
         sock.close()
         raise

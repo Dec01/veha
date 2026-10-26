@@ -2,7 +2,7 @@
 title: Статус «Вехи»
 status: current
 verified: 2026-10-26
-sources: [README.md, pyproject.toml, CHANGELOG.md, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in, veha/scaffold.py, tests/test_init.py]
+sources: [README.md, pyproject.toml, CHANGELOG.md, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in, veha/scaffold.py, tests/test_init.py, Dockerfile, compose.example.yaml, tests/test_listen_host.py, tests/test_docker_files.py]
 audience: agent
 allow_version_literals: true
 ---
@@ -50,8 +50,9 @@ allow_version_literals: true
 - `veha/viz/app.py` — фабрика `create_app(root, scope=…, readonly=…, port=…)`, статика
   внутри пакета.
 - `veha/cli.py` — `veha serve --root <каталог> [--port] [--no-browser] [--system --env]
-  [--allow-run]`, `veha demo [--port] [--no-browser]`, `veha export-static`; слушает только
-  `127.0.0.1`. Порт — только 1..65535 (иначе сообщение и код 2); занимается до баннера (на Windows —
+  [--allow-run] [--host] [--allowed-host …]`, `veha demo [--port] [--no-browser]`,
+  `veha export-static`; слушает `127.0.0.1`, другой адрес — `--host` литералом IPv4 (имя
+  узла не разрешается — это было бы обращение к DNS) с предупреждением в stderr. Порт — только 1..65535 (иначе сообщение и код 2); занимается до баннера (на Windows —
   исключительно, `SO_EXCLUSIVEADDRUSE`), сокет явно не наследуется дочерними процессами,
   и занятый порт — это сообщение и код 2; сокет передаётся uvicorn,
   браузер открывается из его startup, то есть только у поднявшегося сервера.
@@ -73,8 +74,9 @@ ATLAS_ENV`, как у агента; имя — один сегмент `[A-Za-z0
 получают область в `ATLAS_SYSTEM/ATLAS_ENV`, чтобы плагины агента писали туда, откуда
 читает сервер.
 
-**Защита вебморды.** `Host` — только `127.0.0.1:<порт>` и `localhost:<порт>` (DNS
-rebinding); изменяющие запросы — только с того же источника (`Origin`, иначе `Referer`);
+**Защита вебморды.** `Host` — только `127.0.0.1:<порт>`, `localhost:<порт>` и точные
+значения из `--allowed-host`/`VEHA_ALLOWED_HOSTS` (`имя[:порт]`, без шаблонов; сравнение
+без учёта регистра) — DNS rebinding; изменяющие запросы — только с того же источника (`Origin`, иначе `Referer`);
 тело без `Content-Type` как JSON не разбирается (`strict_content_type`); CSP
 (`default-src 'self'`, скрипты только из файлов), `X-Frame-Options: DENY`,
 `X-Content-Type-Options: nosniff`. Ничего inline — ни скриптов, ни стилей: стиль в
@@ -401,6 +403,20 @@ Windows — причиной; неизвестный ключ раздела —
   (`container_logs.rules_from`, `schemas_from`, где он есть) — `tests/test_init.py`.
   Команды `collect` в подсказках — у partest-atlas 0.3.0, которого ещё нет.
 
+**Образ Docker** (не выпущено) — `Dockerfile`, `.dockerignore`, `compose.example.yaml`,
+[[howto/docker]]. `python:3.14-slim` (минорная закреплена аргументом `PYTHON_VERSION`),
+пакет из дерева (`pip install .`), uid 10001, `veha serve --root /data --host 0.0.0.0
+--no-browser`; ни `--allow-run`, ни pytest. Контекст сборки — разрешающим списком
+(`pyproject.toml`, `README.md`, `LICENSE`, `veha/`). Пример compose: порт
+`127.0.0.1:8770:8770`, том `:ro`, `read_only`, `cap_drop: ALL`, `no-new-privileges`.
+**Записи сервера:** в режиме просмотра — ни одной (`tests/test_listen_host.py` ловит любое
+открытие на запись, создание, переименование и удаление под корнем на всех маршрутах);
+отдельный каталог состояния образу не нужен. С `--allow-run` пишутся `runs.json` области,
+`<live.snapshot_dir>/mr_checks.json`, удаляются файлы Allure, перезапуск кладёт результаты в
+`reports.allure` — всё в корне данных, в образе этого нет. Сам образ не собирался: движок
+Docker на машине разработки выключен; текст `Dockerfile` и compose держит
+`tests/test_docker_files.py`.
+
 ## Что сервер берёт у partest-atlas
 
 Публичным интерфейсом агент объявляет **формат артефактов**, а не классы
@@ -477,7 +493,8 @@ Windows — причиной; неизвестный ключ раздела —
 - Разбора проектного документа на страницы вики (см. [[proposals]]).
 - **Нет аутентификации в вебморде.** Отмечено в `docs/architecture.md §4.6`. До установки,
   к которой ходит больше одного человека, это блокирующий пункт; пока сервер слушает
-  только loopback и отсекает чужие `Host` и источники.
+  loopback (в контейнере — `0.0.0.0` с портом только на `127.0.0.1` хоста) и отсекает
+  чужие `Host` и источники.
 - **Версии в адресах экранов снимка.** `screens/*.png` в снимке — без `?v=`, а на хостинге
   они кешируются надолго: после перерисовки экранов демо посетитель может видеть старые
   картинки (страница не падает). См. [[proposals]].

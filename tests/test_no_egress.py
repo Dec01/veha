@@ -163,8 +163,13 @@ def test_listening_module_only_listens():
     assert len(binds) == 1, "ровно один bind"
     (addr,) = binds[0].args
     assert (isinstance(addr, ast.Tuple)
-            and [getattr(e, "id", None) for e in addr.elts] == ["HOST", "port"]), \
-        "bind только на (HOST, port)"
+            and [getattr(e, "id", None) for e in addr.elts] == ["host", "port"]), \
+        "bind только на (host, port)"
+    # адрес — параметр, и по умолчанию он HOST, то есть loopback
+    (func,) = [n for n in tree.body if isinstance(n, ast.FunctionDef)
+               and n.name == "bind_socket"]
+    assert [a.arg for a in func.args.args] == ["port", "host"]
+    assert [getattr(d, "id", None) for d in func.args.defaults] == ["HOST"]
     hosts = [n.value.value for n in ast.walk(tree) if isinstance(n, ast.Assign)
              and [getattr(t, "id", None) for t in n.targets] == ["HOST"]]
     assert hosts == ["127.0.0.1"], hosts

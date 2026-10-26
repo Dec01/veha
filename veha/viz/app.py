@@ -11,7 +11,9 @@
 браузере может слать запросы на `127.0.0.1` (CSRF), а сайт с подменой DNS — читать
 ответы (DNS rebinding). Поэтому:
 
-* `Host` — только `127.0.0.1:<порт>` или `localhost:<порт>`;
+* `Host` — только `127.0.0.1:<порт>`, `localhost:<порт>` и то, что явно разрешено
+  (`veha serve --allowed-host`, `VEHA_ALLOWED_HOSTS`): адрес, под которым сервер виден
+  из-за проброса порта или обратного прокси;
 * изменяющие методы — только с того же источника (`Origin`, иначе `Referer`, если есть);
 * тело изменяющего запроса — только `application/json` (своя проверка и
   `strict_content_type` fastapi): форма с чужой страницы не обходит CORS;
@@ -30,7 +32,7 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Iterable, Optional
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, HTTPException
@@ -252,16 +254,25 @@ def _origin_of(value: str) -> str:
     return f"{parts.scheme}://{parts.netloc}" if parts.scheme and parts.netloc else ""
 
 
+def default_hosts(port: int) -> set:
+    """`Host`, на которые сервер отвечает всегда: loopback под своим портом."""
+    return {f"127.0.0.1:{port}", f"localhost:{port}"}
+
+
 def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = True,
-               port: int = DEFAULT_PORT) -> FastAPI:
+               port: int = DEFAULT_PORT, allowed_hosts: Iterable[str] = ()) -> FastAPI:
     """Приложение над корнем *root*, которое отвечает на `127.0.0.1:<port>`.
+
+    *allowed_hosts* — ещё значения `Host` (`имя:порт`, уже проверенные
+    `veha.cli.allowed_host`), под которыми сервер виден снаружи: порт, проброшенный из
+    контейнера на другой порт хоста, или имя за обратным прокси. Loopback разрешён всегда.
 
     *readonly* — показывать собранное, но не запускать процессы и ничего не записывать.
     Включён по умолчанию: над набором артефактов без тестов и без стенда кнопка
     «запустить» только вводила бы в заблуждение.
     """
     srv = Server(root, scope=scope, readonly=readonly)
-    allowed_hosts = {f"127.0.0.1:{port}", f"localhost:{port}"}
+    allowed_hosts = default_hosts(port) | {h.lower() for h in allowed_hosts}
 
     @asynccontextmanager
     async def lifespan(_app):
@@ -276,7 +287,7 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
 
     @app.middleware("http")
     async def _guard(request, call_next):
-        host = request.headers.get("host", "")
+        host = request.headers.get("host", "").lower()
         if host not in allowed_hosts:
             response = PlainTextResponse("недопустимый Host", status_code=400)
         elif request.method not in _SAFE_METHODS and not _same_origin(request, host):

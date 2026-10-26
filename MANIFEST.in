@@ -7,6 +7,9 @@ include README.md
 include CHANGELOG.md
 include LICENSE
 
+# Образ и пример compose (README, «Docker»): их разбирает tests/test_docker_files.py.
+include Dockerfile .dockerignore compose.example.yaml
+
 # Генератор демонстрационного набора и описание обхода: из sdist набор можно пересобрать.
 recursive-include demo *.py *.md
 
