@@ -455,6 +455,9 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
         # Снимок — только просмотр: прогона нет и не будет, кнопки выключены.
         runner.update({"readonly": True, "busy": False, "run": None})
         write("api/runner.json", dump(runner))
+        plugins = api["/api/plugins"]()
+        plugins["readonly"] = True
+        write("api/plugins.json", dump(plugins))
 
         manifest = {"generator": f"veha {__version__} export-static", "mode": "static",
                     **report.as_dict()}

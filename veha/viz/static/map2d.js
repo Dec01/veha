@@ -167,7 +167,9 @@ window.Map2D = (function () {
     });
     G.nodes.forEach((n) => {
       const m = n.meta || {};
-      if (m.sessionTouched || num(m.fileEvents) > 0) touched.add(n.id);
+      if (m.sessionTouched || m.runTouched || num(m.fileEvents) > 0 || num(m.runEvents) > 0) {
+        touched.add(n.id);
+      }
     });
     const col = G.collected || {};
     // нет ни одной записи агента о БД или шине — «не задели» сказать нельзя

@@ -10,8 +10,7 @@ partest 2.7.0 вынес строки `exception` из среднего (пра�
 (одна у `orders`, две — весь сервис `probes`). Среднее 75.0 по правилу 1 и 50.0 по
 правилу 2; у `probes` по правилу 2 среднего нет.
 
-Проверки проходят и с `partest-atlas` 0.2.0 (срез без `exception`/`scored`/`depth`), и
-с 0.2.1: то, что зависит от версии агента, проверяется по его `COVERAGE_KEYS`.
+Срез целиком принадлежит `partest-atlas` 0.3: Веха добавляет только частичность и opt-in.
 """
 
 from __future__ import annotations
@@ -30,8 +29,7 @@ from partest_atlas.collect import history
 from tests.conftest import REPO, artifact_path, make_client, rewrite
 
 DATA = Path(__file__).resolve().parent / "data"
-#: Агент 0.2.1 и новее переносит в срез `exception`, `scored` и `depth`.
-ATLAS_021 = "scored" in history.COVERAGE_KEYS
+NODE = shutil.which("node")
 
 
 def _doc(version: str) -> dict:
@@ -68,26 +66,9 @@ def test_snapshot_records_the_rule(small_root, version, rule, avg):
 
     snap = runner.coverage_snapshot(_cov_with(small_root, _doc(version)), suite_full=True)
     assert snap["avgRule"] == rule and snap["avg"] == avg
-    if ATLAS_021:
-        assert snap["exception"] == 3
-        if version == "2.7.0":
-            assert snap["scored"] == 3 and snap["depth"]["statusPct"] == 80.0
-
-
-def test_rule_is_recorded_even_when_the_agent_does_not(monkeypatch):
-    """Агент до 0.2.1 правила в срез не пишет — сервер берёт его из `meta` отчёта."""
-    from veha import runner
-
-    def old_agent(document):            # `coverage_snapshot` partest-atlas 0.2.0
-        summary = (document or {}).get("summary") or {}
-        return {k: summary.get(k) for k in ("avg", "full", "partial", "empty", "endpoints")
-                if k in summary}
-
-    monkeypatch.setattr(runner.history, "coverage_snapshot", old_agent)
-    assert runner.snapshot_of(_doc("2.7.0"), suite_full=True)["avgRule"] == 2
-    assert runner.snapshot_of(_doc("2.6.0"), suite_full=True)["avgRule"] == 1
-    no_meta = {k: v for k, v in _doc("2.6.0").items() if k != "meta"}
-    assert runner.snapshot_of(no_meta, suite_full=True)["avgRule"] == 1
+    assert snap["exception"] == 3
+    if version == "2.7.0":
+        assert snap["scored"] == 3 and snap["depth"]["statusPct"] == 80.0
 
 
 @pytest.mark.parametrize("meta,rule", [
@@ -96,12 +77,8 @@ def test_rule_is_recorded_even_when_the_agent_does_not(monkeypatch):
     ({"avgRule": None}, None), ([], None), ("x", None),
 ])
 def test_rule_as_written_or_unknown(meta, rule):
-    """Как у агента 0.2.1: целое — как записано, не целое и `meta` не объект —
-    неизвестно, нет ключа — 1."""
-    from veha import runner
-
-    assert runner.avg_rule_of({"meta": meta, "summary": {"avg": 1.0}}) == rule
-    assert runner.snapshot_of({"meta": meta, "summary": {"avg": 1.0}})["avgRule"] == rule
+    """Целое — как записано, не целое и `meta` не объект — неизвестно, нет ключа — 1."""
+    assert history.coverage_snapshot({"meta": meta, "summary": {"avg": 1.0}})["avgRule"] == rule
 
 
 def test_partial_run_drops_average_and_depth_shares(small_root):
@@ -113,8 +90,7 @@ def test_partial_run_drops_average_and_depth_shares(small_root):
     assert "avg" not in snap and snap["partialRun"] is True and snap["avgRule"] == 2
     depth = snap.get("depth") or {}
     assert not [k for k in depth if k.endswith("Pct")]
-    if ATLAS_021:
-        assert depth["cells"] == 5 and depth["status"] == 4
+    assert depth["cells"] == 5 and depth["status"] == 4
 
 
 @pytest.mark.parametrize("meta", [
@@ -292,16 +268,14 @@ def test_history_not_understood_is_reported_not_silent(small_root, fake_popen):
 
 
 def test_history_the_agent_refuses_is_reported(small_root, fake_popen):
-    """Файл, который сервер счёл годным, а агент записать не смог: `runs` — не список
-    записей. Агент 0.2.1 его не трогает (`UnreadableHistory` и `[]`), 0.2.0 падает до
-    записи — в обоих случаях файл цел, а прогон помечен незаписанным."""
+    """`runs` — не список записей: агент файл не трогает, а прогон помечен незаписанным."""
     c = make_client(small_root, readonly=False)
     hist = artifact_path(small_root, "runner.history")
     rewrite(hist, runs=[1, 2])
     before = hist.read_bytes()
     r = _run_and_wait(c)
     assert hist.read_bytes() == before
-    assert r["historyWrite"]["state"] == ("skipped" if ATLAS_021 else "error")
+    assert r["historyWrite"]["state"] == "skipped"
 
 
 def test_empty_return_means_skipped(small_root, fake_popen, monkeypatch):
@@ -357,7 +331,7 @@ def _js_average_source() -> str:
     return src[start:end]
 
 
-@pytest.mark.skipif(shutil.which("node") is None, reason="нет node — среднее вебморды "
+@pytest.mark.skipif(NODE is None, reason="нет node — среднее вебморды "
                                                          "сверяется только при нём")
 @pytest.mark.parametrize("version", ["2.6.0", "2.7.0"])
 def test_web_group_average_matches_partest(small_root, tmp_path, version):
@@ -380,7 +354,7 @@ def test_web_group_average_matches_partest(small_root, tmp_path, version):
         "const out = {};\n"
         "Object.keys(by).forEach((k) => { out[k] = coverageAverage(G, by[k]); });\n"
         "process.stdout.write(JSON.stringify(out));\n", encoding="utf-8")
-    run = subprocess.run(["node", str(script), str(data)], capture_output=True, text=True,
+    run = subprocess.run([NODE, str(script), str(data)], capture_output=True, text=True,
                          timeout=60)
     assert run.returncode == 0, run.stderr
     web = json.loads(run.stdout)
@@ -434,24 +408,6 @@ def test_no_exception_rows_no_rule_split():
     # счётчик не записан — правило как записано
     unknown = runner.trend_series([_run(1, 60.0, 1), _run(2, 55.0, 2)])
     assert len(unknown) == 2
-
-
-def test_exception_count_is_recorded_even_when_the_agent_does_not(monkeypatch):
-    from veha import runner
-
-    def old_agent(document):            # `coverage_snapshot` partest-atlas 0.2.0
-        summary = (document or {}).get("summary") or {}
-        return {k: summary.get(k) for k in ("avg", "full", "partial", "empty", "endpoints")
-                if k in summary}
-
-    monkeypatch.setattr(runner.history, "coverage_snapshot", old_agent)
-    old, new = _doc("2.6.0"), _doc("2.7.0")
-    for doc in (old, new):
-        doc["summary"]["exception"] = 0
-    runs = [{"startedAt": i, "suite": "full", "coverage": runner.snapshot_of(d, suite_full=True)}
-            for i, d in enumerate((old, new))]
-    assert [r["coverage"]["exception"] for r in runs] == [0, 0]
-    assert len(runner.trend_series(runs)) == 1
 
 
 def test_history_rows_name_a_rule_other_than_the_current(small_root):
@@ -538,24 +494,22 @@ def test_services_without_average_say_not_measured():
     assert "s.avgCoverage == null" in body and "не измерено" in body
 
 
-@pytest.mark.skipif(shutil.which("node") is None, reason="нет node")
+@pytest.mark.skipif(NODE is None, reason="нет node")
 @pytest.mark.parametrize("coverage,rule", [
     ({}, 1), ({"meta": {}}, 1), ({"meta": {"avgRule": 2}}, 2), ({"meta": {"avgRule": 1}}, 1),
     ({"meta": {"avgRule": 3}}, None), ({"meta": {"avgRule": "2"}}, None),
     ({"meta": None}, None), ({"meta": []}, None), ({"meta": "x"}, None),
 ])
 def test_web_rule_is_the_rule_of_the_server(tmp_path, coverage, rule):
-    """Правило в вебморде — то же, что у `veha.runner.avg_rule_of` (вебморда знает только
-    1 и 2; правило 3 сервер записал бы как есть, вебморда своё среднее не считает)."""
-    from veha import runner
-
+    """Правило в вебморде — то же, что пишет в срез владелец артефакта (вебморда знает
+    только 1 и 2; при правиле 3 своё среднее она не считает)."""
     script = tmp_path / "rule.js"
     script.write_text(_js_average_source() + "\nprocess.stdout.write(JSON.stringify("
                       f"avgRule({{coverage: {json.dumps(coverage)}}})));\n", encoding="utf-8")
-    run = subprocess.run(["node", str(script)], capture_output=True, text=True, timeout=60)
+    run = subprocess.run([NODE, str(script)], capture_output=True, text=True, timeout=60)
     assert run.returncode == 0, run.stderr
     assert json.loads(run.stdout) == rule
-    server = runner.avg_rule_of({**coverage, "summary": {}})
+    server = history.coverage_snapshot({**coverage, "summary": {"avg": 1.0}})["avgRule"]
     assert server == rule or (server == 3 and rule is None)
 
 

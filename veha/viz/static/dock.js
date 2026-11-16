@@ -31,10 +31,11 @@ const SECTIONS = [
   ['sys', 'Система', [['links', 'Связи'], ['schema', 'Схема БД'], ['services', 'Сервисы']]],
   ['req', 'Требования', [['specs', 'Требования'], ['contract', 'Контракт']]],
   ['run', 'Прогон', [['run', 'Прогон'], ['runner', 'Раннер'], ['log', 'Лог'], ['live', 'Live']]],
+  ['plugins', 'Плагины', [['plugins', 'Плагины']]],
 ];
 const TABS = SECTIONS.flatMap(([, , tabs]) => tabs);
 const sectionOf = (t) => (SECTIONS.find(([, , tabs]) => tabs.some(([k]) => k === t)) || ['cov'])[0];
-const lastTab = { cov: 'overview', sys: 'links', req: 'specs', run: 'run' };
+const lastTab = { cov: 'overview', sys: 'links', req: 'specs', run: 'run', plugins: 'plugins' };
 // для палитры команд: разделы и подразделы
 window.vehaSections = [['map', 'Карта']].concat(
   SECTIONS.flatMap(([, label, tabs]) => tabs.map(([k, l]) => [k, l === label ? l : `${label} → ${l}`])));
@@ -1117,6 +1118,15 @@ const RN = { suites: [], history: [], trend: [], trendSeries: [], run: null,
              historyState: null, historyWrite: null,
              busy: false, loaded: false, poll: 0, note: '' };
 
+const REPORT_LABELS = { not_run: 'не запущен', running: 'собирается', no_results: 'нет результатов',
+                        published: 'опубликован', failed: 'ошибка', rotation_failed: 'ошибка ротации' };
+function reportChip(report) {
+  if (!report || !report.status) return '';
+  const bad = report.status === 'failed' || report.status === 'rotation_failed';
+  const ok = report.status === 'published';
+  return `<span class="chip ${bad ? 'bad' : (ok ? 'ok' : '')}" title="${esc(report.error || '')}">Allure: ${esc(REPORT_LABELS[report.status] || report.status)}</span>`;
+}
+
 function viewRunner() {
   if (!RN.loaded) { loadRunner(); return '<div class="pad muted">читаю наборы…</div>'; }
   const OFF = window.vehaApi.isStatic;
@@ -1140,6 +1150,7 @@ function viewRunner() {
         ${r.broken ? `<span class="stat bad">broken <b>${num(r.broken)}</b></span>` : ''}
         ${r.skipped ? `<span class="stat">skipped <b>${num(r.skipped)}</b></span>` : ''}
         <span class="stat">${ms(r.wallMs)}</span>
+        ${reportChip(r.report)}
       </div>
       ${r.current ? `<div class="nodeid">сейчас: ${esc(r.current)}</div>` : ''}
       ${(r.failures || []).length ? `<div class="chips pad-b">${
@@ -1170,6 +1181,7 @@ function viewRunner() {
       <td><span class="chip ${h.failed ? 'bad' : 'ok'}">${num(h.passed)}/${num(h.total)}</span></td>
       <td class="num">${num(h.failed) || ''}</td>
       <td class="num">${ms(h.wallMs)}</td>
+      <td>${reportChip(h.report) || '<span class="muted">—</span>'}</td>
       <td class="num">${cov.partialRun
         ? `<span class="chip" title="${esc((cov.partialReasons || []).join(', '))
           || 'в тренд среднего не входит'}">частичный: ${
@@ -1207,7 +1219,7 @@ function viewRunner() {
       ${trendLine()}
       ${RN.history.length ? `<div class="tbl-wrap"><table class="tbl">
         <thead><tr><th>Когда</th><th>Набор и МР</th><th>Итог</th><th>Упало</th>
-          <th>Время</th><th>Покрытие</th><th>Стенд</th></tr></thead>
+          <th>Время</th><th>Allure</th><th>Покрытие</th><th>Стенд</th></tr></thead>
         <tbody>${hist}</tbody></table></div>`
         : '<div class="muted">прогонов ещё не было</div>'}
     </section>`;
@@ -1351,6 +1363,79 @@ async function startRun(suite, mr) {
   } catch (e) { RN.note = String(e); render(); }
 }
 
+/* -------------------------------------------------------------- плагины */
+const PL = { loaded: false, plugins: [], pending: [], readonly: true, note: '' };
+
+function viewPlugins() {
+  if (!PL.loaded) { loadPlugins(); return '<div class="pad muted">читаю плагины…</div>'; }
+  const pending = PL.pending.length ? `<div class="notes pad">Есть незавершённый прогон:
+    ${PL.pending.map((p) => `<span class="chip bad">${esc(p.run_id || 'неизвестно')} · ${esc(p.state)}</span>`).join(' ')}
+    Следующий запуск сначала выполнит проверенный recovery.</div>` : '';
+  const cards = PL.plugins.map((p) => {
+    const locked = PL.readonly || !p.editable;
+    const schema = p.settingsSchema || {};
+    const fields = Object.entries(schema).map(([key, s]) => {
+      const value = (p.settings || {})[key];
+      const common = `data-plugin-field="${esc(p.id)}" data-setting="${esc(key)}" data-kind="${esc(s.type)}"`;
+      const input = s.type === 'boolean'
+        ? `<input type="checkbox" ${common} ${value ? 'checked' : ''} ${locked ? 'disabled' : ''}>`
+        : `<input type="${s.type === 'string' ? 'text' : 'number'}" ${common}
+             value="${esc(value ?? '')}" ${s.type === 'integer' ? 'step="1"' : ''}
+             ${locked ? 'disabled' : ''}>`;
+      return `<label class="lbl">${esc(key)} ${input}</label>`;
+    }).join('');
+    const last = p.last || null;
+    return `<section class="win">
+      <h3>${esc(p.label)} <span class="chip ${p.required ? 'warn' : ''}">${p.required ? 'обязательный' : 'опциональный'}</span></h3>
+      <div class="muted">${esc(p.id)} · ${(p.stages || []).map(esc).join(', ')} · timeout ${num(p.timeout)} с</div>
+      <div class="runbar" data-css="margin-top:10px">
+        <label class="lbl"><input type="checkbox" data-plugin-enabled="${esc(p.id)}"
+          ${p.enabled ? 'checked' : ''} ${locked || p.required ? 'disabled' : ''}> включён</label>
+        ${fields}
+        ${locked ? '<span class="muted">только чтение</span>'
+          : `<button class="btn sm" data-plugin-save="${esc(p.id)}">Сохранить для будущих прогонов</button>`}
+      </div>
+      ${last ? `<div class="runbar" data-css="margin-top:10px"><span class="chip ${last.status === 'passed' ? 'ok' : 'bad'}">${esc(last.stage)} · ${esc(last.status)}</span>
+        <span class="muted">${num(last.durationMs)} мс</span></div>
+        <div>${esc(last.summary || '')}</div>
+        ${last.output ? `<details><summary>Диагностика</summary><pre class="out">${esc(last.output)}</pre></details>` : ''}`
+        : '<div class="muted" data-css="margin-top:8px">Ещё не выполнялся</div>'}
+    </section>`;
+  }).join('');
+  return `${pending}${PL.note ? `<div class="notes pad">${esc(PL.note)}</div>` : ''}
+    ${cards || '<div class="pad muted">В atlas.yaml нет раздела lifecycle_plugins.</div>'}`;
+}
+
+async function loadPlugins() {
+  PL.loaded = true;
+  try {
+    const d = await window.vehaApi.plugins();
+    PL.plugins = d.plugins || []; PL.pending = d.pending || []; PL.readonly = !!d.readonly;
+  } catch (e) { PL.note = 'не прочитать: ' + e; }
+  if (tab === 'plugins') render();
+}
+
+async function savePlugin(key) {
+  const enabled = dockBody.querySelector('[data-plugin-enabled="' + key + '"]');
+  const settings = {};
+  dockBody.querySelectorAll('[data-plugin-field]').forEach((el) => {
+    if (el.dataset.pluginField !== key) return;
+    if (el.dataset.kind === 'boolean') settings[el.dataset.setting] = el.checked;
+    else if (el.dataset.kind === 'string') settings[el.dataset.setting] = el.value;
+    else settings[el.dataset.setting] = el.value === '' ? null : Number(el.value);
+  });
+  try {
+    const r = await fetch('/api/plugins/' + encodeURIComponent(key) + '/settings', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ enabled: !!(enabled && enabled.checked), settings }),
+    });
+    const d = await r.json();
+    PL.note = r.ok ? 'Сохранено; текущий прогон не изменён.' : (d.detail || 'Не сохранено');
+    if (r.ok) { PL.plugins = d.plugins || []; PL.pending = d.pending || []; }
+  } catch (e) { PL.note = String(e); }
+  render();
+}
+
 /* ---------------------------------------------------------------- сервисы */
 function viewServices() {
   const svc = (g.coverage || {}).services || [];
@@ -1429,11 +1514,13 @@ function render() {
     matrix: viewMethod, links: viewLinks, specs: viewSpecs,
     contract: viewContract, schema: viewSchema,
     runner: viewRunner, live: viewLive, log: viewLog, run: viewRun,
-    services: viewServices }[tab])();
+    services: viewServices, plugins: viewPlugins }[tab])();
   wire();
 }
 
 function wire() {
+  dockBody.querySelectorAll('[data-plugin-save]').forEach((el) =>
+    el.addEventListener('click', () => savePlugin(el.dataset.pluginSave)));
   dockBody.querySelectorAll('[data-rmode]').forEach((el) =>
     el.addEventListener('click', () => { RS.mode = el.dataset.rmode; render(); }));
   dockBody.querySelectorAll('[data-mxmode]').forEach((el) =>

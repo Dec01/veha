@@ -15,6 +15,8 @@ import pytest
 
 from tests.conftest import make_client
 
+NODE = shutil.which("node")
+
 
 @pytest.fixture
 def null_root(small_root):
@@ -71,15 +73,17 @@ def test_overview_and_trend_show_dash_for_null():
     assert "pct(x.avg)" in dock and "${num(x.avg)}%" not in dock
 
 
-@pytest.mark.skipif(shutil.which("node") is None, reason="нет node — помощники не исполнить")
-def test_pct_helper_renders_dash_for_null():
+@pytest.mark.skipif(NODE is None, reason="нет node — помощники не исполнить")
+def test_pct_helper_renders_dash_for_null(tmp_path):
     from veha.viz.app import STATIC
 
     lines = (STATIC / "dock.js").read_text(encoding="utf-8").splitlines()
     helpers = [ln for ln in lines if ln.startswith(("const num = ", "const pct = "))]
     assert len(helpers) == 2
-    script = "\n".join(helpers) + (
-        "\nconsole.log(JSON.stringify([pct(null), pct(undefined), pct('x'), pct(66.05), pct(0)]));")
-    out = subprocess.run(["node", "-e", script], capture_output=True, text=True, timeout=30,
+    script = tmp_path / "pct.js"
+    script.write_text("\n".join(helpers) + (
+        "\nconsole.log(JSON.stringify([pct(null), pct(undefined), pct('x'), pct(66.05), pct(0)]));"),
+        encoding="utf-8")
+    out = subprocess.run([NODE, str(script)], capture_output=True, text=True, timeout=30,
                          check=True).stdout
     assert json.loads(out) == ["—", "—", "—", "66.05%", "0%"]

@@ -1,7 +1,7 @@
 ---
 title: Журнал операций над документацией
 status: current
-verified: 2026-10-26
+verified: 2026-11-16
 sources: []
 audience: maintainer
 ---
@@ -12,6 +12,48 @@ audience: maintainer
 
 Хронология: что сделано с документацией и почему. Новые записи сверху.
 Формат строки: дата · операция (ingest / update / lint / restructure) · что затронуто.
+
+## 2026-11-16 · update · кандидат 0.3 на Atlas 0.3
+
+Веха переведена на локальный Atlas 0.3: чтение, проверка и поиск областей делегированы владельцу
+формата; выбор последнего прогона и фазы окна используют `run` и `phase`. README, CHANGELOG,
+[[status]] и [[proposals]] синхронизированы, номер кандидата поднят. Полный набор —
+787 тестов; тесты в воротах пройдены за 215,0 с, линтер, Bandit и документация также пройдены.
+Проверка НЕПОЛНА: pip-audit не читает extras; настоящий Allure CLI и POSIX/nginx не проверялись.
+До зелёного прогона исправлены ссылка CHANGELOG и область в тесте переноса. Публикаций не было.
+
+## 2026-11-16 · update · безопасная линия Python
+
+По решению человека невыпущенная Веха перешла на новую безопасную линию Python: это убирает
+необходимость принимать уязвимости прежней линии Pillow и позволяет ставить исправленный выпуск.
+README, CHANGELOG, [[status]], Docker и рекомендации по digest обновлены; исторические сведения
+о предыдущем выпуске сохранены. Локальное окружение пересобрано. Повторные полные ворота —
+НЕПОЛНО: тесты, линтер, Bandit и документация пройдены; основные зависимости чисты, extras
+инструмент не проверяет. Версия не менялась.
+
+## 2026-11-16 · update · Allure и env подключены к runner
+
+README, CHANGELOG и [[status]] описывают opt-in `runner.allure`, доверенные `runner.env` и
+suite-level overrides, fresh raw, раздельные исходы pytest/Allure, OS lock и обязательный
+`after_run` после публикации. Старый проектный ingest остаётся неподключённым; настоящий Allure CLI,
+POSIX symlink и nginx не проверялись. Добавлены ссылки на `veha/allure_runner.py` и
+`tests/test_runner_allure.py`; focused-проверка — 168 passed, 3 skipped. Версия не менялась.
+
+## 2026-11-15 · update · атомарная история Allure
+
+README и [[status]] описывают `veha.allure_store.publish/recover`, раскладку на
+`system/env/suite`, перенос history через вход Allure, два снапшота, atomic latest/state,
+recovery и различие с `runner.history_limit`. Отдельно зафиксировано: runner/ingest не
+подключены, POSIX/nginx и настоящая генерация не проверялись. Добавлены ссылки на модуль и
+`tests/test_allure_store.py`; версия не менялась. После самопроверки security зафиксированы отказ
+от Windows junction/reparse points и обход отчёта без входа в связанный каталог; focused-прогон —
+30 passed, 1 skipped.
+
+## 2026-11-15 · update · lifecycle-плагины
+
+[[status]] и README описывают `lifecycle_plugins`, страницу «Плагины», JSON-контракт,
+manifest/recovery и ограничения audit identity. [[howto/docker]]: состояние `.veha/lifecycle/`
+в списке записей сервера. Добавлены ссылки на `veha/lifecycle.py` и его тесты.
 
 ## 2026-10-26 · update · Docker после ревью security
 

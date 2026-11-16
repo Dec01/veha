@@ -1,6 +1,8 @@
 __pycache__/
 *.py[cod]
 .venv/
+.venv-python310-backup/
+.venv314/
 venv/
 build/
 dist/
@@ -10,6 +12,7 @@ dist/
 .env
 
 # Артефакты и рабочие каталоги
+.veha/
 # плагин partest под pytest-xdist складывает сюда call_storage воркеров
 .partest/
 atlas/

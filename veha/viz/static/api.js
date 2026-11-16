@@ -203,6 +203,7 @@ window.vehaApi = (function () {
     },
 
     runner: () => (STATIC ? file('api/runner.json') : json('/api/runner/suites')),
+    plugins: () => (STATIC ? file('api/plugins.json') : json('/api/plugins')),
 
     /* «Live»: у сервера — опрос снимков стенда, в снимке демо — те же ответы файлом. */
     liveContainers: () => (STATIC ? file('api/live/containers.json')

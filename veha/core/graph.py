@@ -21,6 +21,7 @@ import fnmatch
 import re
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from itertools import combinations
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -62,6 +63,46 @@ def domain_of(domains: List[dict], service: Optional[str]) -> str:
 
 def depends_for(depends: List[dict], path: str) -> List[dict]:
     return [d for d in depends if fnmatch.fnmatch(path, d.get("path", ""))]
+
+
+def _latest_observation_run(records: List[dict]) -> Optional[dict]:
+    """Последняя метка `run` в записях агента; неразмеченные записи её не выдумывают.
+
+    Свежесть определяется `run.startedAt` с часовым поясом, при равенстве — порядком
+    в файле. Негодная метка остаётся в старом режиме «сумма по файлу», а не назначает
+    прогон по догадке.
+    """
+    labelled = []
+    for index, record in enumerate(records):
+        run = record.get("run")
+        if not isinstance(run, dict):
+            continue
+        ident, started = run.get("id"), run.get("startedAt")
+        if not isinstance(ident, str) or not ident or not isinstance(started, str):
+            continue
+        try:
+            parsed = datetime.fromisoformat(started[:-1] + "+00:00"
+                                            if started.endswith("Z") else started)
+            if parsed.tzinfo is None or parsed.utcoffset() is None:
+                continue
+            stamp = parsed.astimezone(timezone.utc)
+        except (ValueError, OverflowError, OSError):
+            continue
+        labelled.append((stamp, index, {"id": ident, "startedAt": started}))
+    return max(labelled, key=lambda item: (item[0], item[1]))[2] if labelled else None
+
+
+def _call_effect(record: dict) -> bool:
+    """Только вызов теста; setup/teardown и неизвестная фаза ребра не порождают."""
+    return record.get("phase") in (None, "call")
+
+
+def _in_current_run(record: dict, current_run: Optional[dict]) -> bool:
+    """Запись принадлежит последнему размеченному прогону, а не просто лежит в файле."""
+    run = record.get("run")
+    return bool(current_run) and isinstance(run, dict) \
+        and run.get("id") == current_run["id"] \
+        and run.get("startedAt") == current_run["startedAt"]
 
 
 # --------------------------------------------------------------------------
@@ -237,10 +278,11 @@ _WRITE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 #: Окно замера у агента (partest-atlas ≥ 0.2) — подготовка, вызов и уборка теста: в
 #: дельту входит и то, что записали фикстуры, а эффект фикстуры модуля или сессии
 #: приписан тесту, на подготовке или уборке которого она сработала. Эндпоинты теста
-#: сервер берёт из тела теста в Allure, фикстур в них нет, — значит, ребро может
-#: приписать эндпоинту теста запись фикстуры. Отделить её нечем: фаз запись не хранит.
-#: Поэтому подпись называет окно, а не выдаёт ребро за измеренную запись эндпоинта.
+#: У неразмеченной записи сервер берёт эндпоинты из тела теста в Allure, а фаза не
+#: записана — значит, ребро может принадлежать фикстуре, и подпись обязана это сказать.
+#: С `phase=call` замер относится именно к вызову теста.
 WINDOW_LABEL = "снято в окне теста, с фикстурами: {}"
+CALL_LABEL = "снято в вызове теста: {}"
 
 
 #: Почему запись агента не дала ни одного ребра.
@@ -293,7 +335,7 @@ def _bus_edges(ax: dict, nodes: Dict[str, Node], add,
     tables_by_test: Dict[str, List[str]] = defaultdict(list)
     for eff in ax["dbEffects"]:
         nodeid = eff.get("nodeid")
-        if not nodeid or eff.get("scope") == "session":
+        if not nodeid or eff.get("scope") == "session" or not _call_effect(eff):
             continue
         if eff.get("insert") or eff.get("update") or eff.get("delete"):
             tables_by_test[nodeid].append(eff["table"])
@@ -322,10 +364,13 @@ def _bus_edges(ax: dict, nodes: Dict[str, Node], add,
             add(Node(id=tid, label=topic, layer="bus", kind="topic",
                      meta={"observed": True}))
         meta = nodes[tid].meta
-        # Сумма по записям файла, а не число за прогон: агент дописывает прогоны в один
-        # файл, не размечая их, и схлопывает совпадающие записи. Отсюда имена `file*`.
+        # Сумма по файлу остаётся отдельно: старые записи без метки нельзя разложить
+        # по прогонам. Записи с меткой последнего прогона дают собственный замер.
         meta["fileEvents"] = int(meta.get("fileEvents") or 0) + ev["events"]
         meta["fileRecords"] = int(meta.get("fileRecords") or 0) + 1
+        if _in_current_run(ev, ax.get("currentRun")):
+            meta["runEvents"] = int(meta.get("runEvents") or 0) + ev["events"]
+            meta["runRecords"] = int(meta.get("runRecords") or 0) + 1
 
         if not ev.get("nodeid") or ev.get("scope") == "session":
             # Сессионный срез: тест за событием не стоит — не потеря. И `afterWrite` у
@@ -442,26 +487,32 @@ def _collected_edges(ax: dict, nodes: Dict[str, Node], add, tests_by_nodeid: dic
     for eff in ax["dbEffects"]:
         if not eff.get("table"):
             continue
-        # Сессионный замер относится ко всему прогону: конкретного теста, а значит и
-        # эндпоинта, за ним нет. Связь из него построить нельзя, но сам факт «прогон
-        # задел таблицу» ценен — вешаем его на таблицу.
+        # Сессионный замер не привязан к эндпоинту, но факт обращения к таблице ценен.
+        # Сумма по файлу и последний размеченный прогон — разные величины.
         if eff.get("scope") == "session" or not eff.get("nodeid"):
             tid = f"store:{eff['table']}"
             if tid not in nodes:
                 add(Node(id=tid, label=eff["table"], layer="storage", kind="table",
                          meta={"observed": True}))
             meta = nodes[tid].meta
-            # Сумма по сессионным записям файла, а не «что сделал прогон»: агент копит
-            # прогоны в одном файле без метки прогона и схлопывает совпадающие записи,
-            # поэтому разложить сумму по прогонам нельзя. Число записей — рядом, чтобы
-            # было видно, из скольких слагаемых она.
             touched = meta.setdefault("sessionTouched",
                                       {"insert": 0, "update": 0, "delete": 0, "records": 0})
             for k in ("insert", "update", "delete"):
                 touched[k] += eff[k]
             touched["records"] += 1
+            if _in_current_run(eff, ax.get("currentRun")):
+                current = meta.setdefault("runTouched", {
+                    "insert": 0, "update": 0, "delete": 0, "records": 0,
+                    "run": ax["currentRun"]})
+                for k in ("insert", "update", "delete"):
+                    current[k] += eff[k]
+                current["records"] += 1
             continue
 
+        # Записи подготовки и уборки остаются в `G.dbEffects`, но не доказывают,
+        # что эндпоинт из тела теста обращался к таблице: это эффекты фикстур.
+        if not _call_effect(eff):
+            continue
         test = tests_by_nodeid.get(eff.get("nodeid"))
         lost = _loss_of(test)
         if lost:
@@ -476,6 +527,7 @@ def _collected_edges(ax: dict, nodes: Dict[str, Node], add, tests_by_nodeid: dic
         # Дельта относится ко всему тесту, а тест обычно дёргает несколько эндпоинтов.
         # Приписывать вставку всем подряд нечестно — получался «GET пишет в таблицу».
         # Поэтому вид изменения сопоставляется с методом.
+        label = CALL_LABEL if eff.get("phase") == "call" else WINDOW_LABEL
         by_method = {
             "insert": {"POST", "PUT"},
             "update": {"PUT", "PATCH", "POST"},
@@ -493,7 +545,7 @@ def _collected_edges(ax: dict, nodes: Dict[str, Node], add, tests_by_nodeid: dic
                 if key in seen_db:
                     continue
                 seen_db.add(key)
-                db_edges.append(Edge(eid, tid, "writes", WINDOW_LABEL.format(change)))
+                db_edges.append(Edge(eid, tid, "writes", label.format(change)))
 
         # Чтение: если тест ничего не менял, а таблицу задел, это был GET.
         if not (eff.get("insert") or eff.get("update") or eff.get("delete")):
@@ -506,7 +558,7 @@ def _collected_edges(ax: dict, nodes: Dict[str, Node], add, tests_by_nodeid: dic
                 if key in seen_db:
                     continue
                 seen_db.add(key)
-                db_edges.append(Edge(eid, tid, "reads", WINDOW_LABEL.format("select")))
+                db_edges.append(Edge(eid, tid, "reads", label.format("select")))
         if not produced and loss is not None:
             loss["filtered"] += 1
     return ui_edges, db_edges
@@ -956,6 +1008,7 @@ def build(s: Sources) -> dict:
         "busFlow": bus_flow,
         "containerLogs": arts.payload("containers.logs"),
         "openapi": arts.payload("contract.openapi"),
+        "currentRun": _latest_observation_run([*db_effects, *bus_flow]),
     }
     db = {"databases": arts.payload("db.schema"),
           "stats": arts.payload("db.schema", "stats", {})}

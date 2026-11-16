@@ -1286,19 +1286,23 @@ function renderNode(d) {
   }
   if (m.note && n.kind !== 'control') out.push(`<section><p class="hint-row">${esc(m.note)}</p></section>`);
 
-  // шина: что реально прошло по топику на прогоне
-  // `fileEvents` — сумма по всем записям артефакта: агент копит прогоны в одном
-  // файле и не размечает их, поэтому это не «за прогон». Тишина считается только
-  // по позадачным записям; у сессионного среза её нет (`silentTests` не задан).
+  // шина: сумма по файлу и последний прогон с меткой `run` — разные величины.
+  // Тишина считается только по позадачным записям; у сессионного среза её нет.
   if (n.kind === 'topic' && m.fileEvents != null) {
     out.push(`<section><h3>Замеры шины</h3><div class="kv">
-      <div class="k">Событий</div><div>${recNum(m.fileEvents)}</div>
-      <div class="k">Записей</div><div>${recNum(m.fileRecords)}</div>
+      ${m.runEvents != null ? `<div class="k">Событий в последнем прогоне</div>
+        <div>${recNum(m.runEvents)}</div>
+        <div class="k">Записей последнего прогона</div><div>${recNum(m.runRecords)}</div>` : ''}
+      <div class="k">Событий по файлу</div><div>${recNum(m.fileEvents)}</div>
+      <div class="k">Записей по файлу</div><div>${recNum(m.fileRecords)}</div>
       ${m.silentTests != null ? `<div class="k">Тестов с событием в тишине</div>
         <div>${recNum(m.silentTests)}</div>` : ''}</div>
-      <p class="hint-row">Сумма по всем записям артефакта
-        <code>bus.flow</code>: агент дописывает прогоны в один файл, не размечая
-        их, поэтому это не число за прогон.
+      <p class="hint-row">Сумма по всем записям артефакта <code>bus.flow</code>
+        показана отдельно от последнего прогона.
+        ${m.runEvents != null ? `В последний прогон входят только записи с его
+        меткой <code>run</code>; прежние и неразмеченные записи в него не складываются.`
+        : `Метки <code>run</code> в этих записях нет, поэтому разложить сумму по
+        прогонам нельзя.`}
         ${m.silentTests != null ? `«Тестов с событием в тишине» — разные
         тесты, у позадачных записей которых стоит признак <code>afterWrite</code>. Стенд общий, и признак не
         доказательство.` : `Замер снят на весь прогон: кто писал после события —
@@ -1437,12 +1441,14 @@ function renderTable(n) {
       агента partest-atlas не собран или не прочитан (см. <code>/api/artifacts</code>).
       </p></section>`;
   }
-  // Позадачный замер даёт «какой тест что записал», сессионный — только
-  // «прогон задел таблицу». Смешивать их в один список нечестно: во втором
-  // случае теста за записью нет.
+  // Позадачный замер даёт «какой тест что записал», сессионный — только факт
+  // обращения к таблице. Сумма по файлу и последний размеченный прогон не смешиваются.
   const all = (G.dbEffects || []).filter((e) => e.table === t.name);
   const eff = all.filter((e) => e.scope !== 'session' && e.nodeid);
   const touched = n.meta.sessionTouched;
+  const current = n.meta.runTouched;
+  const hasPhases = eff.some((e) => !!e.phase);
+  const hasWindow = eff.some((e) => !e.phase);
   const cols = t.columns.map((c) => `<tr>
       <td>${c.pk ? '<span class="key pk">PK</span>' : ''}${
         c.fk ? '<span class="key fk">FK</span>' : ''}</td>
@@ -1463,33 +1469,45 @@ function renderTable(n) {
     </div>
     <table class="cols">${cols}</table>
   </section>
-  ${touched ? `<section><h3>Прогоны задели таблицу</h3>
+  ${current ? `<section><h3>Последний прогон задел таблицу</h3>
+    <div class="row">
+      ${recNum(current.insert) ? `<span class="chip ok">+${recNum(current.insert)}</span>` : ''}
+      ${recNum(current.update) ? `<span class="chip">~${recNum(current.update)}</span>` : ''}
+      ${recNum(current.delete) ? `<span class="chip">−${recNum(current.delete)}</span>` : ''}
+    </div>
+    <p class="hint-row">Записей с меткой последнего прогона
+      <code>${esc(current.run.id)}</code>: ${recNum(current.records)}. Прежние и
+      неразмеченные записи сюда не входят.</p>
+  </section>` : ''}
+  ${touched ? `<section><h3>Сессионные замеры по файлу</h3>
     <div class="row">
       ${recNum(touched.insert) ? `<span class="chip ok">+${recNum(touched.insert)}</span>` : ''}
       ${recNum(touched.update) ? `<span class="chip">~${recNum(touched.update)}</span>` : ''}
       ${recNum(touched.delete) ? `<span class="chip">−${recNum(touched.delete)}</span>` : ''}
     </div>
-    <p class="hint-row">Сессионный замер: известно, что прогоны меняли таблицу,
-      но не известно, какой именно тест — статистика PostgreSQL публикуется
-      пачками. Числа — сумма по ${recNum(touched.records)} сессионным записям артефакта:
-      агент копит прогоны в одном файле, не размечая их, и схлопывает совпадающие
-      записи, поэтому это не число за прогон. Точную привязку даёт запуск немногих
-      тестов без pytest-xdist, см. <code>db_effects.per_test_limit</code>.</p>
+    <p class="hint-row">Известно, что прогоны меняли таблицу, но не известно, какой
+      именно тест — статистика PostgreSQL публикуется пачками. Числа — сумма по
+      ${recNum(touched.records)} сессионным записям артефакта, а не число за прогон.
+      Точную привязку даёт запуск немногих тестов без pytest-xdist, см.
+      <code>db_effects.per_test_limit</code>.</p>
   </section>` : ''}
   ${eff.length ? `<section><h3>Что задели тесты · ${eff.length}</h3>
-    <p class="hint-row">Окно замера — подготовка, вызов и уборка теста: сюда
-      входит и запись фикстур, а фикстура модуля или сессии приписана тесту, на
-      котором сработала.</p>
+    ${hasPhases ? `<p class="hint-row">У размеченных записей фаза <code>call</code>
+      относится к вызову теста, а <code>setup</code> и <code>teardown</code> — к его
+      фикстурам. На карте связи строятся только из <code>call</code>.</p>` : ''}
+    ${hasWindow ? `<p class="hint-row">У записей без <code>phase</code> окно замера
+      включает подготовку, вызов и уборку: такая запись может принадлежать фикстуре.</p>` : ''}
     ${eff.slice(0, 8).map((e) => `<div class="test">
       <div class="tname">${esc(e.test)}</div>
       <div class="row">
         ${recNum(e.insert) ? `<span class="chip ok">+${recNum(e.insert)}</span>` : ''}
         ${recNum(e.update) ? `<span class="chip">~${recNum(e.update)}</span>` : ''}
         ${recNum(e.delete) ? `<span class="chip">−${recNum(e.delete)}</span>` : ''}
+        ${e.phase ? `<span class="chip">фаза: ${esc(e.phase)}</span>` : ''}
         ${e.shared ? '<span class="chip">стенд общий</span>' : ''}
       </div></div>`).join('')}
     ${eff.length > 8 ? `<p class="muted">и ещё ${eff.length - 8}</p>` : ''}</section>`
-    : (touched ? '' : `<section><p class="empty">Нет данных о записи. Снять
+    : (touched || current ? '' : `<section><p class="empty">Нет данных о записи. Снять
        агентом partest-atlas: <code>ATLAS_DB_EFFECTS=1 pytest</code></p></section>`)}`;
 }
 

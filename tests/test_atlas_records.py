@@ -1,9 +1,8 @@
-"""Записи агента так, как их пишет partest-atlas 0.2: окно теста `db.effects` с
-фикстурами, сессионные записи под pytest-xdist, прогоны, накопленные в одном файле.
+"""Записи partest-atlas 0.2–0.3: старые окна с фикстурами, сессионные записи под
+pytest-xdist, накопленные прогоны и новые метки `run`/`phase` в одном файле.
 
-Записи здесь собраны руками в форме сборщиков агента (`collect.db_effects.diff`,
-`collect.bus_flow.diff_offsets`): формат 0.2 тот же, что 0.1, поменялось, когда и
-какие записи пишутся."""
+Записи собраны руками в форме сборщиков (`collect.db_effects.diff`,
+`collect.bus_flow.diff_offsets`), чтобы проверить и совместимость, и новый вывод."""
 
 from __future__ import annotations
 
@@ -11,7 +10,7 @@ import json
 
 from tests.conftest import artifact_path
 from veha import runner
-from veha.core.graph import WINDOW_LABEL, build_root
+from veha.core.graph import CALL_LABEL, WINDOW_LABEL, build_root
 
 NODE = "tests/orders/test_orders.py::TestOrders::test_create"
 FULL = "tests.orders.test_orders.TestOrders#test_create"
@@ -60,6 +59,45 @@ def test_session_effects_of_several_runs_are_not_shown_as_one_run(small_root):
     meta = _node(build_root(small_root), "store:audit_log")["meta"]
     assert "runTouched" not in meta
     assert meta["sessionTouched"] == {"insert": 8, "update": 0, "delete": 1, "records": 2}
+
+
+def test_latest_labelled_run_is_separate_from_the_file_total(small_root):
+    """Последний прогон выбирается по `startedAt`, а не по порядку записей в файле."""
+    old = {"id": "old", "startedAt": "2026-11-15T23:00:00+03:00"}
+    new = {"id": "new", "startedAt": "2026-11-16T01:00:00+03:00"}
+    _records(small_root, "db.effects", [
+        {**_session_effect("audit_log", insert=5), "run": new},
+        {**_session_effect("audit_log", insert=3), "run": old},
+    ])
+    meta = _node(build_root(small_root), "store:audit_log")["meta"]
+    assert meta["sessionTouched"] == {"insert": 8, "update": 0, "delete": 0, "records": 2}
+    assert meta["runTouched"] == {
+        "insert": 5, "update": 0, "delete": 0, "records": 1, "run": new}
+
+
+def test_invalid_run_labels_do_not_invent_a_latest_run(small_root):
+    """Метка без пояса или с негодной датой остаётся только в сумме по файлу."""
+    _records(small_root, "db.effects", [
+        {**_session_effect("audit_log", insert=2),
+         "run": {"id": "naive", "startedAt": "2026-11-16T01:00:00"}},
+        {**_session_effect("audit_log", insert=3),
+         "run": {"id": "broken", "startedAt": "not-a-date"}},
+    ])
+    meta = _node(build_root(small_root), "store:audit_log")["meta"]
+    assert "runTouched" not in meta
+    assert meta["sessionTouched"]["insert"] == 5
+
+
+def test_latest_labelled_bus_run_is_separate_from_the_file_total(small_root):
+    old = {"id": "old", "startedAt": "2026-11-15T20:00:00Z"}
+    new = {"id": "new", "startedAt": "2026-11-15T21:00:00Z"}
+    _records(small_root, "bus.flow", [
+        {**_session_bus("audit.recorded", 4, False), "run": old},
+        {**_session_bus("audit.recorded", 2, False), "run": new},
+    ])
+    meta = _node(build_root(small_root), "topic:audit.recorded")["meta"]
+    assert (meta["fileEvents"], meta["fileRecords"]) == (6, 2)
+    assert (meta["runEvents"], meta["runRecords"]) == (2, 1)
 
 
 def test_session_bus_records_never_count_as_silence(small_root):
@@ -158,6 +196,35 @@ def test_write_edge_from_a_test_window_names_the_window(small_root):
     assert "фикстур" in WINDOW_LABEL and WINDOW_LABEL.startswith("снято")
 
 
+def test_only_call_phase_builds_edges_and_bus_consumers(small_root):
+    """Подготовка и уборка видны в записях, но не приписываются вызовам теста."""
+    _allure(small_root)
+    run = {"id": "current", "startedAt": "2026-11-16T01:00:00+03:00"}
+    effects = [
+        {"test": "test_create", "nodeid": NODE, "table": "fixture_seed", "insert": 1,
+         "update": 0, "delete": 0, "shared": False, "scope": "test",
+         "phase": "setup", "run": run},
+        {"test": "test_create", "nodeid": NODE, "table": "audit_log", "insert": 2,
+         "update": 0, "delete": 0, "shared": False, "scope": "test",
+         "phase": "call", "run": run},
+        {"test": "test_create", "nodeid": NODE, "table": "audit_log", "insert": 0,
+         "update": 0, "delete": 1, "shared": False, "scope": "test",
+         "phase": "teardown", "run": run},
+    ]
+    _records(small_root, "db.effects", effects)
+    _records(small_root, "bus.flow", [
+        {"test": "test_create", "nodeid": NODE, "topic": "audit.recorded", "events": 1,
+         "scope": "test", "afterWrite": True, "http": {"requests": 2, "writes": 1},
+         "run": run}])
+    g = build_root(small_root)
+    writes = [e for e in g["edges"]
+              if e["kind"] == "writes" and e["label"].startswith("снято")]
+    assert [(e["target"], e["label"]) for e in writes] == [
+        ("store:audit_log", CALL_LABEL.format("insert"))]
+    assert [e["target"] for e in g["edges"] if e["kind"] == "consumes"] == ["store:audit_log"]
+    assert [e["phase"] for e in g["dbEffects"]] == ["setup", "call", "teardown"]
+
+
 def test_trend_skips_a_report_that_counted_nothing():
     """Отчёт, который ничего не посчитал (`endpoints: 0`), — не «0 %». До partest
     2.6.0 такой отчёт выходил молча; с ним в тренде был бы рост с нуля, которого не
@@ -183,6 +250,18 @@ def test_requirement_by_table_and_uncounted_history_are_named_in_the_page():
     assert "table: ['выведено по таблице, по окну теста с фикстурами'" in atlas_js
     assert "table: ['по таблице, по окну теста с фикстурами'" in dock_js
     assert "cov.endpoints === 0" in dock_js and "не посчитано" in dock_js
+
+
+def test_latest_run_and_effect_phase_are_named_in_the_page():
+    from pathlib import Path
+
+    static = Path(__file__).resolve().parents[1] / "veha" / "viz" / "static"
+    atlas_js = static.joinpath("atlas.js").read_text(encoding="utf-8")
+    map2d_js = static.joinpath("map2d.js").read_text(encoding="utf-8")
+    assert "m.runEvents != null" in atlas_js and "m.runRecords" in atlas_js
+    assert "const current = n.meta.runTouched" in atlas_js
+    assert "фаза: ${esc(e.phase)}" in atlas_js
+    assert "m.sessionTouched || m.runTouched" in map2d_js
 
 
 def test_uncounted_last_run_does_not_become_the_current_series():

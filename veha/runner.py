@@ -29,7 +29,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 from partest_atlas.artifacts import Scope
 from partest_atlas.collect import history
 
-from veha import redact
+from veha import allure_runner, lifecycle, redact
 from veha.config import Config
 from veha.core.sources import (normalize_optin, optin_phrases, optin_record,
                                optin_signature, partial_reasons)
@@ -159,6 +159,8 @@ class Suite:
     #: Набор гоняет всё. Только такой прогон годится для тренда среднего покрытия:
     #: partest не помечает выбор по путям, а наборы раннера заданы путями.
     full: bool = False
+    #: Сырые overrides валидируются при запуске; список suites в API их не раскрывает.
+    env: Any = field(default_factory=dict)
 
 
 def suites(cfg: Config) -> List[Suite]:
@@ -171,6 +173,7 @@ def suites(cfg: Config) -> List[Suite]:
             args=list(spec.get("args") or []),
             note=spec.get("note", ""),
             full=bool(spec.get("full")),
+            env=spec.get("env", {}),
         ))
     return out
 
@@ -248,6 +251,10 @@ class RunState:
     #: отпечаток отчёта покрытия до запуска (:func:`file_signature`); `None` — файла не
     #: было. Свежесть отчёта решает сравнение с ним, а не с часами (:meth:`wrote`).
     coverage_before: Optional[Tuple[int, int, int]] = None
+    #: отдельный исход каждого lifecycle-плагина; ошибка cleanup не прячется за кодом pytest
+    plugins: List[Dict[str, Any]] = field(default_factory=list)
+    #: Opt-in состояние Allure; без runner.allure поля в API и истории нет.
+    report: Optional[Dict[str, Any]] = None
 
     def wrote(self, path: Optional[Path]) -> bool:
         """Записал ли этот прогон файл *path*: файл есть и его отпечаток не тот, что был
@@ -346,7 +353,7 @@ class RunState:
         self.xfailed, self.xpassed = counts["xfailed"], counts["xpassed"]
 
     def as_dict(self) -> Dict[str, Any]:
-        return {
+        out = {
             "id": self.id, "suite": self.suite, "label": self.label,
             "status": self.status, "statusLabel": STATUS_LABEL.get(self.status, self.status),
             "startedAt": self.started,
@@ -364,7 +371,11 @@ class RunState:
             "failures": self.failures[-60:],
             "touched": self.touched[-120:],
             "context": dict(self.context),
+            "plugins": list(self.plugins),
         }
+        if self.report is not None:
+            out["report"] = dict(self.report)
+        return out
 
 
 
@@ -470,49 +481,85 @@ def run_tree(args: List[str], *, cwd: str, env: Dict[str, str], timeout: float,
 
 
 class Runner:
-    """Один прогон за раз: тесты ходят на общий стенд.
-
-    Прогон считается идущим, пока жив процесс pytest, — не пока открыт его вывод. Внук,
-    унаследовавший пайп и переживший родителя, не держит ни замок, ни запись в истории.
-    """
+    """Один прогон за раз: pytest и lifecycle-плагины удерживают общий OS lock."""
 
     def __init__(self, cfg: Config):
         self.cfg = cfg
         self._lock = threading.Lock()
         self._proc: Optional[subprocess.Popen] = None
+        self._plugin_proc: Optional[subprocess.Popen] = None
         self._state: Optional[RunState] = None
         self._thread: Optional[threading.Thread] = None
         self._watch: Optional[threading.Thread] = None
         self._on_finish: Optional[Callable[[RunState], None]] = None
         self._stopping = False
         self._closed = False
+        self._lifecycle_lock: Optional[lifecycle.FileLock] = None
+        self._manifest: Optional[Dict[str, Any]] = None
+        self._allure: Optional[allure_runner.Settings] = None
+        self._allure_scope: Optional[Scope] = None
+        self._allure_env: Dict[str, str] = {}
 
     def close(self) -> None:
-        """Сервер останавливается: новых прогонов нет, идущий убивается с деревом.
-
-        Под тем же замком, что и запуск: прогон, стартующий в эту же секунду, либо
-        успеет зарегистрироваться и будет убит, либо не стартует вовсе.
-        """
+        """Новых прогонов нет; живой pytest или плагин убивается с process group."""
         with self._lock:
             self._closed = True
         self.stop()
 
     @property
     def busy(self) -> bool:
-        return self._proc is not None and self._proc.poll() is None
+        if self._lifecycle_lock is not None:
+            return True
+        if self._proc is not None and self._proc.poll() is None:
+            return True
+        return self._plugin_proc is not None and self._plugin_proc.poll() is None
 
     def status(self) -> Dict[str, Any]:
         st = self._state
         return {"busy": self.busy, "run": st.as_dict() if st else None}
 
+    def _remember_plugin_proc(self, proc: Optional[subprocess.Popen]) -> None:
+        self._plugin_proc = proc
+
+    def _release_lifecycle(self) -> None:
+        lock, self._lifecycle_lock = self._lifecycle_lock, None
+        if lock is not None:
+            lock.release()
+
+    def _set_report(self, report: Dict[str, Any]) -> None:
+        if self._state is not None:
+            self._state.report = report
+        if self._manifest is not None:
+            self._manifest["report_status"] = report.get("status", "not_run")
+
+    def _publish_allure(self) -> None:
+        """Генерация отделена от исхода pytest; после неё всё равно будет after_run."""
+        settings, scope, st = self._allure, self._allure_scope, self._state
+        if settings is None or scope is None or st is None:
+            return
+        self._set_report({**(st.report or {}), "status": "running"})
+
+        def generate(raw: Path, report: Path) -> None:
+            try:
+                code, _ = run_tree(
+                    [*settings.command, str(raw), "-o", str(report), "--clean"],
+                    cwd=str(self.cfg.root), env=self._allure_env, timeout=settings.timeout,
+                    on_start=self._remember_plugin_proc)
+                if code != 0:
+                    raise RuntimeError(f"Allure CLI завершился с кодом {code}")
+            finally:
+                self._remember_plugin_proc(None)
+
+        self._set_report(allure_runner.publish(
+            self.cfg, settings, scope, st.suite, generate, previous=st.report))
+
     def start(self, suite_key: str, *, scope: Scope,
               context: Optional[Dict[str, Any]] = None,
               on_finish: Optional[Callable[[RunState], None]] = None) -> RunState:
-        """Запустить набор из `runner.suites`.
+        """Запустить статический suite; required validate идёт до pytest.
 
-        Аргументы pytest берутся **только** из конфигурации: дописать их из запроса
-        значило бы отдать вебморде `-p`, `-c`, `--rootdir` и путь к любому `.py` —
-        выполнение произвольного кода на стенде.
+        Без lifecycle_plugins и runner.allure сохраняется прежний путь. Env-overrides —
+        доверенная конфигурация проекта: они не принимаются через HTTP и не попадают в API.
         """
         with self._lock:
             if self._closed:
@@ -523,31 +570,91 @@ class Runner:
             if suite is None:
                 raise ValueError(f"нет набора {suite_key}")
 
+            allure = allure_runner.load_settings(self.cfg)
+            env = runner_env(self.cfg, suite, scope)
             args = [sys.executable, "-m", "pytest", *suite.args,
                     "-v", "-p", "no:cacheprovider", "--color=no"]
-            self._state = RunState(
+            if allure is not None:
+                # Относительный путь не раскрывает расположение корня через RunState.args.
+                args += ["--alluredir", os.path.relpath(allure.results, self.cfg.root)]
+            st = RunState(
                 id=uuid.uuid4().hex[:12], suite=suite.key, label=suite.label,
                 args=args[3:], started=time.time(), context=dict(context or {}),
                 coverage_before=file_signature(self.cfg.coverage_file),
+                report={"status": "not_run"} if allure is not None else None,
             )
+            self._state = st
             self._on_finish = on_finish
             self._stopping = False
-            # построчный вывод: без него прогресс приезжает пачкой в конце
-            self._proc = subprocess.Popen(
-                args, cwd=str(self.cfg.root), env=scope_env(scope), stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT, text=True, encoding="utf-8",
-                errors="replace", bufsize=1, **popen_group_kwargs(),
-            )
+            self._allure, self._allure_scope, self._allure_env = allure, scope, env
+            enabled = lifecycle.configured(self.cfg)
+            try:
+                if enabled or allure is not None:
+                    # Allure store тоже требует одного writer даже без проектных плагинов.
+                    lock = lifecycle.FileLock(lifecycle.state_dir(self.cfg) / "runner.lock")
+                    if not lock.acquire():
+                        raise RuntimeError("прогон занят другим процессом veha — запуск запрещён")
+                    self._lifecycle_lock = lock
+                if enabled:
+                    lifecycle.recover_pending(self.cfg)
+                    selected = lifecycle.snapshots(self.cfg, suite.key)
+                    self._manifest = {
+                        "run_id": st.id, "suite": st.suite, "state": "running",
+                        "started_at": st.started,
+                        "scope": {"system": scope.system, "env": scope.env},
+                        "tests_status": "not_run", "report_status": "not_run",
+                        "plugins": selected,
+                    }
+                    lifecycle.write_manifest(self.cfg, self._manifest)
+                    results = lifecycle.run_stage(
+                        self.cfg, selected, "validate",
+                        {"run_id": st.id, "suite": st.suite, "scope": self._manifest["scope"]},
+                        on_start=self._remember_plugin_proc)
+                    st.plugins = [r.as_dict() for r in results]
+                    self._manifest["validate_results"] = st.plugins
+                    if lifecycle.stage_failed(results):
+                        st.status = "error"
+                        st.finished = time.time()
+                        st.note = "required validate не пройден — pytest не запускался"
+                        self._manifest["state"] = "validation_failed"
+                        lifecycle.write_manifest(self.cfg, self._manifest)
+                        raise RuntimeError(st.note)
+                if allure is not None:
+                    st.report.update(allure_runner.prepare(self.cfg, allure, scope, suite.key))
+                # построчный вывод: без него прогресс приезжает пачкой в конце
+                self._proc = subprocess.Popen(
+                    args, cwd=str(self.cfg.root), env=env, stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT, text=True, encoding="utf-8",
+                    errors="replace", bufsize=1, **popen_group_kwargs(),
+                )
+            except Exception as exc:
+                if st.report is not None and st.report.get("status") == "not_run":
+                    st.report = {"status": "failed", "error": type(exc).__name__}
+                if self._manifest is not None and self._manifest.get("state") == "running":
+                    self._manifest["state"] = "start_failed"
+                    self._manifest["error"] = type(exc).__name__
+                    self._manifest["report_status"] = (st.report or {}).get("status", "not_run")
+                    try:
+                        lifecycle.write_manifest(self.cfg, self._manifest)
+                    except Exception:
+                        pass
+                self._release_lifecycle()
+                if isinstance(exc, (RuntimeError, ValueError)):
+                    raise
+                raise lifecycle.LifecycleError(
+                    f"подготовка прогона не удалась: {type(exc).__name__}") from exc
             self._thread = threading.Thread(target=self._pump, daemon=True)
             self._thread.start()
             self._watch = threading.Thread(target=self._finish, daemon=True)
             self._watch.start()
-            return self._state
+            return st
 
     def stop(self) -> bool:
-        """Остановить прогон вместе со всем, что он запустил."""
-        proc = self._proc
-        if proc is None or proc.poll() is not None:
+        """Остановить живой pytest или lifecycle-плагин вместе со всем деревом."""
+        proc = self._proc if self._proc is not None and self._proc.poll() is None else None
+        if proc is None and self._plugin_proc is not None and self._plugin_proc.poll() is None:
+            proc = self._plugin_proc
+        if proc is None:
             return False
         self._stopping = True
         if self._state:
@@ -558,7 +665,7 @@ class Runner:
         return True
 
     def wait(self, timeout: Optional[float] = None) -> None:
-        """Дождаться, пока прогон завершится и запишется (для проверок)."""
+        """Дождаться, пока прогон, after_run и запись истории завершатся."""
         if self._watch is not None:
             self._watch.join(timeout)
 
@@ -573,33 +680,88 @@ class Runner:
             pass        # пайп закрыт при убийстве дерева
 
     def _finish(self) -> None:
-        """Конец прогона — смерть процесса pytest, а не конец его вывода."""
+        """Pytest → Allure → required after_run; исходы тестов и отчёта не смешиваются."""
         st, proc = self._state, self._proc
         if st is None or proc is None:
             return
-        code = proc.wait()
-        if self._thread is not None:
-            self._thread.join(PUMP_GRACE_SEC)
-        st.finished = time.time()
-        st.returncode = code
-        if self._stopping:
-            st.status = "stopped"
-        else:
-            # 1 — тесты упали, 5 — тестов не собрано: это не ошибки запуска
-            st.status = "done" if code in (0, 1, 5) else "error"
-            if st.status == "done" and not st.summary:
-                # pytest умер, не напечатав итога: pytest-timeout в режиме thread
-                # завершает процесс через os._exit(1). Это не «завершён», а «оборван»
-                st.status = "aborted"
-        if self._on_finish:
-            # Обработчик сам отвечает за то, чтобы сбой записи не потерялся (сервер
-            # показывает его в окне раннера); здесь — последний рубеж: поток наблюдения
-            # не должен умереть молча, и прогон получает пометку.
-            try:
-                self._on_finish(st)
-            except Exception as exc:
-                st.note = "; ".join(filter(None, [
-                    st.note, f"после прогона: {type(exc).__name__}"]))
+        try:
+            code = proc.wait()
+            if self._thread is not None:
+                self._thread.join(PUMP_GRACE_SEC)
+            st.returncode = code
+            if self._stopping:
+                st.status = "stopped"
+            else:
+                # 1 — тесты упали, 5 — тестов не собрано: это не ошибки запуска
+                st.status = "done" if code in (0, 1, 5) else "error"
+                if st.status == "done" and not st.summary:
+                    st.status = "aborted"
+            group_note = ""
+            if self._manifest is not None or self._allure is not None:
+                # До Allure и cleanup должны умереть не только pytest, но и его группа.
+                group_note = kill_tree(proc)
+            if self._manifest is not None:
+                self._manifest["tests_status"] = st.status
+                self._manifest["pytest_returncode"] = code
+                lifecycle.write_manifest(self.cfg, self._manifest)
+            if self._allure is not None:
+                if group_note:
+                    self._set_report({"status": "failed", "error": group_note})
+                else:
+                    try:
+                        self._publish_allure()
+                    except Exception as exc:
+                        # Ни сбой raw, ни неожиданная ошибка адаптера не отменяют cleanup.
+                        self._set_report({
+                            "status": "failed",
+                            "error": allure_runner.safe_text(self.cfg, exc),
+                        })
+            if self._manifest is not None:
+                self._manifest["report_status"] = (st.report or {}).get("status", "not_run")
+                lifecycle.write_manifest(self.cfg, self._manifest)
+                try:
+                    if group_note:
+                        raise lifecycle.LifecycleError(group_note)
+                    results = lifecycle.run_stage(
+                        self.cfg, self._manifest.get("plugins") or [], "after_run",
+                        {"run_id": st.id, "suite": st.suite, "tests_status": st.status,
+                         "report_status": self._manifest.get("report_status", "not_run"),
+                         "scope": self._manifest.get("scope") or {}},
+                        on_start=self._remember_plugin_proc)
+                    st.plugins += [r.as_dict() for r in results]
+                    self._manifest["after_run_results"] = st.plugins
+                    if lifecycle.stage_failed(results):
+                        st.status = "error"
+                        st.note = "; ".join(filter(None, [
+                            st.note, "required after_run завершился неуспешно"]))
+                except Exception as exc:
+                    st.status = "error"
+                    st.note = "; ".join(filter(None, [
+                        st.note, f"after_run: {type(exc).__name__}"]))
+            st.finished = time.time()
+            if self._on_finish:
+                try:
+                    self._on_finish(st)
+                except Exception as exc:
+                    st.note = "; ".join(filter(None, [
+                        st.note, f"после прогона: {type(exc).__name__}"]))
+            if self._manifest is not None:
+                self._manifest["state"] = "finished"
+                self._manifest["final_status"] = st.status
+                self._manifest["finished_at"] = st.finished
+                lifecycle.write_manifest(self.cfg, self._manifest)
+        except Exception as exc:
+            st.status = "error"
+            st.note = "; ".join(filter(None, [
+                st.note, f"завершение прогона: {type(exc).__name__}"]))
+            if self._manifest is not None:
+                try:
+                    self._manifest["state"] = "finish_failed"
+                    lifecycle.write_manifest(self.cfg, self._manifest)
+                except Exception:
+                    pass
+        finally:
+            self._release_lifecycle()
 
 
 def file_signature(path: Optional[Path]) -> Optional[Tuple[int, int, int]]:
@@ -617,14 +779,46 @@ def file_signature(path: Optional[Path]) -> Optional[Tuple[int, int, int]]:
     return (st.st_mtime_ns, st.st_size, st.st_ino)
 
 
-def scope_env(scope: Scope) -> Dict[str, str]:
+_ENV_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def runner_env(cfg: Config, suite: Suite, scope: Scope) -> Dict[str, str]:
+    """Окружение pytest с доверенными overrides, но без их значений в состоянии/API."""
+    merged: Dict[str, Optional[str]] = {}
+    for raw, where in ((cfg.section("runner").get("env"), "runner.env"),
+                       (suite.env, f"runner.suites.{suite.key}.env")):
+        if raw is None:
+            continue
+        if not isinstance(raw, dict):
+            raise ValueError(f"{where}: ожидался словарь имя: строка|null")
+        for name, value in raw.items():
+            if not isinstance(name, str) or not _ENV_NAME.fullmatch(name):
+                raise ValueError(f"{where}: негодное имя переменной окружения")
+            if value is not None and not isinstance(value, str):
+                raise ValueError(f"{where}.{name}: значение — строка или null")
+            if "\x00" in (value or ""):
+                raise ValueError(f"{where}.{name}: NUL в значении недопустим")
+            merged[name] = value
+    return scope_env(scope, merged)
+
+
+def scope_env(scope: Scope, overrides: Optional[Dict[str, Optional[str]]] = None) -> Dict[str, str]:
     """Окружение подпроцесса pytest: область та же, что показывает сервер.
 
-    Плагины агента выбирают, куда писать, по `ATLAS_SYSTEM/ATLAS_ENV`. Без этого прогон,
-    запущенный из вебморды, писал бы артефакты в область окружения сервера, а сцена
-    читала бы другую.
+    ``null`` в overrides удаляет унаследованную переменную. На Windows имена сравниваются
+    без учёта регистра, чтобы не появлялись две разные переменные в одном environment block.
+    ``ATLAS_SYSTEM/ATLAS_ENV`` назначаются последними и всегда соответствуют показываемой
+    области, что бы ни задал проект в overrides.
     """
-    return {**os.environ, "ATLAS_SYSTEM": scope.system, "ATLAS_ENV": scope.env}
+    env = dict(os.environ)
+    for name, value in (overrides or {}).items():
+        for old in list(env):
+            if old == name or (os.name == "nt" and old.upper() == name.upper()):
+                del env[old]
+        if value is not None:
+            env[name] = value
+    env["ATLAS_SYSTEM"], env["ATLAS_ENV"] = scope.system, scope.env
+    return env
 
 
 def append_history(cfg: Config, scope: Scope, entry: dict) -> List[dict]:
@@ -633,12 +827,6 @@ def append_history(cfg: Config, scope: Scope, entry: dict) -> List[dict]:
     return history.append(path, entry, limit=history_limit(cfg), scope=scope,
                           collector="veha/runner")
 
-
-#: Правило среднего у отчёта без `meta.avgRule`: так считали все выпуски partest до
-#: 2.7.0 (`exception` — как 100 % внутри среднего). С 2.7.0 — правило 2: строки
-#: `exception` вне среднего и вне `covered`. Контракт `coverage-payload`: тренд и
-#: сравнение средних — только в пределах одного правила.
-DEFAULT_AVG_RULE = 1
 
 #: Больше любого настоящего номера правила — как у `partest-atlas` (`COUNT_LIMIT`).
 _RULE_LIMIT = 10**12
@@ -651,33 +839,12 @@ def _rule(value: Any) -> Optional[int]:
     return value
 
 
-def avg_rule_of(document: Any) -> Optional[int]:
-    """Правило среднего отчёта покрытия — ``meta.avgRule`` по тому же правилу, что у
-    `partest_atlas.collect.history.coverage_snapshot` (0.2.1).
-
-    Нет ``meta`` или нет ключа — :data:`DEFAULT_AVG_RULE`: так считали все прежние
-    выпуски partest. Ключ не целым числом или ``meta`` не объект — ``None``: о правиле
-    такой отчёт ничего не говорит, и «1» было бы догадкой.
-    """
-    if not isinstance(document, dict):
-        return None
-    if "meta" not in document:
-        return DEFAULT_AVG_RULE
-    meta = document["meta"]
-    if not isinstance(meta, dict):
-        return None
-    if "avgRule" not in meta:
-        return DEFAULT_AVG_RULE
-    return _rule(meta["avgRule"])
-
-
 def snapshot_of(document: Any, *, suite_full: Optional[bool] = None) -> Dict[str, Any]:
     """Срез покрытия из прочитанного `coverage.json` — то, что сервер пишет в историю.
 
-    Сводку берёт код агента (`history.coverage_snapshot`); сервер дописывает то, что
-    знает только он, — частичность прогона, opt-in, — и правило среднего, если агент
-    его не записал (`partest-atlas` до 0.2.1): правило пишется в срез при любом
-    установленном агенте, иначе тренд не отличил бы новые прогоны от прежних.
+    Сводку, включая правило среднего и строки `exception`, берёт код владельца
+    (`history.coverage_snapshot`, partest-atlas ≥ 0.3); сервер дописывает только то,
+    что знает он, — частичность прогона и opt-in.
 
     Частичный прогон в тренд со средним не кладётся: его процент считан по части набора
     и с полным несравним. По той же причине у него убираются и доли глубины
@@ -698,15 +865,6 @@ def snapshot_of(document: Any, *, suite_full: Optional[bool] = None) -> Dict[str
     if not isinstance(document, dict):
         return {}
     snap = history.coverage_snapshot(document)
-    if snap:
-        # Как у агента 0.2.1: правило пишется, если сводка дала хоть один ключ. Число
-        # строк `exception` агент до 0.2.1 не переносил, а без него тренд не знает, что
-        # правила 1 и 2 дали одно и то же число (:func:`effective_rule`).
-        snap.setdefault("avgRule", avg_rule_of(document))
-        summary = document.get("summary")
-        exc = summary.get("exception") if isinstance(summary, dict) else None
-        if isinstance(exc, int) and not isinstance(exc, bool) and 0 <= exc <= _RULE_LIMIT:
-            snap.setdefault("exception", exc)
     meta = document.get("meta")
     meta = meta if isinstance(meta, dict) else {}
     reasons = partial_reasons(meta, suite_full=suite_full)

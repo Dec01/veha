@@ -92,10 +92,12 @@ def test_kind_must_match_the_file(small_root, server):
 
 
 def test_scope_in_file_differs_from_directory(small_root, server):
+    """Область сверяет владелец формата: файл чужого контура не идёт в граф."""
     path = artifact_path(small_root, "specs.requirements")
     rewrite(path, scope={"system": "shop", "env": "preprod"})
     st, _ = _status(server(), "specs.requirements")
-    assert st["state"] == "ok" and st["warnings"]
+    assert st["state"] == "invalid"
+    assert any("scope=shop/preprod" in p for p in st["problems"])
 
 
 def test_missing_artifact_is_a_normal_state(small_root, server):

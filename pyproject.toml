@@ -9,8 +9,8 @@ name = "veha"
 dynamic = ["version"]
 description = "Веха — сервер карты тестирования: сведение артефактов partest-atlas в граф и вебморда"
 readme = "README.md"
-# Согласовано с partest-atlas: потребитель не может требовать меньше, чем поставщик.
-requires-python = ">=3.10"
+# Безопасная линия пилота: Pillow 13 требует Python >=3.11; человек выбрал 3.14.4.
+requires-python = ">=3.14.4"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "dec01" }]
@@ -20,8 +20,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     # Только версии, на которых прогнан весь набор тестов из колеса.
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.14",
     "Framework :: FastAPI",
     "Environment :: Web Environment",
@@ -32,12 +30,10 @@ classifiers = [
 dependencies = [
     # Владелец формата артефактов. Верхняя граница — до следующей минорной: в 0.x
     # минорная версия вправе поменять формат, и узнавать об этом на установке поздно.
-    # 0.2.1 (срез с `avgRule`, `exception`, `scored`, `depth`; `append`, не трогающий
-    # непонятый файл) пол не поднимает: правило среднего сервер дописывает в срез сам
-    # из `meta.avgRule`, непонятый файл истории проверяет сам, а пропуск записи узнаёт
-    # по пустому возврату `append` — с 0.1–0.2.0 так же, как с 0.2.1. 0.2.1 нужна только
-    # генератору демонстрации (`demo/generate.py` проверяет её сам), в колесо он не входит.
-    "partest-atlas>=0.1.0,<0.3",
+    # С 0.3.0 владельцу принадлежат проверка вида и области, ключи полезной нагрузки,
+    # обнаружение областей, безопасная дописка истории и полный срез покрытия;
+    # записи db.effects/bus.flow размечаются прогоном (`run`) и фазой (`phase`).
+    "partest-atlas>=0.3,<0.4",
     # `partest.redact.mask_secret` — маскирование значения; пакет и так приезжает с
     # partest-atlas, но используется напрямую — значит, объявляется. `<3` защищает только
     # документированный `mask_secret`. Наборы чувствительных ключей `partest.redact`

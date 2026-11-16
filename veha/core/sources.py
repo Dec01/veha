@@ -8,9 +8,9 @@
 
 Артефакты агента
 ----------------
-Формат принадлежит `partest-atlas`, и копии его здесь нет. Файл читается
-`partest_atlas.artifacts.read`, проверяется `partest_atlas.artifacts.validate`, путь к
-нему строит `partest_atlas.artifacts.Scope`. Каждый вид получает **состояние**:
+Формат принадлежит `partest-atlas`, и копии его здесь нет. Чтение, проверку, поиск
+областей и пути выполняет `partest_atlas.artifacts`; сервер только переводит решение
+в свой API и добавляет советы по восстановлению. Каждый вид получает **состояние**:
 
 ``ok``       прочитан, сходится с контрактом, данные идут в граф;
 ``missing``  файла нет — законное состояние проекта, который этого ещё не собирал;
@@ -40,7 +40,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import yaml
 from partest_atlas import __version__ as ATLAS_VERSION
 from partest_atlas import artifacts
-from partest_atlas.artifacts import KINDS, SCHEMA_VERSION, Scope
+from partest_atlas.artifacts import KINDS, PAYLOAD_KEYS, SCHEMA_VERSION, Scope
 
 from veha import redact
 from veha.config import Config
@@ -54,21 +54,10 @@ from veha.config import Config
 #: версией. Тест сверяет её с агентом и падает, когда агент ушёл вперёд.
 READS_SCHEMA = frozenset({2})
 
-#: Какой ключ полезной нагрузки несёт записи у каждого вида — так, как их пишут
-#: сборщики `partest-atlas` 0.1.
-#: Пока формат агента не объявляет ключи полезной нагрузки в контракте, своя таблица:
-#: они видны только в коде сборщиков. `load.profile` не читается вовсе, пока формат не
-#: согласован с `partest-load`.
-PAYLOAD_KEY = {
-    "db.schema": "databases",
-    "db.effects": "records",
-    "bus.flow": "records",
-    "containers.logs": "containers",
-    "contract.openapi": "operations",
-    "specs.requirements": "requirements",
-    "ui.flow": "links",
-    "runner.history": "runs",
-}
+#: Ключи полезной нагрузки объявлены владельцем формата. Старое внутреннее имя
+#: остаётся псевдонимом, чтобы чтение в `ArtifactSet` не тащило вторую таблицу.
+#: `load.profile` не читается, пока формат не согласован с `partest-load`.
+PAYLOAD_KEY = PAYLOAD_KEYS
 
 #: Ключи, значения под которыми — идентификаторы соединения (таблица, топик, путь,
 #: nodeid, имя контейнера), а не текст. Маскирование их не трогает: исказить имя
@@ -79,16 +68,10 @@ IDENTIFIER_KEYS = frozenset({
     "operationId", "name", "schema", "id", "section", "source", "tags", "responses",
 })
 
-#: Один сегмент пути: имя системы или контура. Никаких разделителей и `..`: область
-#: становится каталогом, и выход за `atlas/` через неё недопустим.
-#: `\Z`, а не `$`: `$` пропускает перевод строки в конце имени, а имя области
-#: попадает в пути и в комментарий atlas.yaml.
-_SEGMENT_RE = re.compile(r"^[A-Za-z0-9._-]+\Z")
-
 
 def valid_segment(value: str) -> bool:
-    return bool(_SEGMENT_RE.match(value or "")) and value not in (".", "..") \
-        and ".." not in value
+    """Правило имени системы/контура — у владельца раскладки артефактов."""
+    return artifacts.valid_scope_part(value)
 
 
 @dataclass
@@ -139,17 +122,8 @@ HOW_SINGLE = "единственная область на диске"
 
 
 def discover_scopes(artifacts_dir: Path) -> List[Scope]:
-    """Области, для которых на диске лежит хотя бы один артефакт известного вида."""
-    known = set(KINDS.values())
-    out: List[Scope] = []
-    base = Path(artifacts_dir)
-    if not base.is_dir():
-        return out
-    for system in sorted(p for p in base.iterdir() if p.is_dir()):
-        for env in sorted(p for p in system.iterdir() if p.is_dir()):
-            if any((env / name).is_file() for name in known):
-                out.append(Scope(system=system.name, env=env.name))
-    return out
+    """Области на диске по правилам владельца раскладки артефактов."""
+    return artifacts.discover_scopes(artifacts_dir)
 
 
 def choose_scope(artifacts_dir: Path, requested: Optional[Scope] = None) -> ScopeChoice:
@@ -177,91 +151,40 @@ def choose_scope(artifacts_dir: Path, requested: Optional[Scope] = None) -> Scop
                                  "укажите --system и --env"), chosen=False)
 
 
-def _count_records(kind: str, doc: Dict[str, Any]) -> Optional[int]:
-    key = PAYLOAD_KEY.get(kind)
-    value = doc.get(key) if key else None
-    return len(value) if isinstance(value, (list, dict)) else None
-
-
 def inspect(path: Path, kind: str, scope: Scope, root: Path) -> Tuple[ArtifactStatus, Dict[str, Any]]:
-    """Прочитать один артефакт и вынести решение о нём. Данные — только при ``ok``."""
+    """Решение владельца формата + относительный путь и советы для пользователя Вехи."""
     try:
         rel = str(path.relative_to(root)).replace("\\", "/")
     except ValueError:
         rel = str(path)
-    if not path.is_file():
-        return ArtifactStatus(kind, rel, "missing"), {}
+    found = artifacts.inspect(path, kind, scope=scope)
+    status = ArtifactStatus(
+        kind, rel, found.state, problems=list(found.problems),
+        warnings=list(found.warnings), version=found.version,
+        collected_at=found.collected_at, collector=found.collector, records=found.records)
 
-    doc = artifacts.read(path)
-    if not doc:
-        # `read` снисходителен нарочно и отдаёт пустой словарь на битом файле. Файл
-        # при этом есть — значит, это не «не собирали», а «собрали и испортили».
-        return ArtifactStatus(kind, rel, "broken", problems=[
-            "файл есть, но не разбирается как JSON-объект (или пуст)"]), {}
-    if not isinstance(doc, dict):
-        return ArtifactStatus(kind, rel, "broken", problems=artifacts.validate(doc)), {}
-
-    problems = artifacts.validate(doc)
-    version = doc.get("version")
-    status = ArtifactStatus(kind, rel, "ok", version=version,
-                            collected_at=str(doc.get("collected_at") or ""),
-                            collector=str(doc.get("collector") or ""))
-
-    if isinstance(version, int) and not isinstance(version, bool) \
-            and version > max(READS_SCHEMA):
-        status.state = "newer"
-        status.problems = problems or [f"version={version} новее известной {max(READS_SCHEMA)}"]
+    if found.state == "newer":
         status.problems.append(
             f"сервер читает схему {sorted(READS_SCHEMA)} (partest-atlas {ATLAS_VERSION}); "
             "артефакт не читается — обновите сервер или пересоберите артефакт агентом "
             "той версии, которую сервер знает")
-        return status, {}
-
-    # Пока формат агента не проверяет это сам (`validate(doc, kind=…)`), сверяем здесь:
-    # `validate` знает только «вид из набора», а не «вид этого файла», и файл схемы под
-    # именем эффектов пропустит. Имя файла выводится из вида (`artifacts.filename`),
-    # значит, обратное — тоже часть контракта.
-    if doc.get("kind") in KINDS and doc.get("kind") != kind:
-        problems = [*problems, f"kind={doc.get('kind')!r} лежит в файле вида {kind!r}"]
-    if not problems and version not in READS_SCHEMA:
-        problems = [f"version={version!r}: сервер читает схему {sorted(READS_SCHEMA)}"]
-    if problems:
-        status.state = "invalid"
-        status.problems = problems
-        if isinstance(version, int) and version < min(READS_SCHEMA):
-            if kind == "runner.history":
-                # Историю не снять заново: прошлые прогоны уже прошли. Пишут её сервер
-                # (`veha/runner`) и агент (`partest-atlas/history` по умолчанию) — но
-                # оба только в новой схеме.
-                # Обратимо, пока не решено, переносить ли старую историю
-                # (proposals, «обёртка v1 → v2»): удалить её значило бы решить за
-                # пользователя.
-                status.problems.append(
-                    f"история схемы {version}: сервер её не читает, а переснять прошлые "
-                    f"прогоны нельзя — переименуйте файл в runs.v{version}.json (сервер "
-                    "его не читает), новая история начнётся с первого прогона")
-            else:
-                status.problems.append(
-                    f"артефакт версии {version}: снимите его заново агентом partest-atlas "
-                    "— править старые файлы руками не нужно")
-        return status, {}
-
-    # Пока формат агента не говорит, обязан ли `scope` в файле совпадать с каталогом, —
-    # предупреждение, не отказ.
-    doc_scope = Scope.from_doc(doc)
-    if doc_scope != scope:
-        status.warnings.append(
-            f"в файле scope={doc_scope.system}/{doc_scope.env}, а лежит он в "
-            f"{scope.system}/{scope.env}")
-    key = PAYLOAD_KEY.get(kind)
-    if key is None:
+    elif found.state == "invalid" and isinstance(found.version, int) \
+            and not isinstance(found.version, bool) and found.version < min(READS_SCHEMA):
+        if kind == "runner.history":
+            # Прошлые прогоны переснять нельзя. Старую историю не удаляем и не переносим
+            # молча: обратимое переименование оставляет решение о конвертации человеку.
+            status.problems.append(
+                f"история схемы {found.version}: сервер её не читает, а переснять прошлые "
+                f"прогоны нельзя — переименуйте файл в runs.v{found.version}.json (сервер "
+                "его не читает), новая история начнётся с первого прогона")
+        else:
+            status.problems.append(
+                f"артефакт версии {found.version}: снимите его заново агентом partest-atlas "
+                "— править старые файлы руками не нужно")
+    elif found.usable and PAYLOAD_KEY.get(kind) is None:
         status.warnings.append(
             "формат полезной нагрузки этого вида не согласован — сервер её не читает")
-    elif key not in doc:
-        status.warnings.append(
-            f"нет ключа полезной нагрузки {key!r} — заголовок сходится, но данных нет")
-    status.records = _count_records(kind, doc)
-    return status, doc
+    return status, found.doc if found.usable else {}
 
 
 def _flat_note(path: Path, base: Path) -> str:

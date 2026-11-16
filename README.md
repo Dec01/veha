@@ -5,7 +5,7 @@
 Сборка графа, эвристики соединения, сцена, показ расхождений. Управление ими (эталон,
 принятие, исключение из оценки) — следующий этап, `docs/architecture.md` §10.
 
-**Статус: alpha (0.2.2)**, что стабильно — в разделе «Статус» ниже. Лицензия — MIT.
+**Статус: alpha (0.3.0)**, что стабильно — в разделе «Статус» ниже. Лицензия — MIT.
 
 ## Быстрый старт
 
@@ -19,7 +19,7 @@ veha demo
 пакета; сервер над ним только показывает — прогоны не запускаются, на диск ничего не
 пишется. Сеть не нужна. Ключи `demo`: `--port` (по умолчанию 8770), `--no-browser`.
 
-Что смотреть и в каком порядке — [обход демонстрации на 7 шагов](https://github.com/Dec01/veha/blob/v0.2.2/demo/README.md).
+Что смотреть и в каком порядке — [обход демонстрации на 7 шагов](https://github.com/Dec01/veha/blob/v0.3.0/demo/README.md).
 Та же карта без сервера — [демо на сайте](https://partest.ru/veha/demo/).
 
 ### Свой проект
@@ -93,16 +93,16 @@ CLI), а конфликт имён на чужой машине ловится �
 сведённый граф, находки и эталон — то, чего агент не знает. FastAPI отдаёт и `/api/*`, и
 статику; отрисовка — в браузере: карта по слоям на SVG, объёмный вид на Canvas 2D; ни npm,
 ни WebGL, ни внешних шрифтов, ни единого внешнего запроса.
-Подробности и недостающая аутентификация — [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.2.2/docs/architecture.md) §4.6.
+Подробности и недостающая аутентификация — [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.3.0/docs/architecture.md) §4.6.
 
 ## Документация
 
 | Документ | О чём |
 |---|---|
-| [docs/architecture.md](https://github.com/Dec01/veha/blob/v0.2.2/docs/architecture.md) | проектный документ: модель данных, несколько систем и контуров, управление расхождениями, подключение к тестам, вебморда |
-| [docs/wiki/index.md](https://github.com/Dec01/veha/blob/v0.2.2/docs/wiki/index.md) | каталог вики: состояние, решения, спорное |
-| [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.2.2/docs/wiki/status.md) | что сделано, чего нет, известные ограничения |
-| [demo/README.md](https://github.com/Dec01/veha/blob/v0.2.2/demo/README.md) | демонстрация на вымышленных данных |
+| [docs/architecture.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/architecture.md) | проектный документ: модель данных, несколько систем и контуров, управление расхождениями, подключение к тестам, вебморда |
+| [docs/wiki/index.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/index.md) | каталог вики: состояние, решения, спорное |
+| [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/status.md) | что сделано, чего нет, известные ограничения |
+| [demo/README.md](https://github.com/Dec01/veha/blob/v0.3.0/demo/README.md) | демонстрация на вымышленных данных |
 
 ## Красные линии
 
@@ -115,7 +115,7 @@ CLI), а конфликт имён на чужой машине ловится �
 3. **В consumer group не входим.** Смещения читаются, чужие консьюмеры не задеты.
 4. **Пишем только в свой каталог.** Артефакты — в `artifacts_dir`, ничего другого в
    тестируемой системе не создаётся и не меняется (о файле отметок МР —
-   [docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.2.2/docs/wiki/proposals.md)).
+   [docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/proposals.md)).
 5. **Секреты не показываем.** Всё, что уходит в интерфейс, проходит через `redact`.
 6. **Аудит-лог обращений** к базе, шине и логам — в открытом виде, доступен тому, чью
    систему читают.
@@ -124,12 +124,12 @@ CLI), а конфликт имён на чужой машине ловится �
    эндпоинту, по таблице, по названию фичи); связь «эндпоинт — таблица» подписана окном
    теста, в котором снята, а «топик — таблица» — выводом из тишины записей. Единое поле
    `evidence` (`measured`, `inferred`, `declared`) на каждой связи — план, а не то, что
-   уже есть ([docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.2.2/docs/wiki/proposals.md)).
+   уже есть ([docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/proposals.md)).
 8. **В ядре нет домена конкретного проекта.** Всё проектное — в `atlas.yaml`.
 
 ## Установка
 
-Нужен Python ≥ 3.10. Ставьте Веху в **отдельное окружение**, а не в окружение проекта с
+Нужен Python ≥ 3.14.4. Ставьте Веху в **отдельное окружение**, а не в окружение проекта с
 тестами: у сервера свои зависимости (FastAPI, uvicorn, pydantic), и резолвер pip будет
 мирить их с пакетами проекта — проигрывает в этом обычно проект. Данные проекта сервер
 читает из каталога (`--root`), ставить его рядом с тестами незачем.
@@ -258,11 +258,117 @@ loopback без `--allow-run` (`--host 0.0.0.0` — для контейнера)
 причина видна под шапкой и при старте. Секреты (авторизация, пароли, токены, куки)
 маскируются во всём, что уходит в интерфейс: вложения, логи, разбор падений.
 
+### Окружение и атомарная история Allure в runner
+
+Доверенный `atlas.yaml` может переопределять окружение pytest на уровне всего runner или одного
+suite. Значение `null` удаляет унаследованную переменную; настройки suite имеют приоритет над
+общими. `ATLAS_SYSTEM` и `ATLAS_ENV` всегда соответствуют выбранной области и не переопределяются.
+Значения env не попадают в API, историю или lifecycle-manifest.
+
+```yaml
+runner:
+  env:
+    PROJECT_OPTIN: null       # внешний opt-in не должен незаметно менять набор
+  allure: {}                  # opt-in; без этого раздела прежнее поведение не меняется
+  suites:
+    api:
+      args: [tests/api]
+      env:
+        PROJECT_MODE: api
+```
+
+Раздел `runner.allure` подключает `veha.allure_store` к runner. Отсутствующий или YAML-null
+раздел выключен, `{}` включает умолчания: `store: .veha/allure`, `keep: 2`,
+`command: [allure, generate]`, `timeout: 300`. Команда — argv без shell; runner добавляет
+`raw, -o, report, --clean`. Raw (`reports.allure`) и store обязаны быть обычными непересекающимися
+каталогами строго внутри корня; ссылки и junction отклоняются до pytest.
+
+Перед прогоном runner повторяет незавершённую ротацию и удаляет из raw только стандартные файлы
+Allure, сохраняя проектные файлы. Затем выполняет pytest с явным `--alluredir`, останавливает его
+process group и публикует отчёт. При отсутствии `*-result.json` статус — `no_results`, генератор
+не вызывается. Состояние отчёта (`not_run`, `running`, `no_results`, `published`, `failed`,
+`rotation_failed`) видно отдельно от исхода тестов в текущем прогоне и истории. Ошибка или timeout
+Allure не меняет `returncode` pytest; required `after_run` получает итоговый `report_status` и всё
+равно выполняется. При включённом Allure общий OS lock удерживается на весь запуск, публикацию и
+required `after_run`, даже если lifecycle-плагины не настроены.
+
+Хранилище оставляет по умолчанию **два снапшота на каждый `system/env/suite`** независимо от
+`runner.history_limit`. Оно копирует `history` из предыдущего опубликованного отчёта того же набора,
+собирает новый отчёт в `.staging` на той же файловой системе и атомарно переключает относительную
+ссылку `latest`:
+
+```text
+<root>/<system>/<env>/<suite>/
+  runs/<run_id>/index.html   # сгенерированный отчёт и veha-allure.json
+  raw/<run_id>/              # копия сырых результатов
+  latest -> runs/<run_id>
+  state.json                 # опубликованные run_id, от старого к новому
+```
+
+Сбой генерации или переключения `latest` оставляет прежний отчёт и историю нетронутыми. Сбой
+удаления старого снапшота не откатывает новый: статус `rotation_failed` виден отдельно, а
+`recover()` перед следующим прогоном повторяет ротацию. Неопубликованные каталоги `runs` в историю
+не поднимаются. Старый `latest`, который является обычным каталогом, автоматически не мигрируется.
+
+Для независимого CI-адаптера остаётся публичный Python API `veha.allure_store.publish()` и
+`recover()`: хранилище принимает функцию генерации и само не запускает процессы. Проектный
+`aqa/docker/reports/ingest.sh` сознательно не подключён — в его образе нет Python. Настоящий
+Allure CLI, symlink на POSIX и раздача через nginx ещё не проверены; локальные тесты используют
+генератор-имитацию, а на Windows без права symlink — файловый адаптер `latest`.
+
+### Lifecycle-плагины
+
+Проект может зарегистрировать свои обработчики `validate`, `after_run` и `recovery` в
+`atlas.yaml`. Это код проекта, как и вызываемый Вехой pytest: сервер не знает его домен и не
+получает команду из браузера.
+
+```yaml
+lifecycle_plugins:
+  project_cleanup:
+    label: Project cleanup
+    kind: command
+    command: [python, scripts/cleanup_adapter.py]
+    cwd: .
+    stages: [validate, after_run, recovery]
+    required: true
+    timeout: 600
+    suites: [full]
+    env: [PROJECT_DSN_ENV]
+    implementation: adapter-v1
+    editable: false
+    settings:
+      mode: {type: string, default: marked}
+```
+
+`command` — argv-массив, shell не используется. `python` означает интерпретатор самого сервера;
+скрипт и `cwd` обязаны находиться внутри корня без symlink/junction. Плагин получает минимальное
+окружение и только переменные из `env`; их значения в событие и manifest не пишутся, а в выводе,
+summary и metrics маскируются даже при печати голым значением без подписи `password=…`.
+На stdin подаётся один JSON с `contract_version: 1`, `run_id`, `suite`, `stage`, `tests_status`,
+`report_status`, `scope`, `settings` и `artifacts`. Последняя непустая строка stdout обязана быть
+JSON-объектом `{"status":"passed|failed|skipped", "summary":"…", "metrics":{…}}`. Вывод и
+результат ограничиваются и проходят redaction. Ненулевой код, timeout, битый JSON и неуспешный
+required-результат видны отдельно от исхода pytest; required `validate` не пропускает запуск.
+
+Страница «Плагины» разрешает менять только enabled у необязательного плагина и scalar-настройки,
+объявленные с безопасным `default` (`string`, `integer`, `number`, `boolean`). `editable: false`
+делает всю запись read-only. Обязательный плагин нельзя отключить. Изменения атомарно пишутся в
+`.veha/lifecycle/state.json`, попадают в `audit.jsonl` и действуют только на будущие прогоны.
+Встроенной аутентификации у сервера нет: `actor` в audit обозначает канал `web-ui`, а не имя
+пользователя; персональную личность должен давать доверенный auth-слой развёртывания.
+
+До pytest Веха атомарно сохраняет `.veha/lifecycle/runs/<run_id>.json` со snapshot команд, настроек
+и SHA-256 реализации. Общий OS lock удерживается до конца required `after_run`. После сбоя сервера
+следующий запуск сначала выполняет `recovery` из snapshot. Если команда, файл адаптера,
+`implementation` или версия контракта изменились, автоматический recovery и новый прогон
+блокируются для ручного разбора. Без раздела `lifecycle_plugins` прежнее поведение и файлы состояния
+не создаются.
+
 ### Docker
 
 `Dockerfile` в корне репозитория собирает образ `veha serve --root /data` из рабочего
 дерева (`pip install .`, не с PyPI; незакоммиченное тоже уезжает — для выпуска собирайте из
-чистого клона или `git archive`) на `python:3.14-slim`. Сервер работает под
+чистого клона или `git archive`) на `python:3.14.4-slim`. Сервер работает под
 непривилегированным пользователем (uid 10001) и без `--allow-run`. pytest и allure-pytest
 в образе есть — их тянет partest; запуск наборов из вебморды закрыт не составом образа, а
 отсутствием `--allow-run` в команде и отказом `serve` сочетать его с адресом не на
@@ -293,7 +399,7 @@ VEHA_PROJECT=/путь/к/проекту docker compose -f compose.example.yaml 
   от `veha init` — `0666 & ~umask`, обычно `0644`. Закрытый каталог — `user: "${UID}:${GID}"`
   в compose.
 
-Подробно, с проверкой после запуска, — [docs/wiki/howto/docker.md](https://github.com/Dec01/veha/blob/v0.2.2/docs/wiki/howto/docker.md).
+Подробно, с проверкой после запуска, — [docs/wiki/howto/docker.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/howto/docker.md).
 
 Что сервер прочитал, а что нет и почему, печатается при старте и видно под шапкой вебморды; для
 диагностики то же отдаёт `GET /api/artifacts` — это внутренний HTTP-интерфейс вебморды,
@@ -308,7 +414,7 @@ Alpha: сервер — устанавливаемый пакет и потре�
 **Что стабильно.** Версии — [Semantic Versioning](https://semver.org/) с поправкой на
 линию `0.x`: пока она не кончилась, ломающее изменение поднимает **минорную** цифру и
 записывается в журнале изменений разделом «Сломано». Таблица — в начале
-[CHANGELOG.md](https://github.com/Dec01/veha/blob/v0.2.2/CHANGELOG.md).
+[CHANGELOG.md](https://github.com/Dec01/veha/blob/v0.3.0/CHANGELOG.md).
 
 - **Публичное** — то, на что можно опираться: команды `veha serve`, `veha demo`,
   `veha export-static`, `veha init` и их ключи; порт по умолчанию 8770; переменные `ATLAS_SYSTEM` и
@@ -319,9 +425,9 @@ Alpha: сервер — устанавливаемый пакет и потре�
   `live/mr_checks.json`.
 - **Внутреннее** — меняется в любой версии без записи в «Сломано»: импорт `veha.*`
   (кроме `veha.__version__`), HTTP-интерфейс `/api/*`, раскладка статического снимка. Подробно, с
-тем, чего нет, и с ближайшими шагами, — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.2.2/docs/wiki/status.md).
-Проектное направление дальше — этапы в [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.2.2/docs/architecture.md) §10.
+тем, чего нет, и с ближайшими шагами, — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/status.md).
+Проектное направление дальше — этапы в [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.3.0/docs/architecture.md) §10.
 
 ## Лицензия
 
-MIT — см. [LICENSE](https://github.com/Dec01/veha/blob/v0.2.2/LICENSE).
+MIT — см. [LICENSE](https://github.com/Dec01/veha/blob/v0.3.0/LICENSE).

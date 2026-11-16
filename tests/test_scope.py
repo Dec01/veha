@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import shutil
 
 import pytest
@@ -13,11 +14,17 @@ from veha.core import sources
 
 
 def _move_scope(root, system, env):
+    """Перенести область вместе с шапками: Atlas 0.3 сверяет их с каталогом."""
     src = root / "atlas" / "default" / "default"
     dst = root / "atlas" / system / env
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.move(str(src), str(dst))
     shutil.rmtree(root / "atlas" / "default", ignore_errors=True)
+    for path in dst.glob("*.json"):
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(document, dict) and isinstance(document.get("scope"), dict):
+            document["scope"] = {"system": system, "env": env}
+            path.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
 
 
 def test_no_artifacts_at_all(tmp_path):

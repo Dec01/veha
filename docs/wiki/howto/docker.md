@@ -1,7 +1,7 @@
 ---
 title: Веха в контейнере
 status: current
-verified: 2026-10-26
+verified: 2026-11-16
 sources: [Dockerfile, compose.example.yaml, .dockerignore, veha/cli.py, veha/listen.py, veha/viz/app.py, veha/config.py]
 audience: user
 # адреса 127.0.0.1 и 0.0.0.0 линтер принимает за версии
@@ -49,8 +49,8 @@ Docker обходит ufw. Входа во вебморду нет — так н
 Для установки, которую проверяют на firewall заказчика, `Dockerfile` из репозитория —
 отправная точка, а не готовый рецепт:
 
-- **закрепите базу по digest** (`FROM python:3.14-slim@sha256:…`) — тег `3.14-slim`
-  со временем указывает на другой образ;
+- **закрепите базу по digest** (`FROM python:3.14.4-slim@sha256:…`) — даже патчевый тег
+  со временем может указывать на другой образ;
 - **ставьте зависимости из списка с хэшами**: сначала `pip install --require-hashes -r
   requirements.lock` (все пакеты закреплены и с `--hash`), затем сам пакет
   `pip install --no-deps .`; список собирайте там, где вы ему доверяете, или ставьте из
@@ -112,6 +112,7 @@ curl без этих заголовков с `Host: 127.0.0.1:8770` пройдё
 | Запись | Куда | Когда |
 |---|---|---|
 | история прогонов `runner.history` | `<artifacts_dir>/<система>/<контур>/runs.json` | после прогона набора |
+| состояние, audit и manifest lifecycle-плагинов | `.veha/lifecycle/` в корне проекта | настройки и прогон с `lifecycle_plugins` |
 | отметки МР | `<live.snapshot_dir>/mr_checks.json` | отметка в окне «Live» |
 | очистка результатов Allure | файлы `<UUID>-…` в `reports.allure` | кнопка очистки |
 | результаты перезапуска кейса | `reports.allure` (пишет pytest проекта) | перезапуск кейса |

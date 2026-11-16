@@ -27,10 +27,10 @@ def _instructions(text: str):
             if ln.strip() and not ln.lstrip().startswith("#")]
 
 
-def test_dockerfile_base_is_slim_python_with_a_pinned_minor():
+def test_dockerfile_base_is_slim_python_with_a_pinned_patch():
     lines = _instructions(_dockerfile())
     arg = next(ln for ln in lines if ln.startswith("ARG PYTHON_VERSION="))
-    assert re.fullmatch(r"ARG PYTHON_VERSION=3\.\d+", arg)
+    assert arg == "ARG PYTHON_VERSION=3.14.4"
     assert "FROM python:${PYTHON_VERSION}-slim" in lines
 
 

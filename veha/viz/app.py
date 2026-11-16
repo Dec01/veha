@@ -42,7 +42,7 @@ from partest_atlas.artifacts import Scope
 from partest_atlas.collect import history as atlas_history
 from pydantic import BaseModel, ConfigDict
 
-from veha import __version__, redact
+from veha import __version__, lifecycle, redact
 from veha import config as veha_config
 from veha import runner as veha_runner
 from veha.core import graph as core_graph
@@ -92,6 +92,14 @@ class RunRequest(BaseModel):
 
 class RerunRequest(BaseModel):
     nodeid: str
+
+
+class PluginSettingsRequest(BaseModel):
+    """Только enabled и заранее объявленные settings; argv и путей здесь нет."""
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: Optional[bool] = None
+    settings: Optional[Dict[str, Any]] = None
 
 
 class Server:
@@ -582,17 +590,6 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
                 srv.live.invalidate("mrs")
             except Exception:
                 pass
-        # Пока пол partest-atlas ниже 0.2.1: `history.append` агента 0.1–0.2.0 дописывает
-        # поверх файла, которого не понял (новее схемы, битый), и уничтожает его записи;
-        # с 0.2.1 он такой файл не трогает сам. До подъёма пола файл проверяется здесь.
-        # Состояние берётся с диска сейчас, а не из закэшированного графа: файл мог
-        # поменяться за время прогона.
-        path = scope.path(srv.cfg.artifacts_dir, atlas_history.KIND)
-        hist, _ = core_sources.inspect(path, atlas_history.KIND, scope, srv.root)
-        if hist.state not in ("ok", "missing"):
-            return _history_outcome(
-                "skipped", f"файл истории не понят ({hist.state}) — прогон не записан, "
-                           "файл не тронут")
         # Предел — только целое ≥ 1 (`history_limit_checked`): с пределом < 1 агент стёр
         # бы историю. Негодное значение — предел по умолчанию и видимая пометка.
         _, limit_note = veha_runner.history_limit_checked(srv.cfg)
@@ -608,6 +605,27 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
                            "не записан, файл не тронут (причина — в выводе сервера)",
                 limit_note)
         return _history_outcome("written", note=limit_note)
+
+    @app.get("/api/plugins")
+    def plugin_state() -> dict:
+        try:
+            return {**lifecycle.public_state(srv.cfg), "readonly": srv.readonly}
+        except lifecycle.LifecycleError as exc:
+            raise HTTPException(409, str(exc))
+
+    @app.post("/api/plugins/{key}/settings")
+    def plugin_settings(key: str, req: PluginSettingsRequest) -> dict:
+        srv.require_writable("настройки плагинов не меняются")
+        srv.require_scope()
+        try:
+            plugin = next((p for p in lifecycle.plugins(srv.cfg) if p.key == key), None)
+            if plugin is None:
+                raise HTTPException(404, "плагин не зарегистрирован")
+            lifecycle.StateStore(srv.cfg).update(
+                plugin, req.enabled, req.settings, scope=srv.scope)
+            return {**lifecycle.public_state(srv.cfg), "readonly": srv.readonly}
+        except lifecycle.LifecycleError as exc:
+            raise HTTPException(409, str(exc))
 
     @app.get("/api/runner/suites")
     def runner_suites() -> dict:
