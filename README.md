@@ -5,7 +5,7 @@
 Сборка графа, эвристики соединения, сцена, показ расхождений. Управление ими (эталон,
 принятие, исключение из оценки) — следующий этап, `docs/architecture.md` §10.
 
-**Статус: alpha (0.3.0)**, что стабильно — в разделе «Статус» ниже. Лицензия — MIT.
+**Статус: alpha (0.4.0)**, что стабильно — в разделе «Статус» ниже. Лицензия — MIT.
 
 ## Быстрый старт
 
@@ -19,7 +19,7 @@ veha demo
 пакета; сервер над ним только показывает — прогоны не запускаются, на диск ничего не
 пишется. Сеть не нужна. Ключи `demo`: `--port` (по умолчанию 8770), `--no-browser`.
 
-Что смотреть и в каком порядке — [обход демонстрации на 7 шагов](https://github.com/Dec01/veha/blob/v0.3.0/demo/README.md).
+Что смотреть и в каком порядке — [обход демонстрации на 7 шагов](https://github.com/Dec01/veha/blob/v0.4.0/demo/README.md).
 Та же карта без сервера — [демо на сайте](https://partest.ru/veha/demo/).
 
 ### Свой проект
@@ -93,16 +93,16 @@ CLI), а конфликт имён на чужой машине ловится �
 сведённый граф, находки и эталон — то, чего агент не знает. FastAPI отдаёт и `/api/*`, и
 статику; отрисовка — в браузере: карта по слоям на SVG, объёмный вид на Canvas 2D; ни npm,
 ни WebGL, ни внешних шрифтов, ни единого внешнего запроса.
-Подробности и недостающая аутентификация — [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.3.0/docs/architecture.md) §4.6.
+Подробности и недостающая аутентификация — [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.4.0/docs/architecture.md) §4.6.
 
 ## Документация
 
 | Документ | О чём |
 |---|---|
-| [docs/architecture.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/architecture.md) | проектный документ: модель данных, несколько систем и контуров, управление расхождениями, подключение к тестам, вебморда |
-| [docs/wiki/index.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/index.md) | каталог вики: состояние, решения, спорное |
-| [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/status.md) | что сделано, чего нет, известные ограничения |
-| [demo/README.md](https://github.com/Dec01/veha/blob/v0.3.0/demo/README.md) | демонстрация на вымышленных данных |
+| [docs/architecture.md](https://github.com/Dec01/veha/blob/v0.4.0/docs/architecture.md) | проектный документ: модель данных, несколько систем и контуров, управление расхождениями, подключение к тестам, вебморда |
+| [docs/wiki/index.md](https://github.com/Dec01/veha/blob/v0.4.0/docs/wiki/index.md) | каталог вики: состояние, решения, спорное |
+| [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.4.0/docs/wiki/status.md) | что сделано, чего нет, известные ограничения |
+| [demo/README.md](https://github.com/Dec01/veha/blob/v0.4.0/demo/README.md) | демонстрация на вымышленных данных |
 
 ## Красные линии
 
@@ -115,7 +115,7 @@ CLI), а конфликт имён на чужой машине ловится �
 3. **В consumer group не входим.** Смещения читаются, чужие консьюмеры не задеты.
 4. **Пишем только в свой каталог.** Артефакты — в `artifacts_dir`, ничего другого в
    тестируемой системе не создаётся и не меняется (о файле отметок МР —
-   [docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/proposals.md)).
+   [docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.4.0/docs/wiki/proposals.md)).
 5. **Секреты не показываем.** Всё, что уходит в интерфейс, проходит через `redact`.
 6. **Аудит-лог обращений** к базе, шине и логам — в открытом виде, доступен тому, чью
    систему читают.
@@ -124,7 +124,7 @@ CLI), а конфликт имён на чужой машине ловится �
    эндпоинту, по таблице, по названию фичи); связь «эндпоинт — таблица» подписана окном
    теста, в котором снята, а «топик — таблица» — выводом из тишины записей. Единое поле
    `evidence` (`measured`, `inferred`, `declared`) на каждой связи — план, а не то, что
-   уже есть ([docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/proposals.md)).
+   уже есть ([docs/wiki/proposals.md](https://github.com/Dec01/veha/blob/v0.4.0/docs/wiki/proposals.md)).
 8. **В ядре нет домена конкретного проекта.** Всё проектное — в `atlas.yaml`.
 
 ## Установка
@@ -241,12 +241,17 @@ CSP без `'unsafe-inline'`; действия, которым нужен сер
 просмотр, ничего не пишется). `--host` — адрес IPv4, на котором слушать (по умолчанию
 `127.0.0.1`; имя узла не принимается — его пришлось бы разрешать через DNS);
 `--allowed-host ИМЯ[:ПОРТ]` (повторяемый) и переменная `VEHA_ALLOWED_HOSTS` (через
-запятую) — ещё значения заголовка `Host`, без порта — порт сервера.
+запятую) — ещё значения заголовка `Host`, без порта — порт сервера. За своим HTTP/HTTPS
+прокси задают `--public-origin http(s)://имя[:порт]` или `VEHA_PUBLIC_ORIGIN`: один точный
+origin без userinfo, пути, query и fragment. Стандартный порт 80/443 нормализуется без
+явного `:порт`; его `Host` автоматически разрешается. Прокси должен сохранять исходные
+`Host`, `Origin` и `Referer`, а не переписывать их.
 
 Аутентификации пока нет, поэтому сервер по умолчанию слушает только `127.0.0.1`, отвечает
 только на `Host` `127.0.0.1:<порт>`, `localhost:<порт>` и явно разрешённые
 `--allowed-host` (шаблонов нет — иначе вернулся бы DNS rebinding) и отдаёт CSP без внешних
-источников. Изменяющие запросы с чужой страницы отсекаются по `Origin`/`Referer` — это
+источников. Изменяющие запросы с чужой страницы отсекаются по `Origin`/`Referer`; для Host
+публичного origin ожидается его HTTP/HTTPS-схема, для остальных Host поведение прежнее — это
 защита от браузера, а не от любого клиента: запрос без этих заголовков (curl, скрипт)
 проходит. От прочих клиентов защищает то, что изменяющие маршруты включаются только
 `--allow-run`, а `--allow-run` сервер принимает только на loopback: вместе с `--host` не на
@@ -312,9 +317,10 @@ required `after_run`, даже если lifecycle-плагины не настр
 
 Для независимого CI-адаптера остаётся публичный Python API `veha.allure_store.publish()` и
 `recover()`: хранилище принимает функцию генерации и само не запускает процессы. Проектный
-`aqa/docker/reports/ingest.sh` сознательно не подключён — в его образе нет Python. Настоящий
-Allure CLI, symlink на POSIX и раздача через nginx ещё не проверены; локальные тесты используют
-генератор-имитацию, а на Windows без права symlink — файловый адаптер `latest`.
+ingest может вызывать этот API из своего Python-адаптера. Настоящий Allure CLI, ротация
+трёх публикаций до двух, POSIX symlink и nginx проверены локально на синтетических данных;
+unit/fault-тесты используют генератор-имитацию, а на Windows без права symlink — файловый
+адаптер `latest`.
 
 ### Lifecycle-плагины
 
@@ -335,6 +341,7 @@ lifecycle_plugins:
     suites: [full]
     env: [PROJECT_DSN_ENV]
     implementation: adapter-v1
+    implementation_files: [src/project/cleanup.py]
     editable: false
     settings:
       mode: {type: string, default: marked}
@@ -358,11 +365,14 @@ required-результат видны отдельно от исхода pytest
 пользователя; персональную личность должен давать доверенный auth-слой развёртывания.
 
 До pytest Веха атомарно сохраняет `.veha/lifecycle/runs/<run_id>.json` со snapshot команд, настроек
-и SHA-256 реализации. Общий OS lock удерживается до конца required `after_run`. После сбоя сервера
-следующий запуск сначала выполняет `recovery` из snapshot. Если команда, файл адаптера,
-`implementation` или версия контракта изменились, автоматический recovery и новый прогон
-блокируются для ручного разбора. Без раздела `lifecycle_plugins` прежнее поведение и файлы состояния
-не создаются.
+и SHA-256 реализации. `implementation_files` объявляет дополнительные импортированные файлы:
+их пути и байты входят в digest после файла команды; выход за корень и ссылки отклоняются.
+Пустой или отсутствующий список не меняет прежний digest и остаётся совместим со старыми
+snapshots. Общий OS lock удерживается до конца required `after_run`. После сбоя сервера
+следующий запуск сначала выполняет `recovery` из snapshot. Если команда, файл адаптера или
+дополнительный файл, `implementation` либо версия контракта изменились, автоматический recovery
+и новый прогон блокируются для ручного разбора. Без раздела `lifecycle_plugins` прежнее поведение
+и файлы состояния не создаются.
 
 ### Docker
 
@@ -399,7 +409,7 @@ VEHA_PROJECT=/путь/к/проекту docker compose -f compose.example.yaml 
   от `veha init` — `0666 & ~umask`, обычно `0644`. Закрытый каталог — `user: "${UID}:${GID}"`
   в compose.
 
-Подробно, с проверкой после запуска, — [docs/wiki/howto/docker.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/howto/docker.md).
+Подробно, с проверкой после запуска, — [docs/wiki/howto/docker.md](https://github.com/Dec01/veha/blob/v0.4.0/docs/wiki/howto/docker.md).
 
 Что сервер прочитал, а что нет и почему, печатается при старте и видно под шапкой вебморды; для
 диагностики то же отдаёт `GET /api/artifacts` — это внутренний HTTP-интерфейс вебморды,
@@ -414,7 +424,7 @@ Alpha: сервер — устанавливаемый пакет и потре�
 **Что стабильно.** Версии — [Semantic Versioning](https://semver.org/) с поправкой на
 линию `0.x`: пока она не кончилась, ломающее изменение поднимает **минорную** цифру и
 записывается в журнале изменений разделом «Сломано». Таблица — в начале
-[CHANGELOG.md](https://github.com/Dec01/veha/blob/v0.3.0/CHANGELOG.md).
+[CHANGELOG.md](https://github.com/Dec01/veha/blob/v0.4.0/CHANGELOG.md).
 
 - **Публичное** — то, на что можно опираться: команды `veha serve`, `veha demo`,
   `veha export-static`, `veha init` и их ключи; порт по умолчанию 8770; переменные `ATLAS_SYSTEM` и
@@ -425,9 +435,9 @@ Alpha: сервер — устанавливаемый пакет и потре�
   `live/mr_checks.json`.
 - **Внутреннее** — меняется в любой версии без записи в «Сломано»: импорт `veha.*`
   (кроме `veha.__version__`), HTTP-интерфейс `/api/*`, раскладка статического снимка. Подробно, с
-тем, чего нет, и с ближайшими шагами, — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/status.md).
-Проектное направление дальше — этапы в [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.3.0/docs/architecture.md) §10.
+тем, чего нет, и с ближайшими шагами, — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.4.0/docs/wiki/status.md).
+Проектное направление дальше — этапы в [`docs/architecture.md`](https://github.com/Dec01/veha/blob/v0.4.0/docs/architecture.md) §10.
 
 ## Лицензия
 
-MIT — см. [LICENSE](https://github.com/Dec01/veha/blob/v0.3.0/LICENSE).
+MIT — см. [LICENSE](https://github.com/Dec01/veha/blob/v0.4.0/LICENSE).

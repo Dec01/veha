@@ -44,6 +44,34 @@ def test_same_origin_change_is_accepted(small_root):
         assert r.status_code == 200, headers
 
 
+def test_https_public_origin_and_referer_are_accepted_only_for_their_host(small_root):
+    c = make_client(small_root, readonly=False, allowed_hosts=["other.internal"],
+                    public_origin="https://veha.internal")
+    for headers in (
+            {"Host": "veha.internal", "Origin": "https://veha.internal"},
+            {"Host": "veha.internal", "Referer": "https://veha.internal/run/full"},
+    ):
+        r = c.post("/api/live/mr", json={"iid": 121, "status": "checked"}, headers=headers)
+        assert r.status_code == 200, headers
+    for headers in (
+            {"Host": "veha.internal", "Origin": "http://veha.internal"},
+            {"Host": "veha.internal", "Origin": "https://evil.internal"},
+            {"Host": "other.internal", "Origin": "https://veha.internal"},
+    ):
+        r = c.post("/api/live/mr", json={"iid": 121, "status": "checked"}, headers=headers)
+        assert r.status_code == 403, headers
+    r = c.post("/api/live/mr", json={"iid": 121, "status": "checked"},
+               headers={"Host": "other.internal", "Origin": "http://other.internal"})
+    assert r.status_code == 200
+
+
+def test_https_origin_is_not_accepted_without_public_origin(small_root):
+    c = make_client(small_root, readonly=False, allowed_hosts=["veha.internal"])
+    r = c.post("/api/live/mr", json={"iid": 121, "status": "checked"},
+               headers={"Host": "veha.internal", "Origin": "https://veha.internal"})
+    assert r.status_code == 403
+
+
 @pytest.mark.parametrize("ctype", [None, "text/plain", "application/x-www-form-urlencoded",
                                    "multipart/form-data; boundary=x"])
 def test_body_that_is_not_declared_json_is_refused(small_root, ctype):

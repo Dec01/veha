@@ -15,7 +15,7 @@
 | поднят пол `partest-atlas` или `partest` | минор | минор, мажор если сменилось то, что мы из них берём |
 | формат артефактов агента | только вместе с владельцем формата (`partest-atlas`) | то же |
 
-**Публичное:** команды `veha serve`, `veha demo`, `veha export-static`, `veha init` и их ключи; переменная `VEHA_ALLOWED_HOSTS`; порт по
+**Публичное:** команды `veha serve`, `veha demo`, `veha export-static`, `veha init` и их ключи; переменные `VEHA_ALLOWED_HOSTS` и `VEHA_PUBLIC_ORIGIN`; порт по
 умолчанию 8770; переменные `ATLAS_SYSTEM` и `ATLAS_ENV`; раскладка каталога данных
 (`atlas.yaml`, `atlas/<система>/<контур>/`, `coverage.json`, `allure-results/`) и разделы
 `atlas.yaml`, которые читает сервер (`project`, `artifacts_dir`, `containers`, `domains`,
@@ -27,6 +27,20 @@
 **Внутреннее** — меняется в любой версии без записи в «Сломано»: импорт `veha.*` (кроме
 `veha.__version__` и явно названного выше `veha.allure_store`), HTTP-интерфейс `/api/*`
 вебморды, раскладка статического снимка.
+
+## 0.4.0 — 2026-11-16
+
+### Добавлено
+
+- **`veha serve --public-origin HTTP(S)://ИМЯ[:ПОРТ]`** и `VEHA_PUBLIC_ORIGIN` задают точный
+  публичный origin за своим обратным прокси. HTTPS `Origin`/`Referer` принимаются только для
+  соответствующего Host; его значение автоматически добавляется к разрешённым. Поведение
+  loopback и остальных Host без настройки не меняется.
+- **`lifecycle_plugins.<id>.implementation_files`** перечисляет дополнительные локальные файлы
+  реализации. Их относительные пути и байты входят в snapshot digest после файла команды:
+  изменение импортированного cleanup теперь блокирует automatic recovery. Пути проверяются на
+  выход за корень и ссылки. Пустой или отсутствующий список сохраняет прежний digest и
+  совместимость старых snapshots.
 
 ## 0.3.0 — 2026-11-16
 
@@ -409,4 +423,4 @@
 - Единое поле `evidence` на каждой связи — план; сейчас происхождение подписано
   текстом.
 
-Подробно — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.3.0/docs/wiki/status.md).
+Подробно — [docs/wiki/status.md](https://github.com/Dec01/veha/blob/v0.4.0/docs/wiki/status.md).

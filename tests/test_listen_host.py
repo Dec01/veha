@@ -25,7 +25,7 @@ from tests.conftest import make_client
 
 @pytest.fixture(autouse=True)
 def _clean_env(monkeypatch):
-    for name in ("ATLAS_SYSTEM", "ATLAS_ENV", "VEHA_ALLOWED_HOSTS"):
+    for name in ("ATLAS_SYSTEM", "ATLAS_ENV", "VEHA_ALLOWED_HOSTS", "VEHA_PUBLIC_ORIGIN"):
         monkeypatch.delenv(name, raising=False)
 
 
@@ -74,6 +74,32 @@ def test_bare_name_form_survives_the_argument_parser():
 
     parsed = allowed_host("Veha.Internal:")          # как его вернёт argparse
     assert allowed_hosts_from([parsed], "veha.other:", 8770) == ["veha.internal", "veha.other"]
+
+
+@pytest.mark.parametrize("text, want", [
+    ("HTTPS://Veha.Internal", "https://veha.internal"),
+    ("https://veha.internal:443/", "https://veha.internal"),
+    ("http://Veha.Internal:80", "http://veha.internal"),
+    ("https://veha.internal:8443", "https://veha.internal:8443"),
+    ("http://veha.internal", "http://veha.internal"),
+])
+def test_public_origin_is_normalised(text, want):
+    from veha.cli import public_origin
+
+    assert public_origin(text) == want
+
+
+@pytest.mark.parametrize("text", [
+    "", "veha.internal", "ftp://veha.internal", "https://user@veha.internal",
+    "https://user:pass@veha.internal", "https://veha.internal/path",
+    "https://veha.internal?x=1", "https://veha.internal#x", "https://veha.internal:0",
+    "https://veha.internal:70000", "https://*.internal", "https://veha.internal:",
+])
+def test_public_origin_refuses_not_exact_origins(text):
+    from veha.cli import public_origin
+
+    with pytest.raises(argparse.ArgumentTypeError):
+        public_origin(text)
 
 
 def test_bare_name_is_served_without_a_port(demo_root):
@@ -155,6 +181,32 @@ def test_bad_allowed_hosts_in_the_environment_refuse_to_start(demo_root, monkeyp
     code, seen = _serve(monkeypatch, demo_root)
     assert code == 2 and "bind" not in seen
     assert "VEHA_ALLOWED_HOSTS" in capsys.readouterr().err
+
+
+def test_public_origin_comes_from_environment_and_allows_its_host(
+        demo_root, monkeypatch):
+    monkeypatch.setenv("VEHA_PUBLIC_ORIGIN", "HTTPS://Veha.Internal:443/")
+    code, seen = _serve(monkeypatch, demo_root)
+    assert code == 0
+    assert seen["app"].state.public_origin == "https://veha.internal"
+    assert "veha.internal" in seen["app"].state.allowed_hosts
+
+
+def test_public_origin_flag_overrides_environment(demo_root, monkeypatch):
+    monkeypatch.setenv("VEHA_PUBLIC_ORIGIN", "https://ignored.internal")
+    code, seen = _serve(monkeypatch, demo_root,
+                        "--public-origin", "https://veha.internal:8443")
+    assert code == 0
+    assert seen["app"].state.public_origin == "https://veha.internal:8443"
+    assert "veha.internal:8443" in seen["app"].state.allowed_hosts
+    assert "ignored.internal" not in seen["app"].state.allowed_hosts
+
+
+def test_bad_public_origin_refuses_to_start_before_bind(demo_root, monkeypatch, capsys):
+    monkeypatch.setenv("VEHA_PUBLIC_ORIGIN", "https://user@veha.internal")
+    code, seen = _serve(monkeypatch, demo_root)
+    assert code == 2 and "bind" not in seen
+    assert "VEHA_PUBLIC_ORIGIN" in capsys.readouterr().err
 
 
 def test_bad_host_flag_is_an_argument_error(demo_root, capsys):

@@ -215,6 +215,51 @@ def test_changed_implementation_blocks_execution(tmp_path, monkeypatch):
     assert result.status == "failed" and "изменилась" in result.summary
 
 
+def test_changed_imported_implementation_file_blocks_recovery(tmp_path, monkeypatch):
+    monkeypatch.setenv("PLUGIN_VISIBLE", "x")
+    (tmp_path / "src").mkdir()
+    dependency = tmp_path / "src" / "cleanup.py"
+    dependency.write_text("MODE = 'safe'\n", encoding="utf-8")
+    cfg = project(tmp_path, valid_config().replace(
+        "    editable: false", "    implementation_files: [src/cleanup.py]\n    editable: false"))
+    script(tmp_path, "print('{}')\n")
+    snapshot = lifecycle.snapshots(cfg, "full")[0]
+    assert snapshot["implementation_files"] == ["src/cleanup.py"]
+    dependency.write_text("MODE = 'changed'\n", encoding="utf-8")
+    result = lifecycle.execute(cfg.root, snapshot, "recovery", event())
+    assert result.status == "failed" and "изменилась" in result.summary
+
+
+def test_implementation_file_path_escape_is_refused(tmp_path):
+    cfg = project(tmp_path, """lifecycle_plugins:
+  bad:
+    command: [python, scripts/plugin.py]
+    stages: [validate]
+    implementation_files: [../outside.py]
+""")
+    script(tmp_path, "pass\n")
+    (tmp_path.parent / "outside.py").write_text("pass\n", encoding="utf-8")
+    with pytest.raises(lifecycle.LifecycleError, match="вне корня"):
+        lifecycle.plugins(cfg)
+
+
+@pytest.mark.skipif(os.name == "nt", reason="создание symlink на Windows требует отдельных прав")
+def test_symlink_implementation_file_is_refused(tmp_path):
+    outside = tmp_path.parent / "outside-cleanup.py"
+    outside.write_text("pass\n", encoding="utf-8")
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "plugin.py").write_text("pass\n", encoding="utf-8")
+    (tmp_path / "scripts" / "cleanup.py").symlink_to(outside)
+    (tmp_path / "atlas.yaml").write_text("""lifecycle_plugins:
+  bad:
+    command: [python, scripts/plugin.py]
+    stages: [validate]
+    implementation_files: [scripts/cleanup.py]
+""", encoding="utf-8")
+    with pytest.raises(lifecycle.LifecycleError, match="ссылку"):
+        lifecycle.plugins(load(tmp_path))
+
+
 def test_recovery_uses_saved_settings_and_marks_interrupted(tmp_path, monkeypatch):
     monkeypatch.setenv("PLUGIN_VISIBLE", "x")
     cfg = project(tmp_path, valid_config())

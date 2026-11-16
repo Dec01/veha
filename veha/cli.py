@@ -23,6 +23,7 @@ import sys
 import threading
 from pathlib import Path
 from typing import Any, Callable, List, Optional
+from urllib.parse import urlsplit
 
 from partest_atlas.artifacts import DEFAULT_SCOPE_KEY, Scope
 
@@ -32,6 +33,8 @@ from veha.listen import HOST, bind_socket
 
 #: Дополнительные значения `Host` из окружения — через запятую, как `--allowed-host`.
 ALLOWED_HOSTS_ENV = "VEHA_ALLOWED_HOSTS"
+#: Публичный origin за обратным прокси, включая HTTPS. Только один точный адрес.
+PUBLIC_ORIGIN_ENV = "VEHA_PUBLIC_ORIGIN"
 #: Имя узла в `--allowed-host`: метки DNS через точку или литерал IPv4. Без `*`: шаблон
 #: вернул бы DNS rebinding, от которого список и защищает.
 _HOST_NAME_RE = re.compile(r"^(?=.{1,253}\Z)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?"
@@ -137,9 +140,14 @@ def serve(args: argparse.Namespace) -> int:
     try:
         extra = allowed_hosts_from(args.allowed_host, os.getenv(ALLOWED_HOSTS_ENV, ""),
                                    args.port)
+        raw_origin = (args.public_origin if args.public_origin is not None
+                      else os.getenv(PUBLIC_ORIGIN_ENV, ""))
+        public = public_origin(raw_origin) if raw_origin else ""
     except argparse.ArgumentTypeError as exc:
-        print(f"{ALLOWED_HOSTS_ENV}: {exc}", file=sys.stderr)
+        print(f"{ALLOWED_HOSTS_ENV}/{PUBLIC_ORIGIN_ENV}: {exc}", file=sys.stderr)
         return 2
+    if public:
+        extra = sorted(set(extra) | {urlsplit(public).netloc})
     if not ipaddress.ip_address(args.host).is_loopback:
         if args.allow_run:
             # Изменяющие маршруты (запуск набора, очистка, перезапуск, отметки) защищены
@@ -156,7 +164,8 @@ def serve(args: argparse.Namespace) -> int:
               f"только за своей сетью (контейнер с портом на 127.0.0.1 хоста, VPN).",
               file=sys.stderr)
     return _run(root, scope=scope, allow_run=args.allow_run, port=args.port,
-                no_browser=args.no_browser, host=args.host, allowed_hosts=extra)
+                no_browser=args.no_browser, host=args.host, allowed_hosts=extra,
+                public_origin=public)
 
 
 def demo(args: argparse.Namespace) -> int:
@@ -181,7 +190,7 @@ def demo(args: argparse.Namespace) -> int:
 
 def _run(root: Path, *, scope: Optional[Scope], allow_run: bool, port: int,
          no_browser: bool, note: str = "", host: str = HOST,
-         allowed_hosts: Optional[List[str]] = None) -> int:
+         allowed_hosts: Optional[List[str]] = None, public_origin: str = "") -> int:
     try:
         sock = bind_socket(port, host)
     except OSError as exc:
@@ -191,18 +200,18 @@ def _run(root: Path, *, scope: Optional[Scope], allow_run: bool, port: int,
     try:
         return _run_bound(root, sock, scope=scope, allow_run=allow_run, port=port,
                           no_browser=no_browser, note=note, host=host,
-                          allowed_hosts=allowed_hosts or [])
+                          allowed_hosts=allowed_hosts or [], public_origin=public_origin)
     finally:
         sock.close()
 
 
 def _run_bound(root: Path, sock, *, scope: Optional[Scope], allow_run: bool,
                port: int, no_browser: bool, note: str, host: str = HOST,
-               allowed_hosts: Optional[List[str]] = None) -> int:
+               allowed_hosts: Optional[List[str]] = None, public_origin: str = "") -> int:
     from veha.viz.app import create_app  # noqa: PLC0415 — тяжёлый импорт нужен серверу
 
     app = create_app(root, scope=scope, readonly=not allow_run, port=port,
-                     allowed_hosts=allowed_hosts or [])
+                     allowed_hosts=allowed_hosts or [], public_origin=public_origin)
     # Запасной путь к остановке дерева процессов, если lifespan не отработал
     # (жёсткий выход интерпретатора): прогон не должен пережить сервер.
     atexit.register(app.state.veha.shutdown)
@@ -411,6 +420,31 @@ def allowed_host(text: str, port: Optional[int] = None) -> str:
     return name if port is None else f"{name}:{port}"
 
 
+def public_origin(text: str) -> str:
+    """Один точный HTTP/HTTPS origin за прокси, без учётной записи, пути и query.
+
+    Стандартный порт опускается: браузер именно так сериализует `Origin`. Имя узла
+    проходит ту же проверку, что `--allowed-host`; его нормализованный Host затем
+    автоматически добавляется в список разрешённых.
+    """
+    value = text.strip()
+    try:
+        parts = urlsplit(value)
+        number = parts.port
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"{text!r}: негодный origin ({exc})") from None
+    default = {"http": 80, "https": 443}.get(parts.scheme)
+    if (default is None or not parts.netloc or parts.username is not None
+            or parts.password is not None or parts.path not in ("", "/")
+            or parts.query or parts.fragment or parts.netloc.endswith(":")
+            or (number is not None and not 1 <= number <= 65535)):
+        raise argparse.ArgumentTypeError(
+            f"{text!r}: ожидался http(s)://имя[:порт] без userinfo, пути, query и fragment")
+    name = allowed_host(parts.hostname or "")
+    netloc = name if number in (None, default) else f"{name}:{number}"
+    return f"{parts.scheme}://{netloc}"
+
+
 def allowed_hosts_from(flags: Optional[List[str]], env_value: str, port: int) -> List[str]:
     """Дополнительные `Host` из ключей и из `VEHA_ALLOWED_HOSTS` (через запятую)."""
     raw = list(flags or []) + [x for x in env_value.split(",") if x.strip()]
@@ -462,6 +496,9 @@ def build_parser() -> argparse.ArgumentParser:
                         "`имя:` — заголовок без порта, как его шлёт браузер на 80/443. "
                         "127.0.0.1 и localhost разрешены всегда; --allow-run — только при "
                         "--host на loopback")
+    s.add_argument("--public-origin", metavar="HTTP(S)://ИМЯ[:ПОРТ]",
+                   help="точный публичный origin за своим HTTPS/HTTP прокси (также "
+                        f"{PUBLIC_ORIGIN_ENV}); его Host разрешается автоматически")
     s.add_argument("--no-browser", action="store_true", help="не открывать браузер")
     s.add_argument("--system", default="", help="система (по умолчанию — ATLAS_SYSTEM)")
     s.add_argument("--env", default="", help="контур (по умолчанию — ATLAS_ENV)")

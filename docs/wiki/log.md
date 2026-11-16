@@ -13,6 +13,26 @@ audience: maintainer
 Хронология: что сделано с документацией и почему. Новые записи сверху.
 Формат строки: дата · операция (ingest / update / lint / restructure) · что затронуто.
 
+## 2026-11-16 · update · кандидат на публичный origin и digest
+
+Номер кандидата поднят: новые `--public-origin`/`VEHA_PUBLIC_ORIGIN` и
+`lifecycle_plugins.<id>.implementation_files` — публичные добавления. README и CHANGELOG ведут
+на тег кандидата; [[status]] исправлена: предыдущий выпуск уже опубликован, а Allure CLI,
+POSIX symlink и nginx проверены локально на синтетических данных. Финальные ворота НЕПОЛНЫ
+только из-за extras вне pip-audit; тесты, линтер, Bandit и документация пройдены. Локальные
+wheel/sdist собраны, wheel установлен в чистое окружение: CLI и metadata сообщают номер
+кандидата. Commit, push, тег и PyPI не выполнялись; официальные артефакты ещё не собраны
+из чистого клона.
+
+## 2026-11-16 · update · HTTPS origin и полный digest плагина
+
+README, CHANGELOG и [[status]] описывают `--public-origin`/`VEHA_PUBLIC_ORIGIN` для своего
+HTTP/HTTPS прокси и `lifecycle_plugins.<id>.implementation_files` для байтов импортированной
+реализации. Публичная схема действует только на свой Host; пустой список файлов сохраняет
+прежний digest и старые snapshots. Focused-проверка — 105 passed, 3 skipped. Повторные
+полные ворота — НЕПОЛНО: тесты, линтер, Bandit и документация пройдены, но pip-audit не
+проверяет extras. Версия не менялась, публикаций не было.
+
 ## 2026-11-16 · update · кандидат 0.3 на Atlas 0.3
 
 Веха переведена на локальный Atlas 0.3: чтение, проверка и поиск областей делегированы владельцу

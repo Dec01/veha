@@ -268,19 +268,25 @@ def default_hosts(port: int) -> set:
 
 
 def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = True,
-               port: int = DEFAULT_PORT, allowed_hosts: Iterable[str] = ()) -> FastAPI:
+               port: int = DEFAULT_PORT, allowed_hosts: Iterable[str] = (),
+               public_origin: str = "") -> FastAPI:
     """Приложение над корнем *root*, которое отвечает на `127.0.0.1:<port>`.
 
     *allowed_hosts* — ещё значения `Host` (`имя:порт`, уже проверенные
     `veha.cli.allowed_host`), под которыми сервер виден снаружи: порт, проброшенный из
     контейнера на другой порт хоста, или имя за обратным прокси. Loopback разрешён всегда.
+    *public_origin* — нормализованный HTTP/HTTPS origin обратного прокси; его Host тоже
+    разрешается, а проверка `Origin`/`Referer` использует его только для этого Host.
 
     *readonly* — показывать собранное, но не запускать процессы и ничего не записывать.
     Включён по умолчанию: над набором артефактов без тестов и без стенда кнопка
     «запустить» только вводила бы в заблуждение.
     """
     srv = Server(root, scope=scope, readonly=readonly)
+    public_host = urlsplit(public_origin).netloc.lower() if public_origin else ""
     allowed_hosts = default_hosts(port) | {h.lower() for h in allowed_hosts}
+    if public_host:
+        allowed_hosts.add(public_host)
 
     @asynccontextmanager
     async def lifespan(_app):
@@ -292,6 +298,7 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
                   strict_content_type=True, lifespan=lifespan)
     app.state.veha = srv
     app.state.allowed_hosts = allowed_hosts
+    app.state.public_origin = public_origin
 
     @app.middleware("http")
     async def _guard(request, call_next):
@@ -327,8 +334,9 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
 
     def _same_origin(request, host: str) -> bool:
         """Изменяющий запрос — только со своей страницы. Нет ни `Origin`, ни `Referer`
-        — это не браузер (curl, проверки), и CSRF тут не о чем говорить."""
-        own = f"http://{host}"
+        — это не браузер (curl, проверки), и CSRF тут не о чем говорить. Публичная схема
+        применяется только к её собственному Host, не к loopback и другим адресам."""
+        own = public_origin if public_origin and host == public_host else f"http://{host}"
         origin = request.headers.get("origin")
         if origin is not None:
             return origin == own

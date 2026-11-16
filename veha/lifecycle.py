@@ -40,7 +40,7 @@ _KEY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$")
 _ENV_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,127}$")
 _PLUGIN_KEYS = {
     "label", "kind", "command", "cwd", "stages", "required", "timeout", "suites",
-    "env", "implementation", "editable", "settings",
+    "env", "implementation", "implementation_files", "editable", "settings",
 }
 _SETTING_KEYS = {"type", "default"}
 
@@ -93,6 +93,7 @@ class Plugin:
     suites: tuple[str, ...] = ()
     env: tuple[str, ...] = ()
     implementation: str = ""
+    implementation_files: tuple[str, ...] = ()
     editable: bool = True
     settings: dict[str, Setting] = field(default_factory=dict)
 
@@ -109,7 +110,8 @@ class Plugin:
             "kind": "command", "command": list(self.command), "cwd": self.cwd,
             "stages": list(self.stages), "required": self.required, "timeout": self.timeout,
             "suites": list(self.suites), "env": list(self.env),
-            "implementation": self.implementation, "editable": self.editable,
+            "implementation": self.implementation,
+            "implementation_files": list(self.implementation_files), "editable": self.editable,
             "settings_schema": self.schema, "settings": dict(settings),
             "implementation_digest": _digest_at(root, self),
         }
@@ -199,6 +201,8 @@ def parse_plugin(root: Path, key: str, raw: Any) -> Plugin:
     implementation = raw.get("implementation", "")
     if not isinstance(implementation, str) or len(implementation) > 256:
         raise LifecycleError(f"{where}.implementation: ожидалась строка до 256 символов")
+    implementation_files = _strings(
+        raw.get("implementation_files"), f"{where}.implementation_files")
     label = raw.get("label", key)
     if not isinstance(label, str) or not label.strip() or len(label) > 200:
         raise LifecycleError(f"{where}.label: ожидалась непустая строка до 200 символов")
@@ -207,12 +211,14 @@ def parse_plugin(root: Path, key: str, raw: Any) -> Plugin:
         required=_bool(raw.get("required"), f"{where}.required", False),
         timeout=float(timeout), suites=_strings(raw.get("suites"), f"{where}.suites"),
         env=_strings(raw.get("env"), f"{where}.env", pattern=_ENV_RE),
-        implementation=implementation,
+        implementation=implementation, implementation_files=implementation_files,
         editable=_bool(raw.get("editable"), f"{where}.editable", True),
         settings=_parse_settings(raw.get("settings"), f"{where}.settings"),
     )
     _local_path(root, cwd, f"{where}.cwd", directory=True)
     _validate_command(root, plugin)
+    for value in implementation_files:
+        _local_path(root, value, f"{where}.implementation_files", directory=False)
     return plugin
 
 
@@ -448,9 +454,14 @@ def _from_snapshot(root: Path, raw: Any) -> tuple[Plugin, dict[str, Any], str]:
 
 
 def implementation_digest(plugin: Plugin) -> str:
-    """Digest объявленной реализации; `_digest_at` добавляет байты локальных файлов."""
+    """Digest объявленной реализации; `_digest_at` добавляет байты локальных файлов.
+
+    Пустой `implementation_files` ничего не добавляет, поэтому digest прежних проектов
+    и старые snapshots без нового поля сохраняют прежнее значение.
+    """
     digest = hashlib.sha256()
-    payload = [plugin.key, plugin.implementation, plugin.cwd, *plugin.command]
+    payload = [plugin.key, plugin.implementation, plugin.cwd, *plugin.command,
+               *plugin.implementation_files]
     for item in payload:
         digest.update(item.encode("utf-8", errors="strict"))
         digest.update(b"\0")
@@ -470,6 +481,13 @@ def _digest_at(root: Path, plugin: Plugin) -> str:
         candidates.append(first)
     for value in candidates:
         path = _local_path(root, value, f"{SECTION}.{plugin.key}.command", directory=False)
+        digest.update(path.relative_to(root).as_posix().encode("utf-8"))
+        with path.open("rb") as fh:
+            for block in iter(lambda: fh.read(1024 * 1024), b""):
+                digest.update(block)
+    for value in plugin.implementation_files:
+        path = _local_path(root, value, f"{SECTION}.{plugin.key}.implementation_files",
+                           directory=False)
         digest.update(path.relative_to(root).as_posix().encode("utf-8"))
         with path.open("rb") as fh:
             for block in iter(lambda: fh.read(1024 * 1024), b""):
