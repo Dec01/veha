@@ -128,14 +128,16 @@ def test_missing_configured_reports_are_just_missing(small_root, capsys):
     ("  coverage: [a, b]\n", "reports.coverage: ожидалась строка пути, получено list"),
     ('  coverage: ""\n', "reports.coverage: пустой путь"),
     # `\t` и `\n` в двойных кавычках YAML — табуляция и перевод строки посреди пути
+    # publish-ok: условный путь Windows для проверки диагностики управляющих символов YAML
     ('  coverage: "C:\\temp\\new.json"\n',
      "reports.coverage: управляющий символ в пути — путь Windows в двойных кавычках? "
      "пишите C:/… или в одинарных кавычках"),
+    # publish-ok: заведомо несуществующие UNC-пути для проверки отказа до обращения к сети
     *[(f"  coverage: '{unc}'\n",
        "reports.coverage: сетевой путь (UNC) не читается — открыть его значит обратиться "
        "по сети; отчёт кладут на локальный диск")
-      for unc in (r"\\host\share\coverage.json", "//host/share/coverage.json",
-                  r"\\?\C:\coverage.json", r"\\.\pipe\x", r"/\host\share")],
+      for unc in (r"\\host\share\coverage.json", "//host/share/coverage.json",  # publish-ok: вымышленные UNC-пути
+                  r"\\?\C:\coverage.json", r"\\.\pipe\x", r"/\host\share")],  # publish-ok: продолжение списка вымышленных путей
     ("  coverage: 'C:coverage.json'\n",
      "reports.coverage: диск без косой черты (C:отчёт) уводит из корня; пишите C:/…"),
 ])
@@ -488,6 +490,7 @@ def test_clean_in_a_directory_shared_with_the_project_removes_only_allure_files(
 
 def _shared_root(small_root: Path) -> None:
     """`reports.allure: .`: результат лежит в корне и называет вложениями файлы корня."""
+    # publish-ok: заведомо несуществующий пароль для проверки запрета отдачи .env
     (small_root / ".env").write_text("DB_PASSWORD=hunter2\n", encoding="utf-8")
     result = dict(RESULT, attachments=[
         {"name": "ответ", "source": "0a100000-0000-4000-8000-000000000001-attachment.txt"},

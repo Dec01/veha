@@ -67,6 +67,7 @@ def test_images_dir_inside_the_root_is_served(small_root):
     assert not any(p.startswith("screens.") for p in _problems(small_root))
 
 
+# publish-ok: заведомо несуществующие UNC-пути для проверки отказа до обращения к сети
 UNC = [r"\\evil\share\shots", "//evil/share/shots", r"\\?\UNC\evil\share", r"\\.\pipe\x"]
 
 

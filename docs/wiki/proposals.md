@@ -35,7 +35,7 @@ requirements.lock`, затем `pip install --no-deps .`). **Против сей
 
 ## 2026-10-26 · пути `reports.*` и `artifacts_dir` вне корня и Docker
 
-**Состояние:** открыто. Источник — ревью образа Docker (security, п. 3).
+**Состояние:** открыто. Источник — ревью образа Docker.
 
 Пути, чьё содержимое сервер отдаёт (`screens`, `live`, `app_map`, `logs`), теперь только
 внутри корня. `reports.coverage`, `reports.allure` и `artifacts_dir` под это правило не
@@ -49,8 +49,7 @@ requirements.lock`, затем `pip install --no-deps .`). **Против сей
 
 ## 2026-10-26 · несколько служб в `swagger_files` — один `contract.openapi` на область
 
-**Состояние:** открыто, к владельцу формата (partest-atlas). Источник — ревью `veha init`
-(antagonist, п. 10).
+**Состояние:** открыто, к владельцу формата (partest-atlas). Источник — ревью `veha init`.
 
 `partest-atlas collect openapi --service X` пишет `contract.openapi` области целиком, и
 следующая команда для другой службы заменяет предыдущий артефакт. `veha init` поэтому
@@ -63,11 +62,12 @@ requirements.lock`, затем `pip install --no-deps .`). **Против сей
 
 ## 2026-10-26 · `veha init` без ключа и без `ATLAS_SYSTEM` — имя каталога, а не `default`
 
-**Состояние:** отвергнуто 2026-10-26 (решение координатора): договор `atlas-config` требует
+**Состояние:** отвергнуто 2026-10-26: договор `atlas-config` требует
 одинаковых умолчаний области во всех командах; если init подставит имя каталога и `local`,
 а `veha serve` или `collect` без ключей возьмут `default`, человек не увидит собранного.
-У init теперь те же умолчания (`default`), имя каталога — только `project.name`. Источник — ревью `veha init` (librarian, п. 17; контракт
-`atlas-config`: «одинаковые умолчания во всех командах обоих пакетов»).
+У init теперь те же умолчания (`default`), имя каталога — только `project.name`. Источник —
+ревью `veha init` и контракт `atlas-config`: «одинаковые умолчания во всех командах обоих
+пакетов».
 
 Ключ, затем `ATLAS_SYSTEM`/`ATLAS_ENV` — как у всех команд. Но если не задано ничего,
 `partest-atlas collect` и `veha serve` берут `default`, а `init` подставляет в подсказки

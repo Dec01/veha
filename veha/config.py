@@ -58,6 +58,7 @@ def report_path_problem(where: str, value: str) -> str:
     if not value.strip():
         return f"{where}: пустой путь"
     if any(ord(c) < 0x20 for c in value):
+        # publish-ok: условный путь Windows в пояснении разбора YAML
         # `"C:\new\report"` в двойных кавычках YAML — перевод строки посреди пути
         return (f"{where}: управляющий символ в пути — путь Windows в двойных кавычках? "
                 f"пишите C:/… или в одинарных кавычках")

@@ -23,6 +23,7 @@ from veha import config as veha_config
 from veha import scaffold
 from veha.cli import main
 
+# publish-ok: заведомо несуществующий токен для проверки маскирования
 TOKEN = "SECRET0123456789"
 
 
@@ -213,8 +214,9 @@ def test_local_kind_with_an_address_is_flagged_and_redacted(tmp_path, capsys):
     assert "вид local, но это адрес" in capsys.readouterr().out
 
 
+# publish-ok: заведомо несуществующие UNC-пути для проверки отказа до обращения к сети
 UNC = [r"\\evil\share\spec.json", "//evil/share/spec.json", r"\\?\UNC\evil\share\x.json",
-       r"\\.\pipe\x", r"\\?\C:\spec.json"]
+       r"\\.\pipe\x", r"\\?\C:\spec.json"]  # publish-ok: продолжение списка вымышленных UNC-путей
 
 
 @pytest.mark.parametrize("where", UNC + ["C:/abs/spec.json", "/abs/spec.json",
@@ -320,9 +322,10 @@ def test_substitution_is_not_guessed(tmp_path, capsys):
     assert veha_config.load(root).coverage_file == root.resolve() / "coverage.json"
 
 
+# publish-ok: заведомо несуществующие пути для проверки отказа и скрытия значений
 @pytest.mark.parametrize("value", ["../coverage.json", "/ci/out/secret-host/coverage.json",
                                    "C:/ci/secret-host/coverage.json",
-                                   r"..\up\coverage.json", r"\\filer\share\coverage.json"])
+                                   r"..\up\coverage.json", r"\\filer\share\coverage.json"])  # publish-ok: продолжение списка вымышленных путей
 def test_report_outside_the_root_is_not_written_and_not_shown(tmp_path, capsys, value):
     root = _project(tmp_path, LITERAL,
                     pytest_ini=f"[pytest]\nenv =\n    PARTEST_COVERAGE_JSON={value}\n")
@@ -681,7 +684,8 @@ def test_odd_directory_names_are_not_put_into_commands(tmp_path, capsys):
     assert "$(calc)" not in steps and "`id`" not in steps
     assert "--root <путь к каталогу>" in steps
     assert "имя каталога нестандартное" in out
-    assert scaffold.safe_dir("C:/Users/John Doe/proj") == '"C:/Users/John Doe/proj"'
+    assert scaffold.safe_dir("C:/Users/John Doe/proj") == '"C:/Users/John Doe/proj"'  # publish-ok: вымышленный пользователь для проверки экранирования
+    # publish-ok: вымышленный домашний путь для проверки безопасной подстановки
     assert scaffold.safe_dir("/home/u/%PATH%") == scaffold.DIR_PLACEHOLDER
 
 
