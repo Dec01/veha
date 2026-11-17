@@ -67,9 +67,31 @@ def _no_leftover_rewrite():
 def _wait_for_history(path, before=None, timeout=5.0):
     end = time.time() + timeout
     while time.time() < end:
-        if path.is_file() and path.read_bytes() != before:
-            return
+        try:
+            if path.is_file() and path.read_bytes() != before:
+                return
+        except (FileNotFoundError, PermissionError):
+            pass
         time.sleep(0.05)
+
+
+@pytest.mark.parametrize("error_cls", [PermissionError, FileNotFoundError])
+def test_wait_for_history_ignores_transient_read_errors(tmp_path, monkeypatch, error_cls):
+    path = tmp_path / "runs.json"
+    path.write_bytes(b"before")
+    attempts = 0
+
+    def read_bytes(self):
+        nonlocal attempts
+        assert self == path
+        attempts += 1
+        if attempts == 1:
+            raise error_cls()
+        return b"after"
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+    _wait_for_history(path, b"before", timeout=1.0)
+    assert attempts == 2
 
 
 def _two_scopes_without_default(root):
@@ -84,9 +106,11 @@ def _two_scopes_without_default(root):
 
 def test_run_gets_the_shown_scope(small_root, fake_popen):
     c = make_client(small_root, readonly=False)
-    assert c.post("/api/runner/start", json={"suite": "smoke"}).status_code == 200
+    response = c.post("/api/runner/start", json={"suite": "smoke"})
+    assert response.status_code == 200
     env = fake_popen[0]["env"]
     assert (env["ATLAS_SYSTEM"], env["ATLAS_ENV"]) == ("default", "default")
+    assert env["ATLAS_RUN_ID"] == response.json()["run"]["id"]
     args = fake_popen[0]["args"]
     assert "-p" in args and args[args.index("-p") + 1] == "no:cacheprovider"
 
@@ -446,3 +470,81 @@ def test_demo_startup_does_not_warn_about_trend(demo_root, monkeypatch, capsys):
     monkeypatch.delenv("ATLAS_ENV", raising=False)
     assert cli.main(["serve", "--root", str(demo_root), "--no-browser"]) == 0
     assert "тренда" not in capsys.readouterr().out
+
+
+def test_rotation_failed_still_updates_map_after_history(small_root, fake_popen, monkeypatch):
+    """Raw уже опубликован: prune-ошибка видна, но не оставляет карту старой."""
+    import yaml
+
+    from veha import allure_runner
+    from veha.core import map_state
+    from veha.runner import Runner
+
+    config_path = small_root / "atlas.yaml"
+    config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    config["runner"]["allure"] = {}
+    config_path.write_text(yaml.safe_dump(config, allow_unicode=True, sort_keys=False),
+                           encoding="utf-8")
+    monkeypatch.setattr(allure_runner, "prepare",
+                        lambda *args, **kwargs: {"recovery": "ok"})
+
+    def published_with_failed_prune(self):
+        self._set_report({"status": "rotation_failed", "snapshot": "published-raw",
+                          "error": "prune failed"})
+
+    monkeypatch.setattr(Runner, "_publish_allure", published_with_failed_prune)
+    updates = []
+    monkeypatch.setattr(map_state, "update",
+                        lambda *args, **kwargs: updates.append((args, kwargs)))
+    client = make_client(small_root, readonly=False)
+    hist = artifact_path(small_root, "runner.history")
+    before = hist.read_bytes()
+    response = client.post("/api/runner/start", json={"suite": "smoke"})
+    assert response.status_code == 200
+    client.app.state.veha.runner.wait(5)
+    _wait_for_history(hist, before)
+
+    assert len(updates) == 1
+    last = json.loads(hist.read_text(encoding="utf-8"))["runs"][-1]
+    assert last["report"]["status"] == "rotation_failed"
+    assert last["report"]["error"] == "prune failed"
+
+
+# ------------------------------------------------------------------
+
+
+def test_suite_display_scope_is_shared_and_does_not_change_map_scope(tmp_path):
+    from veha.config import Config
+    from veha.runner import suites
+
+    cfg = Config(root=tmp_path, raw={"runner": {"suites": {
+        "browser": {"args": ["tests/ui"], "browser": True},
+        "windows": {"args": [r"tests\ui\smoke"]},
+        "acceptance": {"args": ["checks/browser"], "browser": True},
+        "api": {"args": ["tests/api"], "map_scope": "api"},
+        "ui-map": {"args": ["tests/api"], "map_scope": "ui"},
+    }}})
+    by_key = {suite.key: suite for suite in suites(cfg)}
+    assert by_key["browser"].display_scope == "ui"
+    assert by_key["browser"].browser is True
+    assert by_key["browser"].map_scope == ""
+    assert by_key["windows"].display_scope == "ui"
+    assert by_key["acceptance"].display_scope == "ui"
+    assert by_key["api"].display_scope == "api"
+    assert by_key["ui-map"].display_scope == "ui"
+
+
+def test_runner_suites_api_exposes_display_scope_and_browser(small_root):
+    import yaml
+
+    path = small_root / "atlas.yaml"
+    config = yaml.safe_load(path.read_text(encoding="utf-8"))
+    config["runner"]["suites"] = {
+        "browser": {"args": ["tests/ui"], "browser": True},
+        "api": {"args": ["tests/api"]},
+    }
+    path.write_text(yaml.safe_dump(config, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    suites = make_client(small_root).get("/api/runner/suites").json()["suites"]
+    assert suites[0]["scope"] == "ui" and suites[0]["browser"] is True
+    assert suites[0]["mapScope"] == ""
+    assert suites[1]["scope"] == "api" and suites[1]["browser"] is False

@@ -43,7 +43,7 @@ from partest_atlas import artifacts
 from partest_atlas.artifacts import KINDS, PAYLOAD_KEYS, SCHEMA_VERSION, Scope
 
 from veha import redact
-from veha.config import Config
+from veha.config import Config, is_link
 
 # ---------------------------------------------------------------------------
 # артефакты агента
@@ -353,14 +353,11 @@ def base_nodeid(nodeid: Optional[str]) -> str:
     return head + sep + _PARAM_RE.sub("", last)
 
 
-def param_variant(nodeid: str, parameters: List[dict]) -> str:
-    """Кандидат в вариант по параметрам Allure, когда `name` его не несёт.
+def atlas_param_variant(nodeid: str, parameters: List[dict]) -> str:
+    """Догадка о nodeid варианта у агента, не канонический identity Allure.
 
-    `@allure.title` заменяет `name`, и `[...]` из него пропадает. Параметры остаются, а
-    id pytest для простых значений — значения через `-`. Это **догадка**: явные `ids=`
-    дают другой id. Поэтому кандидат годится, только если агент записал ровно такой
-    nodeid; иначе соединение уходит в неоднозначную ветку (см. `graph.Joiner`).
-    Значения берутся после маскирования: секретный параметр вариантом не станет.
+    Pytest соединяет простые значения через `-`. Эта форма нужна только для соединения
+    с observations Atlas: она может быть неинъективной и потому не сворачивает attempts.
     """
     if not nodeid or base_nodeid(nodeid) != nodeid or not parameters:
         return ""
@@ -373,6 +370,31 @@ def param_variant(nodeid: str, parameters: List[dict]) -> str:
     return f"{nodeid}[{'-'.join(values)}]"
 
 
+def param_variant(nodeid: str, parameters: List[dict]) -> str:
+    """Инъективный fallback identity для `@allure.title`, скрывающего точный variant.
+
+    Пары имя/значение сериализуются JSON после маскирования: границы параметров и
+    дефисы внутри значений не теряются. Это не предполагаемый nodeid агента.
+    """
+    if not nodeid or base_nodeid(nodeid) != nodeid or not parameters:
+        return ""
+    values = [[str(p.get("name", "")), str(p.get("value", ""))]
+              for p in redact.parameters(parameters) if isinstance(p, dict)]
+    if not values:
+        return ""
+    encoded = json.dumps(values, ensure_ascii=False, separators=(",", ":"))
+    return f"{nodeid}[params:{encoded}]"
+
+
+def test_identity(test: Dict[str, Any]) -> str:
+    """Единый identity: точный Allure variant, fallback параметров лишь без него."""
+    variant = str(test.get("variant") or "")
+    nodeid = str(test.get("nodeid") or "")
+    if variant and variant != nodeid:
+        return variant
+    return str(test.get("paramVariant") or variant or nodeid or test.get("file") or "")
+
+
 def variant_of(nodeid: str, name: str) -> str:
     """Вариант параметризованного теста по результату Allure.
 
@@ -381,8 +403,13 @@ def variant_of(nodeid: str, name: str) -> str:
     """
     if not nodeid or base_nodeid(nodeid) != nodeid:
         return nodeid
-    m = re.search(r"\[.*\]$", name or "")
-    return nodeid + m.group(0) if m else nodeid
+    function = nodeid.rsplit("::", 1)[-1]
+    prefix = function + "["
+    # Только стандартная форма pytest ``test_x[a]``: пользовательский
+    # ``@allure.title("Проверка [smoke]")`` остаётся title, а не становится variant.
+    if (name or "").startswith(prefix) and (name or "").endswith("]"):
+        return nodeid + (name or "")[len(function):]
+    return nodeid
 
 
 def screens(cfg: Config) -> List[dict]:
@@ -680,12 +707,15 @@ def short_error(details: dict) -> Dict[str, str]:
     lines = [ln.rstrip() for ln in msg.splitlines() if ln.strip()]
     head = lines[0] if lines else ""
     body = [ln.strip() for ln in lines[1:8]]
+    # Traceback отдаётся с начала исходной строки с пределом 30 000 символов;
+    # отдельного извлечения фрагмента от «Traceback» до исходной причины здесь нет.
+    trace = redact.text((details or {}).get("trace") or "")
     return {"head": head[:300], "body": "\n".join(body)[:900],
-            "trace": redact.text((details or {}).get("trace") or "")[-1600:]}
+            "trace": trace[:30000]}
 
 
-# Идентификатор требования: «REQ-6.5», «API-2.1». Форма общая, префикс не наш.
-_REQ_REF_RE = re.compile(r"\b([A-Z][A-Z0-9]{1,7}-\d+(?:\.\d+)*)\b")
+# Идентификатор требования: «REQ-6.5», «API-2.1»; «~N» — суффикс дедупликации Atlas.
+_REQ_REF_RE = re.compile(r"\b([A-Z][A-Z0-9]{1,7}-\d+(?:\.\d+)*(?:~\d+)*)\b")
 
 
 def _req_refs(result: dict, labels: Dict[str, str]) -> List[str]:
@@ -758,37 +788,91 @@ def attachment_sources(result: Any, depth: int = 0) -> List[str]:
     return found
 
 
-def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Dict[str, Any]:
-    """Вызовы по эндпоинтам, список тестов и имена вложений, которые тесты называют.
-    Что из тестов — последний прогон, решает граф.
+def allure_result_path(directory: Path, name: str) -> Path:
+    """Обычный result-файл прямо в *directory*; ссылки и escape запрещены до чтения."""
+    if not name or Path(name).name != name:
+        raise ValueError("результат Allure: недопустимое имя файла")
+    path = directory / name
+    if is_link(path):
+        raise ValueError("результат Allure: символическая ссылка не читается")
+    try:
+        base = directory.resolve(strict=True)
+        resolved = path.resolve(strict=True)
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise ValueError("результат Allure: файл не читается") from exc
+    if resolved.parent != base or is_link(path) or not path.is_file():
+        raise ValueError("результат Allure: путь вне каталога или не обычный файл")
+    return path
 
-    *d* — :attr:`Config.allure_dir`; `None` (путь в `atlas.yaml` негоден) и отсутствующий
-    каталог — «отчётов нет». `attachments` — единственный список файлов, которые сервер и
-    снимок отдают как вложения: имя названо тестом этого каталога и похоже на вложение
-    Allure. Иначе при `reports.allure: .` по имени отдавался бы любой файл корня.
+
+def _attempt_time(result: dict) -> Tuple[float, float]:
+    """Фактический порядок попыток; UUID и имя raw-файла в нём не участвуют."""
+    def number(value: Any) -> float:
+        return float(value) if isinstance(value, (int, float)) \
+            and not isinstance(value, bool) else 0.0
+
+    return number(result.get("start")), number(result.get("stop"))
+
+
+def _attempt_order(path: Path, result: dict) -> tuple:
+    """start/stop, затем наблюдаемый mtime; UUID и имя файла не участвуют.
+
+    При равных timestamps и mtime канонический JSON даёт лишь deterministic fallback:
+    он не утверждает хронологию, но одинаков при любом порядке обхода каталога.
+    """
+    try:
+        mtime_ns = path.lstat().st_mtime_ns
+    except OSError:
+        mtime_ns = 0
+    canonical = json.dumps(result, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return (*_attempt_time(result), mtime_ns, canonical)
+
+
+def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Dict[str, Any]:
+    """Вызовы, финальные попытки тестов и их вложения из одного raw-каталога.
+
+    Несколько результатов одного variant (для legacy — nodeid или имени файла) — attempts
+    одного теста, а не несколько тестов. Победитель определяется по ``start/stop``, затем
+    ``mtime``; при полном равенстве — каноническим JSON как deterministic fallback, не
+    хронологией. Только его шаги и вложения попадают в результат. Raw не удаляется.
+
+    `attachments` — единственный список файлов, которые сервер и снимок отдают как вложения:
+    источник назван победившим тестом и похож на вложение Allure. Ссылочные result-файлы
+    пропускаются с явной записью в ``problems`` и никогда не открываются.
     """
     calls: Dict[str, List[dict]] = defaultdict(list)
     tests: List[dict] = []
     attachments: set = set()
+    problems: List[str] = []
     if d is None or not d.is_dir():
-        return {"calls": calls, "tests": tests, "attachments": attachments}
+        return {"calls": calls, "tests": tests, "attachments": attachments,
+                "problems": problems}
     markers = list(ui_markers or [])
+    attempts: Dict[str, Tuple[tuple, dict, dict]] = {}
 
     for f in sorted(d.glob("*result.json")):
+        try:
+            allure_result_path(d, f.name)
+        except ValueError as exc:
+            problems.append(redact.text(f"{f.name}: {exc}"))
+            continue
         try:
             r = json.loads(f.read_text(encoding="utf-8"))
         except Exception:
             continue
+        if not isinstance(r, dict):
+            continue
         full = r.get("fullName") or ""
         nodeid = nodeid_from_full(full)
         lab = _labels(r)
-        start, stop = r.get("start") or 0, r.get("stop") or 0
+        start, stop = _attempt_time(r)
         status = r.get("status")
         test = {
             "name": r.get("name") or full.split("#")[-1],
             "nodeid": nodeid,
             "variant": variant_of(nodeid, r.get("name") or ""),
             "paramVariant": param_variant(nodeid, r.get("parameters") or []),
+            "atlasVariant": atlas_param_variant(nodeid, r.get("parameters") or []),
             "status": status,
             "suite": full,
             "isUi": _is_ui(full, lab, markers),
@@ -803,15 +887,23 @@ def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Di
             "params": [f"{p.get('name')}={p.get('value')}"
                        for p in redact.parameters(r.get("parameters") or [])][:6],
             "reqs": _req_refs(r, lab),
+            "attachments": [a for a in attachment_sources(r) if is_allure_attachment(a)],
             # детали (дерево шагов, вложения) читаются по требованию
             "file": f.name,
         }
         if status in ("failed", "broken"):
             test["error"] = short_error(r.get("statusDetails") or {})
-        attachments.update(a for a in attachment_sources(r) if is_allure_attachment(a))
+        key = test_identity(test)
+        order = _attempt_order(f, r)
+        previous = attempts.get(key)
+        if previous is None or order > previous[0]:
+            attempts[key] = (order, r, test)
+
+    for _, r, test in attempts.values():
+        nodeid = test["nodeid"]
+        attachments.update(test["attachments"])
         flat: List[dict] = []
         _walk_steps(r.get("steps") or [], flat)
-
         current: Optional[str] = None
         for st in flat:
             m = _STEP_RE.match(st["name"])
@@ -821,6 +913,7 @@ def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Di
                 calls[eid].append({
                     "test": test["name"],
                     "nodeid": nodeid,
+                    "variant": test_identity(test),
                     "status": st["status"],
                     "expect": (m.group("code") or "").strip(),
                     "checks": [],
@@ -833,7 +926,8 @@ def load_allure(d: Optional[Path], ui_markers: Optional[List[str]] = None) -> Di
                     {"name": redact.text(st["name"]), "status": st["status"]}
                 )
         tests.append(test)
-    return {"calls": calls, "tests": tests, "attachments": attachments}
+    return {"calls": calls, "tests": tests, "attachments": attachments,
+            "problems": problems}
 
 
 # ---------------------------------------------------------------------------
@@ -865,13 +959,15 @@ def load(cfg: Config, scope: Optional[Scope] = None) -> Sources:
     problems = (cfg.report_problems() + cfg.path_problems()
                 + ([cov_problem] if cov_problem else []))
     tests_cfg = cfg.section("tests")
+    allure = load_allure(cfg.allure_dir, list(tests_cfg.get("ui_markers") or []))
+    problems += list(allure.get("problems") or [])
     return Sources(
         cfg=cfg,
         artifacts=arts,
         app_map=app_map(cfg),
         coverage=cov,
         coverage_extras=extras,
-        allure=load_allure(cfg.allure_dir, list(tests_cfg.get("ui_markers") or [])),
+        allure=allure,
         containers=containers(cfg),
         domains=domains(cfg),
         depends=list(cfg.raw.get("depends") or []),

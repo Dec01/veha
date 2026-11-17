@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from partest_atlas.artifacts import Scope
+from partest_atlas.artifacts import RUN_ID_ENV, Scope
 from partest_atlas.collect import history
 
 from veha import allure_runner, lifecycle, redact
@@ -159,20 +159,45 @@ class Suite:
     #: Набор гоняет всё. Только такой прогон годится для тренда среднего покрытия:
     #: partest не помечает выбор по путям, а наборы раннера заданы путями.
     full: bool = False
+    #: Область накопленной карты. Полный прогон области удаляет только её устаревшие
+    #: наблюдения; это не меняет смысл ``full`` для тренда покрытия.
+    map_scope: str = ""
+    map_full: bool = False
+    #: Явный признак браузерного набора из конфигурации. Не меняет область очистки карты.
+    browser: bool = False
     #: Сырые overrides валидируются при запуске; список suites в API их не раскрывает.
     env: Any = field(default_factory=dict)
+
+    @property
+    def display_scope(self) -> str:
+        """Область для фильтра и значка; ``map_scope`` здесь намеренно не выводится."""
+        if self.map_scope:
+            return self.map_scope
+        paths_ui = any("ui" in re.split(r"[/\\]", arg) for arg in self.args)
+        return "ui" if self.browser or self.key.startswith("ui") or paths_ui else "api"
 
 
 def suites(cfg: Config) -> List[Suite]:
     out: List[Suite] = []
     for key, spec in (cfg.section("runner").get("suites") or {}).items():
         spec = spec or {}
+        map_scope = spec.get("map_scope") or ""
+        map_full = spec.get("map_full", False)
+        if map_scope not in ("", "api", "ui"):
+            raise ValueError(f"runner.suites.{key}.map_scope: ожидалось api или ui")
+        if not isinstance(map_full, bool):
+            raise ValueError(f"runner.suites.{key}.map_full: ожидалось true или false")
+        if map_full and not map_scope:
+            raise ValueError(f"runner.suites.{key}.map_full: нужен map_scope")
         out.append(Suite(
             key=key,
             label=spec.get("label", key),
             args=list(spec.get("args") or []),
             note=spec.get("note", ""),
             full=bool(spec.get("full")),
+            map_scope=map_scope,
+            map_full=map_full,
+            browser=bool(spec.get("browser")),
             env=spec.get("env", {}),
         ))
     return out
@@ -583,6 +608,9 @@ class Runner:
                 coverage_before=file_signature(self.cfg.coverage_file),
                 report={"status": "not_run"} if allure is not None else None,
             )
+            # Агент помечает каждое наблюдение: накопленная карта берёт только этот прогон,
+            # а не всю историю, оставшуюся в append-артефактах db.effects и bus.flow.
+            env[RUN_ID_ENV] = st.id
             self._state = st
             self._on_finish = on_finish
             self._stopping = False

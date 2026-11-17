@@ -32,7 +32,7 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, List, Optional
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, HTTPException
@@ -42,13 +42,14 @@ from partest_atlas.artifacts import Scope
 from partest_atlas.collect import history as atlas_history
 from pydantic import BaseModel, ConfigDict
 
-from veha import __version__, lifecycle, redact
+from veha import __version__, allure_runner, allure_store, lifecycle, redact
 from veha import config as veha_config
 from veha import runner as veha_runner
 from veha.core import graph as core_graph
+from veha.core import map_state
 from veha.core import sources as core_sources
 from veha.viz import assets
-from veha.viz.live import Live
+from veha.viz.live import Live, LiveGenerationError
 
 STATIC = Path(__file__).resolve().parent / "static"
 DEFAULT_PORT = 8770
@@ -78,6 +79,7 @@ class MrCheck(BaseModel):
     iid: int
     status: str = "checked"     # checked | todo | skip
     note: str = ""
+    generation: str = ""        # поколение очереди, к которой относится отметка
 
 
 class RunRequest(BaseModel):
@@ -114,6 +116,9 @@ class Server:
         self.runner = veha_runner.Runner(self.cfg)
         self._graph: Optional[dict] = None
         self.last_sources: Optional[core_sources.Sources] = None
+        # Карточки и вложения не перечитывают весь raw заново: saved неизменяем,
+        # а current кэшируется по именам, размерам и mtime его result-файлов.
+        self._run_allure_cache: Dict[str, Any] = {}
         self._lock = threading.Lock()
         self.rerun_lock = threading.Lock()
         # Прогон набора и перезапуск кейса ходят на один стенд и пишут в одну область:
@@ -159,8 +164,13 @@ class Server:
         """Каталог результатов Allure — из конфигурации (`reports.allure`), не из корня."""
         return self.cfg.allure_dir
 
-    def require_allure_dir(self) -> Path:
-        """Каталог Allure для чтения файла из него; негодный путь в `atlas.yaml` — 404."""
+    def require_allure_dir(self, snapshot: str = "") -> Path:
+        """Raw-каталог выбранного прогона либо текущий ``reports.allure``."""
+        entry, path = self.selected_run(snapshot)
+        if path is not None:
+            return path
+        if snapshot or entry is not None:
+            raise HTTPException(404, "сохранённый прогон не найден или уже удалён")
         d = self.allure_dir
         if d is None:
             raise HTTPException(404, "путь к результатам Allure в atlas.yaml негоден "
@@ -168,22 +178,105 @@ class Server:
         return d
 
     def sources(self) -> core_sources.Sources:
-        return core_sources.load(self.cfg, self.requested_scope)
+        return map_state.apply(core_sources.load(self.cfg, self.requested_scope))
 
-    def attachment_allowed(self, source: str) -> bool:
-        """Отдаётся ли файл как вложение: имя вложения Allure, названное тестом текущего
-        каталога результатов. Сервер и снимок решают одним этим вызовом."""
-        self.graph()
-        sources = self.last_sources
-        named = (sources.allure.get("attachments") or set()) if sources is not None else set()
+    def _store(self) -> Optional[Path]:
+        raw = self.cfg.section("runner").get("allure")
+        if not isinstance(raw, dict):
+            return None
+        value = raw.get("store", allure_runner.DEFAULT_STORE)
+        if not isinstance(value, str) or not value:
+            return None
+        path = self.cfg.path(value)
+        return path if path is not None and self.cfg.inside_root(path) else None
+
+    def saved_runs(self) -> List[dict]:
+        self.graph_structure()
+        store = self._store()
+        if store is None or self.last_sources is None:
+            return []
+        scope = self.last_sources.artifacts.scope
+        history = self.last_sources.artifacts.payload(atlas_history.KIND)
+        return allure_store.saved_runs(store, system=scope.system, env=scope.env,
+                                       history=history)
+
+    def selected_run(self, snapshot: str = "") -> tuple:
+        runs = self.saved_runs()
+        if snapshot:
+            entry = next((item for item in runs if item["snapshot"] == snapshot), None)
+            if entry is None:
+                raise HTTPException(404, "сохранённый прогон не найден или уже удалён")
+        else:
+            entry = runs[-1] if runs else None
+        if entry is None:
+            return None, None
+        store = self._store()
+        assert store is not None
+        scope = self.last_sources.artifacts.scope
+        _, path = allure_store.raw_snapshot(
+            store, system=scope.system, env=scope.env,
+            history=self.last_sources.artifacts.payload(atlas_history.KIND),
+            snapshot=entry["snapshot"])
+        if path is None:
+            raise HTTPException(404, "сохранённый прогон не найден или уже удалён")
+        return entry, path
+
+    @staticmethod
+    def _allure_signature(path: Path) -> tuple:
+        """Смена current raw без полного разбора; saved raw неизменяем и подписи не требует."""
+        try:
+            return tuple((p.name, stat.st_mtime_ns, stat.st_size)
+                         for p in sorted(path.glob("*result.json"))
+                         for stat in (p.lstat(),))
+        except OSError:
+            return ()
+
+    def run_allure(self, snapshot: str = "", raw: Optional[Path] = None) -> Dict[str, Any]:
+        """Разбор выбранного raw; ``raw`` фиксирует уже разрешённый каталог запроса."""
+        entry, path = (None, raw) if raw is not None else self.selected_run(snapshot)
+        saved = raw is None and entry is not None and path is not None
+        if not saved and path is None:
+            if snapshot or entry is not None:
+                raise HTTPException(404, "сохранённый прогон не найден или уже удалён")
+            path = self.require_allure_dir()
+        signature = None if saved else self._allure_signature(path)
+        key = str(path)
+        cached = self._run_allure_cache.get(key)
+        if cached is None or cached[0] != signature:
+            markers = list(self.cfg.section("tests").get("ui_markers") or [])
+            loaded = core_sources.load_allure(path, markers)
+            cached = (signature, loaded)
+            self._run_allure_cache[key] = cached
+        return cached[1]
+
+    def attachment_allowed(self, source: str, snapshot: str = "",
+                           raw: Optional[Path] = None) -> bool:
+        """Вложение должно быть названо тестом именно выбранного raw-прогона."""
+        named = self.run_allure(snapshot, raw=raw).get("attachments") or set()
         return core_sources.is_allure_attachment(source) and source in named
 
-    def graph(self, refresh: bool = False) -> dict:
+    def graph_structure(self, refresh: bool = False) -> dict:
         with self._lock:
             if refresh or self._graph is None:
                 self.last_sources = self.sources()
                 self._graph = core_graph.build(self.last_sources)
             return self._graph
+
+    def graph(self, refresh: bool = False, snapshot: str = "") -> dict:
+        base = self.graph_structure(refresh=refresh)
+        runs = self.saved_runs()
+        entry, path = self.selected_run(snapshot)
+        graph = dict(base)
+        graph["savedRuns"] = runs
+        if entry is not None and path is not None:
+            allure = self.run_allure(entry["snapshot"], raw=path)
+            run = core_graph.run_summary(allure["tests"], 1)
+            graph["run"] = {**(run or {}), "runKey": entry["snapshot"],
+                            "suite": entry["suite"], "suiteLabel": entry["label"],
+                            "problems": list(allure.get("problems") or [])}
+        elif snapshot:
+            raise HTTPException(404, "сохранённый прогон не найден или уже удалён")
+        return graph
 
     def drop_graph(self) -> None:
         with self._lock:
@@ -346,9 +439,9 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         return True
 
     @app.get("/api/graph")
-    def get_graph(refresh: bool = False) -> dict:
-        """Граф для сцены — без того, что читается только в карточке узла."""
-        g = srv.graph(refresh=refresh)
+    def get_graph(refresh: bool = False, run: str = "") -> dict:
+        """Накопленный граф плюс сводка выбранного сохранённого прогона."""
+        g = srv.graph(refresh=refresh, snapshot=run)
         return {
             **{k: v for k, v in g.items() if k not in ("nodes", "tests")},
             "nodes": [
@@ -377,11 +470,12 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         return {"node": node, "incoming": incoming, "outgoing": outgoing, "tests": tests}
 
     @app.get("/api/log")
-    def get_log(name: str = "", tail: int = 400) -> dict:
-        """Хвост лог-файла проекта. Читаются только файлы из раздела `logs:`."""
+    def get_log(name: str = "", tail: int = 400, end: Optional[int] = None) -> dict:
+        """Порция лога из `logs:`; ``end`` — абсолютный offset её правого края."""
         allowed = dict(srv.cfg.section("logs"))
+        empty_page = {"start": 0, "end": 0, "total": 0, "hasMore": False}
         if not allowed:
-            return {"files": [], "name": "", "lines": [],
+            return {"files": [], "name": "", "lines": [], **empty_page,
                     "note": "в atlas.yaml не объявлена секция logs"}
         key = name or next(iter(allowed))
         rel = allowed.get(key)
@@ -392,26 +486,29 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         if path is None:
             raise HTTPException(400, why or "путь вне проекта")
         if not path.is_file():
-            return {"files": list(allowed), "name": key, "lines": [],
+            return {"files": list(allowed), "name": key, "lines": [], **empty_page,
                     "note": f"файла нет: {rel}"}
         size = path.stat().st_size
         if not size:
             return {"files": list(allowed), "name": key, "path": rel, "size": 0,
-                    "lines": [], "note": f"файл пуст: {rel} (лог пишется при прогоне)"}
+                    "lines": [], **empty_page,
+                    "note": f"файл пуст: {rel} (лог пишется при прогоне)"}
         with path.open("r", encoding="utf-8", errors="replace") as fh:
-            lines = fh.readlines()[-max(1, min(tail, 5000)):]
+            lines = fh.readlines()
+        total = len(lines)
+        stop = total if end is None else max(0, min(end, total))
+        start = max(0, stop - max(1, min(tail, 5000)))
         return {"files": list(allowed), "name": key, "path": rel, "size": size,
-                "lines": [redact.text(ln.rstrip()) for ln in lines]}
+                "lines": [redact.text(ln.rstrip()) for ln in lines[start:stop]],
+                "start": start, "end": stop, "total": total, "hasMore": start > 0}
 
     @app.get("/api/tests")
-    def list_tests(status: str = "", q: str = "", limit: int = 400) -> dict:
-        """Список тестов последнего прогона для вкладки «Отчёт»."""
-        g = srv.graph()
-        run = g.get("run") or {}
-        latest = {t["nodeid"] for t in (run.get("failures") or [])}
-        tests = g.get("tests") or []
-        started = run.get("startedAt") or 0
-        rows = [t for t in tests if not started or t.get("start", 0) >= started]
+    def list_tests(status: str = "", q: str = "", limit: int = 400, run: str = "") -> dict:
+        """Список тестов выбранного сохранённого прогона, не накопленной карты."""
+        allure = srv.run_allure(run)
+        summary = core_graph.run_summary(allure["tests"], 1) or {}
+        failed = {t["nodeid"] for t in (summary.get("failures") or [])}
+        rows = list(allure["tests"])
         if status:
             rows = [t for t in rows if t.get("status") == status]
         if q:
@@ -422,49 +519,44 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
                     or low in (t.get("feature") or "").lower()]
         rows.sort(key=lambda t: (t.get("status") != "failed", t.get("status") != "broken",
                                  t.get("feature") or "", t.get("name") or ""))
-        return {"total": len(rows), "failedKnown": len(latest),
-                "tests": rows[:max(1, min(limit, 2000))]}
+        return {"total": len(rows), "failedKnown": len(failed),
+                "tests": rows[:max(1, min(limit, 2000))],
+                "problems": list(allure.get("problems") or [])}
 
     @app.get("/api/test")
-    def test_detail(nodeid: str = "", file: str = "") -> dict:
-        """Полная карточка теста: дерево шагов, вложения, разбор падения."""
-        g = srv.graph()
-        rec = None
-        for t in g.get("tests") or []:
-            if (file and t.get("file") == file) or (nodeid and t.get("nodeid") == nodeid):
-                rec = t
-                break
+    def test_detail(nodeid: str = "", file: str = "", run: str = "") -> dict:
+        """Полная карточка теста из одного заранее зафиксированного raw-снимка."""
+        base = srv.require_allure_dir(run)
+        allure = srv.run_allure(run, raw=base)
+        rec = next((t for t in allure["tests"]
+                    if (file and t.get("file") == file)
+                    or (nodeid and t.get("nodeid") == nodeid)), None)
         if rec is None:
-            raise HTTPException(404, "тест не найден в текущем allure-results")
-        path = srv.require_allure_dir() / (rec.get("file") or "")
-        if not path.is_file():
-            raise HTTPException(404, f"нет файла результата: {rec.get('file')}")
-        raw = json.loads(path.read_text(encoding="utf-8"))
+            raise HTTPException(404, "тест не найден в выбранном прогоне")
+        try:
+            path = core_sources.allure_result_path(base, rec.get("file") or "")
+            raw = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, json.JSONDecodeError):
+            raise HTTPException(404, f"нет обычного файла результата: {rec.get('file')}") \
+                from None
         return {
             "test": rec,
             "labels": {lb.get("name"): redact.text(lb.get("value"))
                        for lb in raw.get("labels") or []},
             "parameters": redact.parameters(raw.get("parameters") or []),
             "statusDetails": redact.data(raw.get("statusDetails") or {}),
-            "attachments": raw.get("attachments") or [],
+            "attachments": redact.data(raw.get("attachments") or [], depth=64),
             "steps": redact.data(raw.get("steps") or [], depth=64),
             "start": raw.get("start"), "stop": raw.get("stop"),
         }
 
     @app.get("/api/attachment/{source}")
-    def attachment(source: str):
-        """Вложение Allure: только простое имя файла внутри allure-results.
-
-        `Path(source).name == source` отсекает разделители, `:` — имена вида `D:x` на
-        Windows, которые `Path` склеивает в путь на другом диске. И на всякий случай путь
-        после разрешения обязан лежать внутри каталога — как у `/api/log`.
-        """
+    def attachment(source: str, run: str = ""):
+        """Вложение, названное тестом выбранного raw-прогона; произвольный путь запрещён."""
         if not source or Path(source).name != source or ":" in source or ".." in source:
             raise HTTPException(400, "недопустимое имя вложения")
-        base = srv.require_allure_dir().resolve()
-        if not srv.attachment_allowed(source):
-            # Каталог `reports.allure` может быть общим с проектом (`.`, `tests`): по
-            # имени отдаётся только то, что тест назвал своим вложением.
+        base = srv.require_allure_dir(run).resolve()
+        if not srv.attachment_allowed(source, run, raw=base):
             raise HTTPException(404, "вложение не найдено")
         path = (base / source).resolve()
         if path.parent != base:
@@ -479,17 +571,24 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         return {"source": source, "size": path.stat().st_size, "text": text[:400_000]}
 
     # ------------------------------------------------------------------ live
+    def _live_read(read: Any) -> dict:
+        try:
+            return read()
+        except LiveGenerationError as exc:
+            raise HTTPException(404, str(exc)) from None
+
     @app.get("/api/live/containers")
-    def live_containers() -> dict:
-        return srv.live.containers()
+    def live_containers(generation: str = "") -> dict:
+        return _live_read(lambda: srv.live.containers(generation=generation))
 
     @app.get("/api/live/container/{cid}/logs")
-    def live_container_logs(cid: str, tail: int = 200) -> dict:
-        return srv.live.container_logs(cid, tail=tail)
+    def live_container_logs(cid: str, tail: int = 200, generation: str = "") -> dict:
+        return _live_read(lambda: srv.live.container_logs(
+            cid, tail=tail, generation=generation))
 
     @app.get("/api/live/mrs")
-    def live_mrs() -> dict:
-        return srv.live.merge_requests()
+    def live_mrs(generation: str = "") -> dict:
+        return _live_read(lambda: srv.live.merge_requests(generation=generation))
 
     @app.post("/api/live/mr")
     def live_mr_check(req: MrCheck) -> dict:
@@ -497,12 +596,15 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         srv.require_writable("отметки МР не записываются")
         if req.status not in ("checked", "todo", "skip", ""):
             raise HTTPException(400, "статус: checked | todo | skip")
+        # Отметка относится к поколению очереди: удалённый pin нельзя записать в
+        # общий файл, а уже затем вернуть 404 при чтении результата.
+        _live_read(lambda: srv.live.require_generation(req.generation))
         try:
             srv.live.set_mr_check(req.iid, req.status, redact.text(req.note))
         except RuntimeError as exc:
             raise HTTPException(409, str(exc))
         srv.live.invalidate("mrs")
-        return srv.live.merge_requests()
+        return _live_read(lambda: srv.live.merge_requests(generation=req.generation))
 
     # ---------------------------------------------------------------- раннер
     def _remember_run(state, scope: Scope) -> None:
@@ -612,6 +714,8 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
                 "skipped", "partest-atlas не записал прогон: файл истории не понят или "
                            "не записан, файл не тронут (причина — в выводе сервера)",
                 limit_note)
+        if finished and suite is not None and allure_store.raw_published(state.report):
+            map_state.update(srv.cfg, scope, suite, run_id=state.id)
         return _history_outcome("written", note=limit_note)
 
     @app.get("/api/plugins")
@@ -646,7 +750,8 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         neutral_rule = veha_runner.current_rule(history)
         return {
             "suites": [{"key": s.key, "label": s.label, "args": s.args, "note": s.note,
-                        "full": s.full}
+                        "full": s.full, "scope": s.display_scope, "browser": s.browser,
+                        "mapScope": s.map_scope, "mapFull": s.map_full}
                        for s in veha_runner.suites(srv.cfg)],
             "history": [_for_window(h, current_rule, neutral_rule, bool(series))
                         for h in history],

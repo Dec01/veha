@@ -193,10 +193,21 @@ class Joiner:
                 self.agent_variants[base_nodeid(r["nodeid"])].add(r["nodeid"])
                 agent_ids.add(r["nodeid"])
 
+        # atlasVariant — совместимый, но lossy alias агента: границы значений с дефисами
+        # могут дать одинаковую строку у разных canonical identity. Такой alias нельзя
+        # превращать обратно в один тест, даже если у кандидатов совпали все endpoints.
+        alias_identities: Dict[str, set] = defaultdict(set)
+        for test in tests:
+            alias = test.get("atlasVariant")
+            if alias:
+                alias_identities[alias].add(src.test_identity(test))
+        self.ambiguous_aliases = {
+            alias for alias, identities in alias_identities.items() if len(identities) > 1}
+
         self.by_variant: Dict[str, List[List[str]]] = defaultdict(list)
         self.variants: Dict[str, set] = defaultdict(set)
         for test in tests:
-            key = self.key_of(test, agent_ids)
+            key = self.key_of(test, agent_ids, self.ambiguous_aliases)
             if not key:
                 continue
             self.variants[base_nodeid(key)].add(key)
@@ -209,11 +220,14 @@ class Joiner:
         self._cache: Dict[str, Optional[dict]] = {}
 
     @staticmethod
-    def key_of(test: dict, agent_ids: Optional[set] = None) -> str:
+    def key_of(test: dict, agent_ids: Optional[set] = None,
+               ambiguous_aliases: Optional[set] = None) -> str:
         """Вариант теста. `name` с `[...]` — точно; без него (`@allure.title`) — по
         параметрам Allure, но только если агент записал ровно такой nodeid."""
         key = test.get("variant") or test.get("nodeid") or ""
-        guess = test.get("paramVariant") or ""
+        guess = test.get("atlasVariant") or test.get("paramVariant") or ""
+        if guess in (ambiguous_aliases or ()):
+            return src.test_identity(test)
         if key and base_nodeid(key) == key and guess and agent_ids and guess in agent_ids:
             return guess
         return key
@@ -254,10 +268,13 @@ class Joiner:
         out: Optional[dict] = None
         if keys:
             sets = [eps for k in keys for eps in self.by_variant.get(k, [])]
-            ambiguous = not exact_variant and (len(keys) > 1 or agent_many or has_params)
+            ambiguous_alias = nodeid in self.ambiguous_aliases
+            ambiguous = ambiguous_alias or (
+                not exact_variant and (len(keys) > 1 or agent_many or has_params))
             out = {"nodeid": keys[0] if len(keys) == 1 else base,
                    "endpoints": self._common(sets) if ambiguous else self._union(sets),
-                   "exact": not ambiguous or all(s == sets[0] for s in sets)}
+                   "exact": not ambiguous_alias and (
+                       not ambiguous or all(s == sets[0] for s in sets))}
         self._cache[nodeid] = out
         return out
 
@@ -780,7 +797,7 @@ def tests_for_links(tests: List[dict]) -> List[dict]:
     """
     out: Dict[str, dict] = {}
     for test in sorted(tests, key=lambda x: x.get("start") or 0):
-        out[test.get("variant") or test["nodeid"]] = test
+        out[src.test_identity(test)] = test
     return list(out.values())
 
 
@@ -826,7 +843,7 @@ def _test_entry(base: str, how: str, variants: List[dict], latest_keys: set,
     по всем вариантам, каждый — со своим последним статусом: перезапуск `[a]` не должен
     скрывать упавший `[b]`.
     """
-    current = [v for v in variants if (v.get("variant") or v["nodeid"]) in latest_keys]
+    current = [v for v in variants if src.test_identity(v) in latest_keys]
     pool = current if (last_run_full and current) else variants
     worst = max(pool, key=lambda v: _STATUS_RANK.get(v.get("status"), 3))
     seen = [v.get("start") or 0 for v in variants]
@@ -875,7 +892,12 @@ def _link_specs(requirements: List[dict], nodes: Dict[str, Node], tests: List[di
         variants_of[base_nodeid(t["nodeid"])].append(t)
 
     # «тест задел таблицу» — из снятых эффектов; только позадачные записи
-    by_variant = {(t.get("variant") or t["nodeid"]): t for t in tests}
+    by_variant = {}
+    for test in tests:
+        by_variant[src.test_identity(test)] = test
+        if test.get("atlasVariant") and (
+                not joiner or test["atlasVariant"] not in joiner.ambiguous_aliases):
+            by_variant[test["atlasVariant"]] = test
     tests_by_table: Dict[str, List[dict]] = defaultdict(list)
     for eff in db_effects:
         # только точное соединение: какой из неразличимых вариантов задел таблицу,
@@ -1200,7 +1222,7 @@ def build(s: Sources) -> dict:
     # --- требования из спецификаций: «как должно работать» ------------------
     specs = _link_specs(arts.payload("specs.requirements"), nodes,
                         tests_for_links(allure["tests"]), ax["dbEffects"], structure_tests,
-                        {(t.get("variant") or t["nodeid"]) for t in latest},
+                        {src.test_identity(t) for t in latest},
                         last_run_is_full(arts.payload("runner.history"), latest))
 
 

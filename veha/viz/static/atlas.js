@@ -59,7 +59,8 @@ let fullChain = false; // карточка: путь целиком, а не с�
 
 /* ------------------------------------------------------------------ данные */
 async function load(refresh) {
-  G = await window.vehaApi.graph(refresh);
+  const selectedRun = window.vehaDock ? window.vehaDock.selectedRun() : '';
+  G = await window.vehaApi.graph(refresh, selectedRun);
   if (!activeShot) {
     const shots = G.screens || [];
     activeShot = shots.find((s) => s.featured) || shots[0] || null;
@@ -1792,8 +1793,14 @@ function renderSceneHint() {
 bind('refresh', 'click', async (e) => {
   if (window.vehaApi.isStatic) return;   // снимок не пересобирается: кнопка спрятана
   e.target.disabled = true; e.target.textContent = 'Собираю…';
-  await load(true);
-  e.target.disabled = false; e.target.textContent = 'Обновить данные';
+  try {
+    await load(true);
+  } catch (error) {
+    // Удалённый выбранный run не подменяем latest: прежний экран остаётся с явной ошибкой.
+    if (window.vehaDock) window.vehaDock.refreshError(error);
+  } finally {
+    e.target.disabled = false; e.target.textContent = 'Обновить данные';
+  }
 });
 bind('close', 'click', closePanel);
 

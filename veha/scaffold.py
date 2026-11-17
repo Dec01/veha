@@ -864,7 +864,7 @@ def next_steps(p: Plan) -> List[str]:
     root = safe_dir(p.root)
     scope = f"--system {p.system} --env {p.env}"
     sig = p.signals
-    package = "partest-atlas[postgres]>=0.3" if sig.db_postgres else "partest-atlas>=0.3"
+    package = "partest-atlas[postgres]>=0.4" if sig.db_postgres else "partest-atlas>=0.4"
     install = f"pip install \"{package}\""
     if not sig.allure_pytest:
         install += " allure-pytest"

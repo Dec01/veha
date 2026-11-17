@@ -390,3 +390,33 @@ def test_bad_retention_is_rejected_before_writing(tmp_path, keep):
     with pytest.raises(ValueError, match="keep"):
         _publish(tmp_path, "one", keep=keep)
     assert not (tmp_path / "aqa").exists()
+
+
+def test_raw_rename_failure_rolls_back_already_renamed_report(tmp_path, monkeypatch):
+    first = _publish(tmp_path, "one")
+    scope = _scope(tmp_path)
+    before_state = (scope / "state.json").read_bytes()
+    real_replace = os.replace
+    replaced = []
+
+    def fail_raw_swap(src, dst, **kwargs):
+        src, dst = Path(src), Path(dst)
+        if src.parent == scope / ".staging" and dst.parent == scope / "raw":
+            raise OSError("raw rename запрещён")
+        replaced.append((src, dst))
+        return real_replace(src, dst, **kwargs)
+
+    monkeypatch.setattr(allure_store.os, "replace", fail_raw_swap)
+    with pytest.raises(OSError, match="raw rename запрещён"):
+        _publish(tmp_path, "two")
+
+    assert replaced and replaced[0][0].parent == scope / ".staging"
+    assert replaced[0][1].parent == scope / "runs"
+    assert _latest(scope) == scope / "runs" / first.run_id
+    assert (scope / "state.json").read_bytes() == before_state
+    assert _run_names(tmp_path) == [first.run_id]
+    assert [p.name for p in (scope / "raw").iterdir()] == [first.run_id]
+    assert list((scope / ".staging").iterdir()) == []
+    history = json.loads((scope / "atlas" / "default" / "default" / "runs.json").read_text()) \
+        if (scope / "atlas" / "default" / "default" / "runs.json").exists() else None
+    assert history is None  # хранилище не создаёт и не меняет состояние карты

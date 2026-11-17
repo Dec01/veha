@@ -365,9 +365,21 @@ function runBar() {
   const r = g.run;
   if (!r) return '';
   const when = r.startedAt ? new Date(r.startedAt).toLocaleString('ru-RU') : '—';
-  const warn = r.runsFound > 1 ? `<div class="warn">
-      В папке ${num(r.runsFound)} прогона — показан только последний.</div>` : '';
-  return warn + `<div class="runbar">
+  const selected = RS.run || r.runKey || '';
+  const choices = (g.savedRuns || []).slice().reverse();
+  const picker = window.vehaApi.isStatic ? `<div class="filters">
+      <span class="muted">Статический снимок содержит один прогон; выбор другого
+      сохранённого прогона недоступен.</span>
+    </div>` : (choices.length ? `<div class="filters">
+      <label class="muted" for="saved-run">Сохранённый прогон</label>
+      <select id="saved-run" data-run-select>${choices.map((x) => {
+        const at = x.startedAt ? new Date(x.startedAt * 1000).toLocaleString('ru-RU') : '—';
+        return `<option value="${esc(x.key)}" ${selected === x.key ? 'selected' : ''}>${
+          esc(x.suiteLabel || x.suite)} · ${esc(at)} · ${num(x.passed)}/${num(x.total)}</option>`;
+      }).join('')}</select>
+      <span class="muted">карта остаётся накопленной; здесь меняется только просматриваемый прогон</span>
+    </div>` : '');
+  return picker + `<div class="runbar">
       <span class="stat">начало <b>${esc(when)}</b></span>
       <span class="stat">длительность <b>${ms(r.wallMs)}</b></span>
       <span class="stat ok">passed <b>${num(r.passed)}</b></span>
@@ -400,9 +412,12 @@ function failsBody() {
         ${(t.error || {}).body ? `<pre class="errb">${esc(t.error.body)}</pre>` : ''}
         <div class="row">
           ${rerunButton(t.nodeid)}
-          <button class="act sm" data-trace="${esc(t.nodeid)}">Трейс</button>
+          ${(t.error || {}).trace
+            ? `<button class="act sm" data-trace="${esc(t.file)}">Трейс</button>`
+            : '<span class="muted">traceback не записан</span>'}
         </div>
-        <pre class="out hidden" data-trace-for="${esc(t.nodeid)}">${esc((t.error || {}).trace || '')}</pre>
+        ${(t.error || {}).trace ? `<pre class="out hidden"
+          data-trace-for="${esc(t.file)}">${esc(t.error.trace)}</pre>` : ''}
       </div>`).join('') || '<div class="muted pad">в этой группе падений нет</div>'}
     </div>
     <section class="win">
@@ -753,7 +768,8 @@ function renderTableCard(t) {
 
 /* --------------------------------------------------------------------- лог */
 let logState = { name: '', lines: [], files: [], note: '', filter: '',
-                 loading: false, fetched: false };
+                 loading: false, fetched: false, request: 0,
+                 start: 0, end: 0, total: 0, hasMore: false };
 
 function viewLog() {
   // грузим один раз: без флага пустой лог заставлял перезапрашивать
@@ -772,20 +788,55 @@ function viewLog() {
       <span class="muted">${logState.loading ? 'читаю…'
         : `${lines.length} из ${logState.lines.length} строк`}</span>
     </div>
+    ${logState.hasMore ? `<div class="row"><button class="act" data-log-more
+      ${logState.loading ? 'disabled' : ''}>Показать предыдущие 400</button></div>` : ''}
     ${logState.note ? `<div class="warn">${esc(logState.note)}</div>` : ''}
     <pre class="logview">${lines.map((l) =>
       `<span class="${level(l)}">${esc(l)}</span>`).join('\n')}</pre>`;
 }
 
+function logPage(d, lines) {
+  return { start: num(d.start) === '' ? 0 : num(d.start),
+           end: num(d.end) === '' ? lines.length : num(d.end),
+           total: num(d.total) === '' ? lines.length : num(d.total),
+           hasMore: d.hasMore === true };
+}
+
 async function loadLog(name) {
+  const request = ++logState.request;
   logState.loading = true;
+  logState.note = '';
   try {
-    const d = await window.vehaApi.log(name);
-    logState = { ...logState, ...d, loading: false, fetched: true,
-                 note: d.note || '' };
+    const d = await window.vehaApi.log(name, 400);
+    if (request !== logState.request) return;
+    const lines = d.lines || [];
+    logState = { ...logState, ...d, ...logPage(d, lines), lines,
+                 loading: false, fetched: true, note: d.note || '' };
   } catch (e) {
+    if (request !== logState.request) return;
     logState = { ...logState, loading: false, fetched: true,
                  note: 'не прочитать: ' + e };
+  }
+  if (tab === 'log') render();
+}
+
+async function loadMoreLog() {
+  if (logState.loading || !logState.hasMore) return;
+  const request = ++logState.request;
+  const name = logState.name, end = logState.start;
+  logState.loading = true;
+  logState.note = '';
+  if (tab === 'log') render();
+  try {
+    const d = await window.vehaApi.log(name, 400, end);
+    if (request !== logState.request) return;
+    const older = d.lines || [];
+    logState = { ...logState, ...d, ...logPage(d, older),
+                 lines: older.concat(logState.lines), loading: false, fetched: true,
+                 note: d.note || '' };
+  } catch (e) {
+    if (request !== logState.request) return;
+    logState = { ...logState, loading: false, note: 'не прочитать: ' + e };
   }
   if (tab === 'log') render();
 }
@@ -795,7 +846,18 @@ async function loadLog(name) {
  * (request/response, лог, скриншот) — без запуска allure serve. */
 const RS = { status: '', q: '', tests: [], total: 0, loaded: false,
              open: null, detail: null, att: null, attName: '', groupBy: 'feature',
-             mode: 'fails' };   // fails | tests — две половины вкладки «Прогон»
+             mode: 'fails', run: '', error: '',
+             runRequest: 0, testsRequest: 0, detailRequest: 0, attachmentRequest: 0 };
+/* atlas.js и этот файл имеют разные области видимости: состояние прогона и ошибку
+ * refresh передаём только через явный мост, без обращения к приватным RS/openTab снаружи. */
+window.vehaDock = {
+  selectedRun: () => RS.run,
+  refreshError(error) {
+    RS.loaded = true;
+    RS.error = 'данные не обновлены: ' + error;
+    openTab('run');
+  },
+};
 
 /* Вкладка «Прогон»: шапка с итогом и две половины — падения и полный отчёт.
  * Раньше это были две вкладки, «Прогон» и «Отчёт». Разными они не были:
@@ -806,7 +868,8 @@ function viewRun() {
       <button class="chip ${mode === 'fails' ? 'on' : ''}" data-rmode="fails">Падения</button>
       <button class="chip ${mode === 'tests' ? 'on' : ''}" data-rmode="tests">Все тесты и шаги</button>
     </div>`;
-  return runBar() + sw + (mode === 'tests' ? reportBody() : failsBody());
+  const error = RS.error ? `<div class="warn" role="alert">${esc(RS.error)}</div>` : '';
+  return runBar() + sw + error + (mode === 'tests' ? reportBody() : failsBody());
 }
 
 function reportBody() {
@@ -902,37 +965,82 @@ function renderTestDetail() {
     </div>`;
 }
 
-async function loadTests() {
-  RS.loaded = true;
+async function selectRun(run) {
+  const request = ++RS.runRequest;
+  RS.error = '';
   try {
-    const d = await window.vehaApi.tests(RS.status, RS.q, 600);
-    RS.tests = d.tests || [];
-    RS.total = d.total || 0;
+    const selected = await window.vehaApi.graph(false, run);
+    if (request !== RS.runRequest) return;
+    // Сначала успешный graph, потом смена состояния: 404 не должен оставить
+    // интерфейс наполовину переключённым на несуществующий прогон.
+    RS.run = run; RS.loaded = false; RS.tests = []; RS.total = 0;
+    RS.open = null; RS.detail = null;
+    RS.att = null; RS.attName = '';
+    RS.testsRequest += 1; RS.detailRequest += 1; RS.attachmentRequest += 1;
+    g = { ...g, ...selected };
   } catch (e) {
-    RS.tests = []; RS.total = 0;
+    if (request !== RS.runRequest) return;
+    RS.error = 'прогон не открыт: ' + e;
   }
   if (tab === 'run') render();
 }
 
-async function openTest(file) {
-  RS.open = file; RS.att = null; RS.attName = '';
+async function loadTests() {
+  const request = ++RS.testsRequest;
+  const status = RS.status, q = RS.q, run = RS.run;
+  RS.loaded = true;
+  RS.error = '';
   try {
-    RS.detail = await window.vehaApi.test(file);
-  } catch (e) { RS.detail = null; }
-  render();
+    const d = await window.vehaApi.tests(status, q, 2000, run);
+    if (request !== RS.testsRequest) return;
+    RS.tests = d.tests || [];
+    RS.total = d.total || 0;
+  } catch (e) {
+    if (request !== RS.testsRequest) return;
+    RS.tests = []; RS.total = 0;
+    RS.error = 'список тестов не прочитан: ' + e;
+  }
+  if (tab === 'run') render();
+}
+
+async function openTest(file, fromRequirement = false) {
+  const request = ++RS.detailRequest;
+  const run = RS.run, previousOpen = RS.open;
+  RS.open = file; RS.att = null; RS.attName = ''; RS.error = '';
+  RS.attachmentRequest += 1;
+  try {
+    const detail = await window.vehaApi.test(file, run);
+    if (request !== RS.detailRequest || RS.run !== run || RS.open !== file) return;
+    RS.detail = detail;
+  } catch (e) {
+    if (request !== RS.detailRequest || RS.run !== run || RS.open !== file) return;
+    // Старая карточка остаётся целой; рядом видна причина, а не пустота после 404.
+    RS.open = previousOpen;
+    RS.error = fromRequirement && run
+      ? 'Тест из требования недоступен в выбранном сохранённом прогоне: ' + e
+      : 'тест не открыт: ' + e;
+  }
+  if (tab === 'run') render();
 }
 
 async function openAttachment(source, name) {
-  RS.attName = name;
-  if (source.endsWith('.png')) {
-    RS.att = { size: 0, image: window.vehaApi.attachmentImage(source) };
-    render();
-    return;
-  }
+  const request = ++RS.attachmentRequest;
+  const run = RS.run, test = RS.open;
+  RS.att = null; RS.attName = name; RS.error = '';
   try {
-    RS.att = await window.vehaApi.attachment(source);
-  } catch (e) { RS.att = { text: 'не прочитать: ' + e, size: 0 }; }
-  render();
+    if (source.endsWith('.png')) {
+      RS.att = { size: 0, image: window.vehaApi.attachmentImage(source, run) };
+    } else {
+      const att = await window.vehaApi.attachment(source, run);
+      if (request !== RS.attachmentRequest || RS.run !== run || RS.open !== test) return;
+      RS.att = att;
+    }
+  } catch (e) {
+    if (request !== RS.attachmentRequest || RS.run !== run || RS.open !== test) return;
+    RS.att = { text: 'не прочитать: ' + e, size: 0 };
+    RS.error = 'вложение не открыто: ' + e;
+  }
+  if (tab === 'run') render();
 }
 
 /* ------------------------------------------------------------------- live */
@@ -940,7 +1048,7 @@ async function openAttachment(source, name) {
  * Сервер читает снимки из `live.snapshot_dir` (`veha/viz/live.py`) и сам наружу
  * не ходит: откуда снимки берутся — дело адаптеров. */
 const LV = {
-  containers: null, mrs: null, logs: null, logOf: '',
+  containers: null, mrs: null, logs: null, logOf: '', generation: '',
   poll: 0, auto: true, loading: false,
   runFor: '',            // номер МР, для которого выбирают набор
 };
@@ -1063,18 +1171,15 @@ async function loadLive() {
   const pull = async (url) => {
     try { return await url(); } catch (e) { return { error: String(e) }; }
   };
-  // Источники грузим независимо: медленный ответ одного не должен задерживать
-  // другой, а общий Promise.all держал бы контейнеры заложником его таймаута.
-  const cp = pull(window.vehaApi.liveContainers).then((c) => {
-    LV.containers = c;
-    if (AT().setContainerState) AT().setContainerState(c);
-    if (tab === 'live') render();
-  });
-  const mp = pull(window.vehaApi.liveMrs).then((m) => {
-    LV.mrs = m;
-    if (tab === 'live') render();
-  });
-  await Promise.allSettled([cp, mp]);
+  // Контейнеры задают generation; очередь МР читается уже строго из того же снимка.
+  const c = await pull(window.vehaApi.liveContainers);
+  const previous = LV.generation;
+  LV.containers = c;
+  LV.generation = c.generation || '';
+  if (previous !== LV.generation) { LV.logs = null; LV.logOf = ''; }
+  if (AT().setContainerState) AT().setContainerState(c);
+  if (tab === 'live') render();
+  LV.mrs = await pull(() => window.vehaApi.liveMrs(LV.generation));
   LV.loading = false;
   if (tab === 'live') render();
   scheduleLive();
@@ -1090,7 +1195,7 @@ async function setMr(iid, status) {
   try {
     LV.mrs = await (await fetch('/api/live/mr', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ iid: Number(iid), status }),
+      body: JSON.stringify({ iid: Number(iid), status, generation: LV.generation }),
     })).json();
   } catch (e) { /* ошибку покажет следующий опрос */ }
   render();
@@ -1106,7 +1211,7 @@ async function loadContainerLog(cid) {
   LV.logs = { lines: [], note: 'читаю…' };
   render();
   try {
-    LV.logs = await (await fetch(`/api/live/container/${encodeURIComponent(cid)}/logs`)).json();
+    LV.logs = await window.vehaApi.liveContainerLog(cid, LV.generation);
   } catch (e) { LV.logs = { lines: [], note: 'не прочитать: ' + e }; }
   render();
 }
@@ -1161,14 +1266,26 @@ function viewRunner() {
         (r.tail || []).slice(-14).map(esc).join('\n')}</pre>
     </section>`;
 
-  const cards = RN.suites.map((sv) => `
-    <div class="suite">
+  const suiteQ = (RN.q || '').toLowerCase();
+  const suiteScope = RN.mapScope || '';
+  const suiteRows = RN.suites.filter((sv) => {
+    const scope = sv.scope || sv.mapScope || 'api';
+    return (!suiteScope || scope === suiteScope)
+      && (!suiteQ || `${sv.key} ${sv.label} ${sv.note || ''}`.toLowerCase().includes(suiteQ));
+  });
+  const cards = suiteRows.map((sv) => {
+    const scope = sv.scope || sv.mapScope || 'api';
+    return `<div class="suite">
       <div class="sn">${esc(sv.label)}</div>
+      <div><span class="chip">${scope === 'ui' ? 'UI' : 'API'}</span>${sv.mapFull
+        ? ' <span class="chip" title="Полный прогон заменяет накопленную карту своей области">полный для карты</span>'
+        : ''}</div>
       <div class="muted">${esc(sv.note || sv.args.join(' '))}</div>
       ${OFF ? window.vehaApi.offline('Запустить')
         : `<button class="act sm" data-run="${esc(sv.key)}" ${RN.busy ? 'disabled' : ''}>
         Запустить</button>`}
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   const hist = RN.history.slice().reverse().map((h) => {
     const cov = h.coverage || {};
@@ -1212,7 +1329,14 @@ function viewRunner() {
       ${RN.note ? `<span class="muted">${esc(RN.note)}</span>` : ''}
     </div>
     ${progress}
-    <section class="win"><h3>Наборы</h3><div class="suites">${cards}</div></section>
+    <section class="win"><h3>Наборы <span class="chip">${suiteRows.length} из ${RN.suites.length}</span></h3>
+      <div class="filters">
+        <input type="search" data-suite-q value="${esc(RN.q || '')}" placeholder="набор, сервис или слой…">
+        ${[['', 'все'], ['api', 'API'], ['ui', 'UI']].map(([value, label]) =>
+          `<button class="chip ${suiteScope === value ? 'on' : ''}" data-suite-scope="${value}">${label}</button>`).join('')}
+      </div>
+      <div class="suites">${cards || '<div class="muted pad">под фильтр ничего не подошло</div>'}</div>
+    </section>
     <section class="win">
       <h3>История прогонов <span class="chip">${RN.history.length}</span></h3>
       ${historyLine()}
@@ -1562,7 +1686,7 @@ function wire() {
     el.addEventListener('click', () => {
       if (!el.dataset.reqTest) return;
       go('run'); RS.mode = 'tests';
-      openTest(el.dataset.reqTest);
+      openTest(el.dataset.reqTest, true);
     }));
   dockBody.querySelectorAll('[data-sp-open]').forEach((el) =>
     el.addEventListener('click', () => {
@@ -1589,6 +1713,16 @@ function wire() {
   if (clear) clear.addEventListener('click', () => {
     Object.keys(F).forEach((k) => (F[k] = ''));
     applyFilter();
+  });
+  const savedRun = dockBody.querySelector('[data-run-select]');
+  if (savedRun) savedRun.addEventListener('change', () => selectRun(savedRun.value));
+  dockBody.querySelectorAll('[data-suite-scope]').forEach((el) =>
+    el.addEventListener('click', () => { RN.mapScope = el.dataset.suiteScope; render(); }));
+  const suiteQ = dockBody.querySelector('[data-suite-q]');
+  if (suiteQ) suiteQ.addEventListener('input', () => {
+    RN.q = suiteQ.value; render();
+    const again = dockBody.querySelector('[data-suite-q]');
+    if (again) { again.focus(); again.setSelectionRange(9999, 9999); }
   });
   dockBody.querySelectorAll('[data-run]').forEach((el) =>
     el.addEventListener('click', () => startRun(el.dataset.run)));
@@ -1659,7 +1793,9 @@ function wire() {
     if (again) { again.focus(); again.setSelectionRange(9999, 9999); }
   });
   dockBody.querySelectorAll('[data-log]').forEach((el) => el.addEventListener('click', () => {
-    logState.lines = []; logState.fetched = false; loadLog(el.dataset.log);
+    logState = { ...logState, name: el.dataset.log, lines: [], fetched: false,
+                 start: 0, end: 0, total: 0, hasMore: false };
+    loadLog(el.dataset.log);
   }));
   const lq = dockBody.querySelector('[data-logq]');
   if (lq) lq.addEventListener('input', () => {
@@ -1669,6 +1805,8 @@ function wire() {
   });
   const lr = dockBody.querySelector('[data-log-reload]');
   if (lr) lr.addEventListener('click', () => loadLog(logState.name));
+  const lm = dockBody.querySelector('[data-log-more]');
+  if (lm) lm.addEventListener('click', loadMoreLog);
   dockBody.querySelectorAll('[data-grpby]').forEach((el) => el.addEventListener('click', () => {
     groupBy = el.dataset.grpby; collapsed.clear(); render();
   }));
@@ -1781,6 +1919,11 @@ document.addEventListener('atlas:selection', (e) => {
 
 document.addEventListener('atlas:ready', (e) => {
   g = e.detail;
+  // Refresh мог сменить default run. Старый список и карточка не должны остаться
+  // рядом с новой шапкой даже на время следующего запроса.
+  RS.loaded = false; RS.tests = []; RS.total = 0;
+  RS.open = null; RS.detail = null; RS.att = null; RS.attName = '';
+  RS.testsRequest += 1; RS.detailRequest += 1; RS.attachmentRequest += 1;
   applyFilter();
 });
 

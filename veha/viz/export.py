@@ -352,7 +352,15 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
         for name, data in files.items():
             write(f"static/{name}", data)
 
-        write("api/graph.json", dump(_relative_assets(api["/api/graph"](refresh=False))))
+        # Один снимок — один прогон и один raw-каталог. Накопленный граф содержит
+        # тесты разных запусков, а текущий reports.allure может уже относиться к
+        # следующему: ни список, ни детали, ни вложения нельзя брать из них вместо
+        # выбранного saved run.
+        run_key = str((g.get("run") or {}).get("runKey") or "")
+        allure = srv.require_allure_dir(run_key)
+
+        write("api/graph.json", dump(_relative_assets(
+            api["/api/graph"](refresh=False, run=run_key))))
         artifacts = api["/api/artifacts"](refresh=False)
         artifacts["config"]["path"] = veha_config.CONFIG_NAME
         write("api/artifacts.json", dump(artifacts))
@@ -380,23 +388,21 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
         write("api/node/index.json", dump(index))
         count("nodes", len(index))
 
-        tests = api["/api/tests"](status="", q="", limit=2000)
+        tests = api["/api/tests"](status="", q="", limit=2000, run=run_key)
         if tests["total"] > len(tests["tests"]):
             report.skipped.append(f"список тестов урезан сервером: {len(tests['tests'])} "
                                   f"из {tests['total']}")
         write("api/tests.json", dump(tests))
 
-        # Каталог Allure — тот же, что у сервера (`reports.allure`); может лежать и вне
-        # корня: файлы из него идут под тем же замком (`_read_inside`), что и из корня.
-        allure = srv.allure_dir
+        # Raw выбранного прогона может лежать вне корня: файлы из него идут под тем
+        # же замком (`_read_inside`), что и из корня. Путь зафиксирован выше и не
+        # переключается на текущий reports.allure между деталями и вложениями.
         sources: List[str] = []
-        for t in g.get("tests") or []:
+        for t in tests["tests"]:
             fname = t.get("file") or ""
             try:
-                if allure is None:
-                    raise _Skip("путь reports.allure в atlas.yaml негоден")
                 _read_inside(allure, fname)       # тот же замок, что у вложений
-                detail = api["/api/test"](nodeid="", file=fname)
+                detail = api["/api/test"](nodeid="", file=fname, run=run_key)
             except _Skip as why:
                 report.skipped.append(f"тест {fname!r}: {why}")
                 continue
@@ -409,18 +415,16 @@ def _build(root: Path, dest: Path, scope: Optional[Scope]) -> ExportReport:
 
         for source in sorted(set(sources)):
             try:
-                if allure is None:
-                    raise _Skip("путь reports.allure в atlas.yaml негоден")
-                if not srv.attachment_allowed(source):
+                if not srv.attachment_allowed(source, run_key):
                     # та же выборка, что у `/api/attachment` сервера: имя вложения
-                    # Allure, названное тестом этого каталога
+                    # Allure, названное тестом выбранного raw-прогона
                     raise _Skip("не вложение Allure")
                 data = _read_inside(allure, source, ATTACHMENT_LIMIT)
                 if source.lower().endswith(".png"):
                     write(f"api/attachment/{source}", data)
                 else:
                     write(f"api/attachment/{source}.json",
-                          dump(api["/api/attachment/{source}"](source)))
+                          dump(api["/api/attachment/{source}"](source, run=run_key)))
                 count("attachments")
             except _Skip as why:
                 report.skipped.append(f"вложение {source!r}: {why}")

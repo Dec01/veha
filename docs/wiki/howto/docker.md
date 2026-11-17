@@ -1,8 +1,8 @@
 ---
 title: Веха в контейнере
 status: current
-verified: 2026-11-16
-sources: [Dockerfile, compose.example.yaml, .dockerignore, veha/cli.py, veha/listen.py, veha/viz/app.py, veha/config.py]
+verified: 2026-11-17
+sources: [Dockerfile, compose.example.yaml, .dockerignore, veha/cli.py, veha/listen.py, veha/viz/app.py, veha/config.py, veha/runner.py, veha/allure_store.py, veha/core/map_state.py, veha/viz/live.py]
 audience: user
 # адреса 127.0.0.1 и 0.0.0.0 линтер принимает за версии
 allow_version_literals: true
@@ -118,6 +118,8 @@ curl без этих заголовков с `Host: 127.0.0.1:8770` пройдё
 | Запись | Куда | Когда |
 |---|---|---|
 | история прогонов `runner.history` | `<artifacts_dir>/<система>/<контур>/runs.json` | после прогона набора |
+| отчёты и raw-снимки Allure | `<runner.allure.store>/<система>/<контур>/<набор>/` (по умолчанию `.veha/allure/…`) | публикация и ротация после прогона |
+| накопленное состояние карты | `.veha/map/<система>/<контур>/state.json` | после завершённого прогона с опубликованным Allure |
 | состояние, audit и manifest lifecycle-плагинов | `.veha/lifecycle/` в корне проекта | настройки и прогон с `lifecycle_plugins` |
 | отметки МР | `<live.snapshot_dir>/mr_checks.json` | отметка в окне «Live» |
 | очистка результатов Allure | файлы `<UUID>-…` в `reports.allure` | кнопка очистки |

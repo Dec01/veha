@@ -169,7 +169,8 @@ def leaky_root(small_root):
                    "steps": [{"name": f"cookie: sid={SECRET}", "status": "failed"}],
                    # вложение шага: сервер отдаёт только то, что назвал тест
                    "attachments": [{"name": "curl", "source": "0a120000-0000-4000-8000-000000000012-attachment.txt"}]}],
-        "attachments": [{"name": "req", "source": "0a110000-0000-4000-8000-000000000011-attachment.json"}],
+        "attachments": [{"name": f"password={SECRET}",
+                         "source": "0a110000-0000-4000-8000-000000000011-attachment.json"}],
     }), encoding="utf-8")
     logs = small_root / "logs"
     (logs / "containers").mkdir(parents=True)
@@ -193,3 +194,140 @@ def test_secrets_are_masked_in_every_answer(leaky_root):
         assert SECRET not in text and TOKEN not in text, text[:300]
     # маскируется значение, а не смысл: схема и ключи остаются видны
     assert "Bearer" in answers[1] and "password" in answers[0]
+
+
+def test_attachment_metadata_is_masked_not_only_its_text(leaky_root):
+    c = make_client(leaky_root)
+    detail = c.get("/api/test", params={"file": "r-result.json"}).json()
+    assert detail["attachments"][0]["name"] == "password=***"
+    assert SECRET not in json.dumps(detail["attachments"], ensure_ascii=False)
+
+
+def test_legacy_map_state_problems_are_masked_on_read(small_root):
+    from veha.core import map_state
+
+    path = small_root / ".veha" / "map" / "default" / "default" / "state.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({
+        "version": map_state.VERSION,
+        # publish-ok: вымышленный секрет в problems унаследованного state проверяет маскирование
+        "problems": [f"повреждённая запись: DB_PASSWORD={SECRET}"],
+    }), encoding="utf-8")
+    response = make_client(small_root).get("/api/graph")
+    assert response.status_code == 200
+    assert SECRET not in response.text
+    assert any("DB_PASSWORD=***" in problem
+               for problem in response.json()["meta"]["reportProblems"])
+
+
+def test_legacy_map_state_payload_is_masked_like_primary_sources(small_root):
+    from partest_atlas.artifacts import Scope
+
+    from veha.config import Config
+    from veha.core import map_state, sources
+
+    nodeid = "tests/test_saved.py::test_saved"
+    path = small_root / ".veha" / "map" / "default" / "default" / "state.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({
+        "version": map_state.VERSION,
+        "allure": {
+            "tests": [{
+                "name": "saved", "nodeid": nodeid, "variant": nodeid,
+                "status": "failed", "start": 1, "stop": 2, "ms": 1,
+                "feature": "", "story": "", "parentSuite": "", "isUi": False,
+                "endpoints": ["api:GET /saved"], "file": "saved-result.json",
+                # publish-ok: вымышленный секрет в ошибке унаследованного state проверяет маскирование
+                "error": {"head": f"AssertionError: DB_PASSWORD={SECRET}",
+                          "body": "", "trace": ""},
+            }],
+            "calls": {"api:GET /saved": [{
+                "test": "saved", "nodeid": nodeid, "variant": nodeid,
+                "checks": [{"name": f"token={SECRET}", "status": "failed"}],
+            }]},
+            "attachments": [f"token={SECRET}-attachment.txt"],
+        },
+        "coverage": {
+            "endpoints": [{"id": "api:GET /saved", "method": "GET", "path": "/saved",
+                           "coverage": 100, "note": f"password={SECRET}"}],
+            # publish-ok: вымышленный секрет в coverage extras унаследованного state проверяет маскирование
+            "extras": {"note": f"DB_PASSWORD={SECRET}"},
+        },
+        "artifacts": {"db.effects": {"records": [{
+            "nodeid": nodeid, "table": "session", "note": f"Authorization: Bearer {SECRET}",
+        }]}},
+    }), encoding="utf-8")
+
+    loaded = map_state.apply(sources.load(Config(root=small_root, raw={}), Scope()))
+    assert loaded.allure["tests"][0]["error"]["head"] == "AssertionError: DB_PASSWORD=***"
+    assert loaded.allure["calls"]["api:GET /saved"][0]["checks"][0]["name"] == "token=***"
+    assert loaded.allure["attachments"] == {"token=***"}
+    assert loaded.coverage["api:GET /saved"]["note"] == "password=***"
+    assert loaded.coverage_extras["note"] == "DB_PASSWORD=***"
+    effect = loaded.artifacts.payload("db.effects")[0]
+    assert effect["note"] == "Authorization: Bearer ***"
+    assert effect["table"] == "session"       # идентификаторы Atlas не искажаются
+
+    response = make_client(small_root).get("/api/graph")
+    assert response.status_code == 200, response.text
+    assert SECRET not in response.text
+    assert response.json()["run"]["failures"][0]["error"]["head"] == \
+        "AssertionError: DB_PASSWORD=***"
+    assert response.json()["coverage"]["note"] == "DB_PASSWORD=***"
+    assert response.json()["dbEffects"][0]["note"] == "Authorization: Bearer ***"
+
+
+@pytest.mark.parametrize("endpoint", ["token", "session", "authorization"])
+def test_map_state_sensitive_endpoint_keys_keep_call_records(small_root, endpoint):
+    from partest_atlas.artifacts import Scope
+
+    from veha.config import Config
+    from veha.core import map_state, sources
+
+    nodeid = "tests/test_saved.py::test_saved"
+    endpoint_id = f"api:GET /{endpoint}"
+    path = small_root / ".veha" / "map" / "default" / "default" / "state.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({
+        "version": map_state.VERSION,
+        "allure": {
+            "tests": [],
+            "calls": {endpoint_id: [{
+                "test": "saved", "nodeid": nodeid, "variant": nodeid, "status": "failed",
+                "checks": [{"name": f"token={SECRET}", "status": "failed"}],
+            }]},
+            "attachments": [],
+        },
+    }), encoding="utf-8")
+
+    loaded = map_state.apply(sources.load(Config(root=small_root, raw={}), Scope()))
+    records = loaded.allure["calls"][endpoint_id]
+    assert isinstance(records, list) and len(records) == 1
+    assert records[0]["checks"][0]["name"] == "token=***"
+
+    response = make_client(small_root).get("/api/graph")
+    assert response.status_code == 200, response.text
+    assert SECRET not in response.text
+    assert any(node["id"] == endpoint_id for node in response.json()["nodes"])
+
+
+def test_result_filename_in_source_problems_is_masked(small_root, monkeypatch):
+    from veha.core import sources
+
+    raw = small_root / "allure-results"
+    raw.mkdir()
+    filename = f"token={SECRET}-result.json"
+    (raw / filename).write_text("broken", encoding="utf-8")
+    real_check = sources.allure_result_path
+
+    def reject_secret_name(directory, name):
+        if name == filename:
+            raise ValueError("символическая ссылка не читается")
+        return real_check(directory, name)
+
+    monkeypatch.setattr(sources, "allure_result_path", reject_secret_name)
+    response = make_client(small_root).get("/api/graph")
+    assert response.status_code == 200
+    assert SECRET not in response.text
+    assert any("token=***" in problem and "символическая ссылка" in problem
+               for problem in response.json()["meta"]["reportProblems"])

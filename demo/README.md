@@ -135,7 +135,7 @@ python demo/generate.py
 Правки руками в `veha/demo_data/atlas.yaml`, `veha/demo_data/app_map.yaml`,
 `veha/demo_data/atlas/` и `veha/demo_data/live/` перетрутся — менять нужно модель
 в начале `demo/generate.py`. Генератору нужен установленный
-`partest-atlas` не ниже 0.3.0: заголовки артефактов проверяются его `validate`,
+`partest-atlas` не ниже 0.4.0: заголовки артефактов проверяются его `validate`,
 контракт, схема БД, связи UI, требования и логи контейнеров собираются его же
 функциями, а срезы покрытия в истории прогонов снимает код сервера
 (`veha.runner.snapshot_of`) поверх его `collect.history.coverage_snapshot` —

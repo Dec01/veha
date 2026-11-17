@@ -107,7 +107,7 @@ def test_next_steps_name_the_commands(tmp_path, capsys):
     root = _project(tmp_path, LITERAL)
     assert _init(root, "--system", "shop", "--env", "stage") == 0
     steps = capsys.readouterr().out.split("Дальше:")[1]
-    assert 'pip install "partest-atlas>=0.3" allure-pytest' in steps
+    assert 'pip install "partest-atlas>=0.4" allure-pytest' in steps
     assert "allure-pytest в зависимостях проекта не найден" in steps
     scope = "--system shop --env stage"
     assert (f"partest-atlas collect openapi --root {root.resolve()} {scope} --service orders"
@@ -156,7 +156,7 @@ def test_db_signals_add_the_schema_step(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "база: psycopg2-binary в requirements.txt" in out
     steps = out.split("Дальше:")[1]
-    assert 'pip install "partest-atlas[postgres]>=0.3"\n' in steps    # allure-pytest уже есть
+    assert 'pip install "partest-atlas[postgres]>=0.4"\n' in steps    # allure-pytest уже есть
     assert f"partest-atlas collect db-schema --root {root.resolve()} --system s --env e" in steps
     assert "# Признак базы: psycopg2-binary в requirements.txt." in _text(root)
 

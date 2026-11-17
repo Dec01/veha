@@ -75,7 +75,25 @@ window.vehaApi = (function () {
     return files.get(path);
   }
 
-  const json = async (url) => (await fetch(url)).json();
+  const json = async (url) => {
+    const response = await fetch(url);
+    let data = null;
+    try { data = await response.json(); } catch (e) {
+      if (response.ok) throw new Error(`${url}: некорректный JSON (${e.message || e})`);
+    }
+    if (!response.ok) {
+      const detail = data && typeof data.detail === 'string' ? ` — ${data.detail}` : '';
+      throw new Error(`${url}: HTTP ${response.status}${detail}`);
+    }
+    return data;
+  };
+
+  // В снимке выгружен один run. Молча отдать его в ответ на другой runKey — значит
+  // подменить выбранный прогон; до появления per-run export такой запрос отклоняем.
+  const oneSnapshot = (run) => {
+    if (run) throw new Error('Статический снимок содержит один прогон; '
+      + 'выбор другого сохранённого прогона недоступен');
+  };
 
   /* Фильтр списка тестов — тот же, что у сервера (`/api/tests`): снимок хранит
    * список целиком, уже упорядоченный, и режет его здесь. */
@@ -156,8 +174,11 @@ window.vehaApi = (function () {
     avgRule,
     coverageAverage,
 
-    graph: (refresh) => (STATIC ? file('api/graph.json')
-      : json('/api/graph' + (refresh ? '?refresh=true' : ''))),
+    async graph(refresh, run) {
+      if (STATIC) { oneSnapshot(run); return file('api/graph.json'); }
+      return json('/api/graph?' + (refresh ? 'refresh=true&' : '')
+        + (run ? 'run=' + encodeURIComponent(run) : ''));
+    },
 
     /* Карточка узла или null, если узла нет. */
     async node(id) {
@@ -170,35 +191,50 @@ window.vehaApi = (function () {
       return r.ok ? r.json() : null;
     },
 
-    async log(name) {
-      if (!STATIC) return json('/api/log' + (name ? '?name=' + encodeURIComponent(name) : ''));
+    async log(name, tail = 400, end) {
+      if (!STATIC) {
+        const q = new URLSearchParams({ tail: String(tail) });
+        if (name) q.set('name', name);
+        if (end !== undefined && end !== null) q.set('end', String(end));
+        return json('/api/log?' + q);
+      }
       const d = await file('api/log.json');
       const key = name || d.first;
-      return (d.logs || {})[key]
+      const found = (d.logs || {})[key]
         || { files: d.names || [], name: key, lines: [], note: `нет лога ${key}` };
+      // В снимке хранится одна порция; повторный запрос не должен prepend'ить её же.
+      return { ...found, hasMore: false };
     },
 
-    async tests(status, q, limit) {
+    async tests(status, q, limit, run) {
       if (!STATIC) {
         return json(`/api/tests?status=${encodeURIComponent(status)}`
-          + `&q=${encodeURIComponent(q)}&limit=${limit}`);
+          + `&q=${encodeURIComponent(q)}&limit=${limit}`
+          + (run ? `&run=${encodeURIComponent(run)}` : ''));
       }
+      oneSnapshot(run);
       return filterTests(await file('api/tests.json'), status, q, limit);
     },
 
-    test(name) {
-      if (!STATIC) return json('/api/test?file=' + encodeURIComponent(name));
+    test(name, run) {
+      if (!STATIC) return json('/api/test?file=' + encodeURIComponent(name)
+        + (run ? `&run=${encodeURIComponent(run)}` : ''));
+      oneSnapshot(run);
       return safe(name) ? file('api/test/' + name) : Promise.reject(new Error('имя теста'));
     },
 
-    attachment(source) {
-      if (!STATIC) return json('/api/attachment/' + encodeURIComponent(source));
+    attachment(source, run) {
+      if (!STATIC) return json('/api/attachment/' + encodeURIComponent(source)
+        + (run ? `?run=${encodeURIComponent(run)}` : ''));
+      oneSnapshot(run);
       return safe(source) ? file('api/attachment/' + source + '.json')
         : Promise.reject(new Error('имя вложения'));
     },
 
-    attachmentImage(source) {
-      if (!STATIC) return '/api/attachment/' + encodeURIComponent(source);
+    attachmentImage(source, run) {
+      if (!STATIC) return '/api/attachment/' + encodeURIComponent(source)
+        + (run ? `?run=${encodeURIComponent(run)}` : '');
+      oneSnapshot(run);
       return safe(source) ? 'api/attachment/' + source : '';
     },
 
@@ -208,6 +244,12 @@ window.vehaApi = (function () {
     /* «Live»: у сервера — опрос снимков стенда, в снимке демо — те же ответы файлом. */
     liveContainers: () => (STATIC ? file('api/live/containers.json')
       : json('/api/live/containers')),
-    liveMrs: () => (STATIC ? file('api/live/mrs.json') : json('/api/live/mrs')),
+    liveMrs: (generation) => (STATIC ? file('api/live/mrs.json')
+      : json('/api/live/mrs' + (generation ? '?generation=' + encodeURIComponent(generation) : ''))),
+    liveContainerLog: (cid, generation) => {
+      const q = new URLSearchParams();
+      if (generation) q.set('generation', generation);
+      return json(`/api/live/container/${encodeURIComponent(cid)}/logs?` + q);
+    },
   };
 }());

@@ -27,7 +27,7 @@ import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 from veha.core.sources import valid_segment
 
@@ -358,6 +358,10 @@ def publish(root: Path, *, system: str, env: str, suite: str, results: Path,
     except Exception:
         _remove_tree(staged_report)
         _remove_tree(staged_raw)
+        # Первый rename мог уже успеть: пара report/raw публикуется либо целиком,
+        # либо не оставляет нового доступного снапшота-сироты.
+        _remove_tree(final_report)
+        _remove_tree(final_raw)
         raise
 
     tmp_latest = scope / f".latest-{uuid.uuid4().hex}.tmp"
@@ -384,3 +388,77 @@ def publish(root: Path, *, system: str, env: str, suite: str, results: Path,
         status, error = "failed", str(exc)
     return StoreResult(system, env, suite, run_id, scope / "latest", tuple(kept),
                        "published", status, error)
+
+
+def raw_published(report: Any) -> bool:
+    """Опубликован ли raw, даже если после переключения failed только ротация.
+
+    ``rotation_failed`` не откатывает ``latest`` и raw: это отдельный сбой удаления
+    старых снапшотов или записи state. Скрывать из-за него уже опубликованный прогон
+    значило бы показывать прежнюю карту рядом с новым отчётом.
+    """
+    return isinstance(report, dict) and report.get("status") in {
+        "published", "rotation_failed",
+    }
+
+
+def saved_runs(root: Path, *, system: str, env: str,
+               history: List[dict]) -> List[dict]:
+    """Завершённые опубликованные прогоны, чей raw ещё сохранён.
+
+    Идентификатор для API — только ``snapshot`` из истории. Клиент не передаёт путь;
+    принадлежность snapshot области и набору подтверждается журналом и ``latest``.
+    Последний сверяется без перезаписи state: после сбоя между переключением latest и
+    записью журнала уже опубликованный raw доступен сразу, ещё до ``recover()``.
+    Незавершённые и неопубликованные запуски в просмотр не попадают.
+    """
+    out: List[dict] = []
+    seen = set()
+    for entry in history:
+        if not isinstance(entry, dict):
+            continue
+        report = entry.get("report") or {}
+        snapshot = report.get("snapshot")
+        if (entry.get("status") != "done" or not entry.get("complete")
+                or not raw_published(report)
+                or not isinstance(snapshot, str) or not valid_segment(snapshot)
+                or snapshot in seen):
+            continue
+        suite = entry.get("suite")
+        if not isinstance(suite, str) or not valid_segment(suite):
+            continue
+        try:
+            scope = _scope(Path(root), system, env, suite, create=False)
+            ids, _ = _recover_ids(scope, system, env, suite)
+            if snapshot not in ids:
+                continue
+            # Сначала родитель: junction raw иначе уведёт snapshot и все API-чтения наружу.
+            _managed_dir(scope, "raw", create=False)
+            raw_dir = scope / "raw" / snapshot
+            _plain_dir(raw_dir, "сохранённые результаты Allure")
+        except (OSError, AllureStoreError, ValueError):
+            continue
+        seen.add(snapshot)
+        out.append({
+            "key": snapshot, "snapshot": snapshot, "suite": suite,
+            "label": entry.get("label") or suite,
+            "startedAt": entry.get("startedAt"), "finishedAt": entry.get("finishedAt"),
+            "total": entry.get("total"), "passed": entry.get("passed"),
+            "failed": entry.get("failed"), "broken": entry.get("broken"),
+            "skipped": entry.get("skipped"),
+        })
+    return out
+
+
+def raw_snapshot(root: Path, *, system: str, env: str, history: List[dict],
+                 snapshot: str = "") -> Tuple[Optional[dict], Optional[Path]]:
+    """Выбранный raw-каталог; пустой snapshot — последний доступный сохранённый run."""
+    runs = saved_runs(root, system=system, env=env, history=history)
+    if not runs:
+        return None, None
+    entry = runs[-1] if not snapshot else next(
+        (item for item in runs if item["snapshot"] == snapshot), None)
+    if entry is None:
+        return None, None
+    scope = _scope(Path(root), system, env, entry["suite"], create=False)
+    return entry, scope / "raw" / entry["snapshot"]

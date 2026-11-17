@@ -8,8 +8,8 @@ import json
 import pytest
 
 from tests.conftest import artifact_path
-from veha.core.graph import build_root
-from veha.core.sources import base_nodeid, norm_screen, variant_of
+from veha.core.graph import Joiner, build_root, tests_for_links as graph_tests_for_links
+from veha.core.sources import base_nodeid, load_allure, norm_screen, variant_of
 
 NODE = "tests/rbac/test_rbac.py::TestRbac::test_write"
 FULL = "tests.rbac.test_rbac.TestRbac#test_write"
@@ -53,6 +53,8 @@ def test_variant_from_allure_name():
     assert variant_of(NODE, "test_write[orders]") == NODE + "[orders]"
     assert variant_of(NODE, "test_write") == NODE
     assert variant_of(NODE + "[x]", "test_write[x]") == NODE + "[x]"
+    assert variant_of(NODE, "Проверка [smoke]") == NODE
+    assert variant_of(NODE, "other_test_write[orders]") == NODE
 
 
 def _result(d, idx, name, write_path):
@@ -89,11 +91,10 @@ def test_distinguishable_variant_writes_only_from_its_own_endpoints(small_root):
     assert _writers(g, "audit_log") == [f"api:POST {INVOICES}"]
 
 
-def test_indistinguishable_variants_do_not_spread_a_write(small_root):
-    """Allure вариантов не различает: эндпоинты, которых этот вариант мог не вызывать,
-    ребро не получают. Общий у вариантов только GET — он не пишет."""
+def test_later_attempt_does_not_inherit_previous_attempt_calls(small_root):
+    """Одинаковый variant — attempts: вызовы победившей попытки не смешиваются с прежними."""
     g = build_root(_rbac_root(small_root, ["test_write", "test_write"]))
-    assert _writers(g, "audit_log") == []
+    assert _writers(g, "audit_log") == [f"api:POST {INVOICES}"]
 
 
 def test_bus_attribution_is_per_variant(small_root):
@@ -128,6 +129,53 @@ def _write_result(d, idx, name, write_path=None, status="passed", parameters=Non
         "start": 1_000 + idx, "stop": 2_000 + idx, "steps": steps}), encoding="utf-8")
 
 
+def test_explicit_variant_ids_win_over_identical_parameter_values(tmp_path):
+    d = tmp_path / "allure-results"
+    d.mkdir()
+    parameters = [{"name": "entity", "value": "same"}]
+    _write_result(d, 1, "test_write[left]", ORDERS, parameters=parameters)
+    _write_result(d, 2, "test_write[right]", INVOICES, parameters=parameters)
+
+    loaded = load_allure(d)
+    assert {t["variant"] for t in loaded["tests"]} == {NODE + "[left]", NODE + "[right]"}
+    assert len(loaded["tests"]) == 2
+    assert len(graph_tests_for_links(loaded["tests"])) == 2
+
+
+def test_title_parameter_fallback_does_not_join_value_boundaries(tmp_path):
+    d = tmp_path / "allure-results"
+    d.mkdir()
+    _write_result(d, 1, "Скрытый variant", ORDERS, parameters=[
+        {"name": "first", "value": "a-b"}, {"name": "second", "value": "c"}])
+    _write_result(d, 2, "Скрытый variant", INVOICES, parameters=[
+        {"name": "first", "value": "a"}, {"name": "second", "value": "b-c"}])
+
+    loaded = load_allure(d)
+    assert len(loaded["tests"]) == 2
+    assert len({t["paramVariant"] for t in loaded["tests"]}) == 2
+    assert len(graph_tests_for_links(loaded["tests"])) == 2
+
+
+def test_lossy_atlas_alias_never_exactly_joins_colliding_variants(tmp_path):
+    d = tmp_path / "allure-results"
+    d.mkdir()
+    _write_result(d, 1, "Скрытый variant", ORDERS, parameters=[
+        {"name": "first", "value": "a-b"}, {"name": "second", "value": "c"}])
+    _write_result(d, 2, "Скрытый variant", INVOICES, parameters=[
+        {"name": "first", "value": "a"}, {"name": "second", "value": "b-c"}])
+    loaded = load_allure(d)
+
+    aliases = {t["atlasVariant"] for t in loaded["tests"]}
+    assert aliases == {NODE + "[a-b-c]"}
+    joiner = Joiner(loaded["tests"], [{"nodeid": NODE + "[a-b-c]"}])
+    resolved = joiner.resolve(NODE + "[a-b-c]")
+
+    assert resolved["nodeid"] == NODE
+    assert resolved["exact"] is False
+    assert resolved["endpoints"] == [f"api:GET {ME}"]
+    assert all(joiner.resolve(t["paramVariant"])["exact"] for t in loaded["tests"])
+
+
 def _effects(root, nodeids):
     path = artifact_path(root, "db.effects")
     doc = json.loads(path.read_text(encoding="utf-8"))
@@ -140,10 +188,10 @@ def test_results_without_calls_do_not_empty_the_intersection(small_root):
     """Пропущенный и сломанный до запроса варианты не обнуляют общие вызовы."""
     d = small_root / "allure-results"
     d.mkdir()
-    _write_result(d, 1, "test_write", INVOICES)
-    _write_result(d, 2, "test_write", INVOICES)
-    _write_result(d, 3, "test_write", None, status="skipped")
-    _write_result(d, 4, "test_write", None, status="broken")
+    _write_result(d, 1, "test_write[invoices]", INVOICES)
+    _write_result(d, 2, "test_write[invoices]", INVOICES)
+    _write_result(d, 3, "test_write[skipped]", None, status="skipped")
+    _write_result(d, 4, "test_write[broken]", None, status="broken")
     _effects(small_root, [NODE + "[invoices]"])
     g = build_root(small_root)
     assert _writers(g, "audit_log") == [f"api:POST {INVOICES}"]
@@ -170,13 +218,14 @@ def test_lost_records_are_counted(small_root):
 def test_empty_intersection_is_counted(small_root):
     d = small_root / "allure-results"
     d.mkdir()
-    for idx, path in ((1, ORDERS), (2, INVOICES)):
+    for idx, variant, path in ((1, "orders", ORDERS), (2, "invoices", INVOICES)):
         (d / f"e2-{idx}-result.json").write_text(json.dumps({
-            "fullName": FULL, "name": "test_write", "status": "passed",
+            "fullName": FULL, "name": f"test_write[{variant}]", "status": "passed",
             "start": 1_000 + idx, "stop": 2_000 + idx,
             "steps": [{"name": f"HTTP POST {path} → expect status=201", "status": "passed"}]}),
             encoding="utf-8")
-    _effects(small_root, [NODE + "[orders]"])
+    # Агент назвал только базовый nodeid: какой из двух variants писал, неизвестно.
+    _effects(small_root, [NODE])
     assert build_root(small_root)["collected"]["lostRecords"]["emptyJoin"] == 1
 
 
@@ -216,6 +265,34 @@ def test_requirement_shows_worst_variant_and_last_seen(small_root):
     assert (e["status"], e["file"], e["variants"]) == ("failed", "b-result.json", 2)
     assert e["lastSeen"] == 20 and e["notInLastRun"] is False
     assert _test_entry(NODE, "anchor", v, set())["notInLastRun"] is True
+
+
+@pytest.mark.parametrize("reference", ["REQ-1", "REQ-1~2", "REQ-1~2~3"])
+def test_requirement_reference_preserves_atlas_dedup_suffixes(small_root, reference):
+    """Прямая ссылка относится только к полному ID, не к базовому требованию."""
+    spec = artifact_path(small_root, "specs.requirements")
+    doc = json.loads(spec.read_text(encoding="utf-8"))
+    ids = ["REQ-1", "REQ-1~2", "REQ-1~2~3"]
+    template = doc["requirements"][0]
+    doc["requirements"] = [dict(template, id=req_id, title=req_id, anchors={})
+                           for req_id in ids]
+    spec.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+
+    raw = small_root / "allure-results"
+    raw.mkdir()
+    (raw / "requirement-result.json").write_text(json.dumps({
+        "fullName": FULL, "name": "test_write", "status": "passed",
+        "start": 1_000, "stop": 2_000, "steps": [],
+        "links": [{"name": reference, "url": f"https://requirements.example/{reference}"}],
+    }), encoding="utf-8")
+
+    requirements = {r["id"]: r for r in build_root(small_root)["specs"]["requirements"]}
+    assert set(requirements) == set(ids)
+    for req_id, requirement in requirements.items():
+        linked = req_id == reference
+        assert requirement["testCount"] == int(linked)
+        assert requirement["how"] == ("direct" if linked else "none")
+        assert bool(requirement["tests"]) is linked
 
 
 def test_requirement_tests_are_listed_by_base_nodeid(full_copy_for_specs):
@@ -297,16 +374,14 @@ def test_losses_are_printed_at_startup(small_root, capsys, monkeypatch):
     assert "записей агента от тестов, которых нет в текущих отчётах: 1" in out
 
 
-def test_skipped_variant_with_calls_stays_out_of_the_intersection(small_root):
-    """qa: пропущенный вариант с непустыми вызовами в пересечение не входит. Без условия
-    на `skipped` его вызовы сузили бы пересечение до общего GET, и запись счёта
-    потеряла бы ребро."""
+def test_latest_skipped_attempt_does_not_reuse_previous_calls(small_root):
+    """Последняя skipped-попытка побеждает: вызовы прежней попытки не оживляют связь."""
     d = small_root / "allure-results"
     d.mkdir()
     _write_result(d, 1, "test_write", INVOICES)
     _write_result(d, 2, "test_write", ORDERS, status="skipped")
     _effects(small_root, [NODE + "[invoices]"])
-    assert _writers(build_root(small_root), "audit_log") == [f"api:POST {INVOICES}"]
+    assert _writers(build_root(small_root), "audit_log") == []
 
 
 # ------------------------------------------------------------------
@@ -394,3 +469,20 @@ def test_records_of_old_tests_are_information_not_loss(small_root, capsys, monke
     assert "  ! записей агента" not in out
     assert "  записей агента от тестов, которых нет в текущих отчётах: 2" in out
 
+
+
+def test_custom_title_with_brackets_uses_parameters_not_title_as_variant(tmp_path):
+    d = tmp_path / "allure-results"
+    d.mkdir()
+    _write_result(d, 1, "Проверка [smoke]", ORDERS,
+                  parameters=[{"name": "entity", "value": "orders"}])
+    _write_result(d, 2, "Проверка [smoke]", INVOICES,
+                  parameters=[{"name": "entity", "value": "invoices"}])
+
+    loaded = load_allure(d)
+    assert len(loaded["tests"]) == 2
+    assert {t["variant"] for t in loaded["tests"]} == {NODE}
+    assert len({t["paramVariant"] for t in loaded["tests"]}) == 2
+    assert len(graph_tests_for_links(loaded["tests"])) == 2
+    assert {call for test in loaded["tests"] for call in test["endpoints"]} == {
+        f"api:GET {ME}", f"api:POST {ORDERS}", f"api:POST {INVOICES}"}

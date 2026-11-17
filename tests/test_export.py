@@ -346,6 +346,19 @@ def test_server_actions_are_disabled_in_the_snapshot_markup():
     assert "window.vehaApi.isStatic" in dock.split("function scheduleLive")[1][:120]
 
 
+def test_trace_is_bound_to_unique_allure_result_file():
+    """У вариантов один nodeid; кнопка и traceback связаны именем результата."""
+    dock = (STATIC / "dock.js").read_text(encoding="utf-8")
+    body = dock.split("function failsBody()", 1)[1].split("/* ------------------------------------------------------------------ связи", 1)[0]
+    assert 'data-trace="${esc(t.file)}"' in body
+    assert 'data-trace-for="${esc(t.file)}"' in body
+    assert 'data-trace="${esc(t.nodeid)}"' not in body
+    assert 'data-trace-for="${esc(t.nodeid)}"' not in body
+    listener = dock.split("dockBody.querySelectorAll('[data-trace]')", 1)[1]
+    assert "x.dataset.traceFor === el.dataset.trace" in listener
+    assert "classList.toggle('hidden')" in listener
+
+
 def test_readonly_server_still_serves_relative_page(demo_root):
     """Страница с относительными путями у сервера раздаётся с корня — `static/…`
     разрешается в `/static/…`, и сервер его отдаёт."""

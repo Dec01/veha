@@ -1,8 +1,8 @@
 ---
 title: Статус «Вехи»
 status: current
-verified: 2026-11-16
-sources: [README.md, pyproject.toml, CHANGELOG.md, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/allure_runner.py, veha/lifecycle.py, veha/allure_store.py, tests/test_allure_store.py, tests/test_runner_allure.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in, veha/scaffold.py, tests/test_init.py, Dockerfile, compose.example.yaml, tests/test_listen_host.py, tests/test_docker_files.py]
+verified: 2026-11-17
+sources: [README.md, pyproject.toml, CHANGELOG.md, veha/__init__.py, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/allure_runner.py, veha/lifecycle.py, veha/allure_store.py, tests/test_allure_store.py, tests/test_runner_allure.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/core/map_state.py, tests/test_map_state.py, tests/test_saved_runs_api.py, tests/test_browser_run_state.py, tests/test_live.py, tests/test_log_pagination.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in, veha/scaffold.py, tests/test_init.py, Dockerfile, compose.example.yaml, tests/test_listen_host.py, tests/test_docker_files.py]
 audience: agent
 allow_version_literals: true
 ---
@@ -18,10 +18,10 @@ allow_version_literals: true
 |---|---|
 | Стадия | alpha: сервер — устанавливаемый пакет и потребитель `partest-atlas`; демонстрация — `veha demo` из пакета |
 | Код | пакет `veha/`: `config.py`, `core/` (чтение и вывод), `viz/` (FastAPI + статика), `runner.py`, `allure_runner.py`, `lifecycle.py`, `allure_store.py`, `redact.py`, `cli.py`, `listen.py` (слушающий сокет — единственный модуль с `socket`), `demo.py`, `scaffold.py` (`veha init`), данные `demo_data/` |
-| Тесты | `tests/`, pytest, без сети и без стенда; полная тестовая стадия кандидата 0.4.0 в воротах 2026-11-16 пройдена за 225,8 с. Линтер, Bandit и документация также пройдены; pip-audit не проверяет extras. Настоящий Allure CLI, POSIX symlink и nginx дополнительно проверены локально на синтетических данных |
-| Версия | кандидат 0.4.0 — 2026-11-16, alpha: публичный HTTP/HTTPS origin за своим прокси и полный digest lifecycle-реализации. Предыдущий выпуск — 0.3.0 от 2026-11-16, опубликован на PyPI. Номер — только в `veha.__version__` (`pyproject.toml` берёт его динамически). Политика версий и граница публичного — в начале `CHANGELOG.md` |
-| Зависимости | `partest-atlas>=0.3,<0.4` (владелец формата артефактов, схема 2; проверка вида и области, поиск областей, ключи полезной нагрузки, безопасная история и полный срез покрытия делегированы ему; записи `db.effects`/`bus.flow` получают `run` и `phase`), `partest>=2.6.0,<3` (`redact.mask_secret`; пол 2.6.0 — ноль исходящего трафика при импорте, держит `tests/test_import_egress.py`; сервер читает JSON отчётов partest обеих эпох), `fastapi>=0.132.0,<1`, `uvicorn>=0.27,<1`, `pydantic>=2.7,<3`, `PyYAML>=6.0.2,<7` |
-| Выпуск | открытый проект, MIT (решение 2026-10-18); 0.4.0 подготавливается, не выпущен. Колесо с демонстрационным набором, метаданные (лицензия SPDX `MIT`, классификатор Python 3.14), `CHANGELOG.md`, sdist с тестами. Официальное колесо собирается только из чистого клона, не из рабочей копии (в ней `veha/demo_data/` мог измениться). Ссылки README и CHANGELOG ведут на тег `v<версия>` выпуска |
+| Тесты | `tests/`, pytest, без сети и без стенда; полная тестовая стадия кандидата 0.5.0 в воротах 2026-11-17 пройдена за 641,4 с. Настоящий Allure CLI, POSIX symlink и nginx дополнительно проверены локально на синтетических данных |
+| Версия | кандидат 0.5.0 — 2026-11-17, alpha: накопленная карта, сохранённые прогоны и исправления их сведения. Последний опубликованный выпуск — 0.4.0 от 2026-11-16, опубликован на PyPI. Номер — только в `veha.__version__` (`pyproject.toml` берёт его динамически). Политика версий и граница публичного — в начале `CHANGELOG.md` |
+| Зависимости | `partest-atlas>=0.4,<0.5` (владелец формата артефактов, схема 2; проверка вида и области, поиск областей, ключи полезной нагрузки, безопасная история и полный срез покрытия делегированы ему; записи `db.effects`/`bus.flow` получают `run` и `phase`), `partest>=2.6.0,<3` (`redact.mask_secret`; пол 2.6.0 — ноль исходящего трафика при импорте, держит `tests/test_import_egress.py`; сервер читает JSON отчётов partest обеих эпох), `fastapi>=0.132.0,<1`, `uvicorn>=0.27,<1`, `pydantic>=2.7,<3`, `PyYAML>=6.0.2,<7` |
+| Выпуск | открытый проект, MIT (решение 2026-10-18); 0.4.0 — последний опубликованный выпуск; 0.5.0 подготовлен, но не выпущен. Колесо с демонстрационным набором, метаданные (лицензия SPDX `MIT`, классификатор Python 3.14), `CHANGELOG.md`, sdist с тестами. Официальное колесо собирается только из чистого клона, не из рабочей копии (в ней `veha/demo_data/` мог измениться). Ссылки README и CHANGELOG ведут на тег `v<версия>` выпуска |
 | История | публичная история начинается с первого коммита репозитория |
 | Вики | заведена 2026-09-07; проектный документ `docs/architecture.md` на страницы не разобран |
 
@@ -135,7 +135,19 @@ state и удаляются старые снапшоты; предел не с�
 включённом Allure действует даже без lifecycle-плагинов. Проектный ingest может подключаться через
 публичный Python API. Настоящий Allure CLI, ротация трёх публикаций до двух, POSIX symlink и nginx
 проверены локально на синтетических результатах 2026-11-16; unit/fault-тесты используют
-генератор-имитацию, а при запрете Windows symlink — файловый адаптер указателя.
+генератор-имитацию, а при запрете Windows symlink — файловый адаптер указателя. Сбой после
+перемещения report, но до перемещения raw удаляет оба новых каталога: прежние latest/state
+остаются рабочими, orphan не признаётся опубликованным прогоном.
+
+**Накопленная карта** (`veha/core/map_state.py`) хранится в
+`.veha/map/<система>/<контур>/state.json`. После завершённого прогона с опубликованным raw
+partial заменяет только повторённые тесты и variants, `map_full` — только явную область
+`map_scope: api|ui`; `ATLAS_RUN_ID` отделяет текущие записи append-артефактов от истории.
+Победители reruns выбираются по фактическим `start/stop`, membership вложений пересобирается
+из финальных тестов. Проблемы, имена result-файлов и метаданные вложений проходят redaction,
+в том числе при чтении legacy state. Путь и все родители проверяются на ссылки до чтения,
+создания каталогов и записи. Это внутренняя производная раскладка сервера, а не публичная
+схема: владельцем контракта артефактов остаётся Atlas.
 
 **Lifecycle-плагины** (`veha/lifecycle.py`) регистрируются только доверенным
 `atlas.yaml` в разделе `lifecycle_plugins`; браузер не задаёт команду, путь, стадии или env.
@@ -297,7 +309,9 @@ node). У сервиса с `avgCoverage: null` в «Система → Серв
 `allure-results` — не потеря, а «отчёты очищены». Результаты без вызовов и пропущенные
 варианты в пересечение не входят. Вариант под `@allure.title` опознаётся по параметрам
 Allure, только если агент записал ровно такой nodeid; иначе — неоднозначная ветка. У
-требования тест показан по базовому nodeid с временем последнего появления. Худший
+требования тест показан по базовому nodeid с временем последнего появления. Прямая ссылка
+сохраняет полный ID Atlas, включая повторяемые суффиксы дедупликации `~N`: `REQ-1~2` не
+засчитывается исходному `REQ-1`. Худший
 статус берётся только среди вариантов последнего прогона, **если тот полный** (набор
 `full: true`, прогон завершён, и по времени это тот же прогон, что последний в Allure);
 иначе — по всем вариантам, каждый со своим последним статусом: перезапуск `[a]` не
@@ -324,7 +338,7 @@ Allure, только если агент записал ровно такой no
 `scored`, `depth`, глубина у строк; строк `exception` в наборе нет, поэтому среднее то
 же, что по правилу 1), а срезы покрытия в истории снимает код сервера
 (`veha.runner.snapshot_of`) поверх `collect.history.coverage_snapshot` агента — нужен
-Atlas 0.3.0, генератор проверяет это сам. Повторная генерация на любом
+Atlas 0.4.0 (полный срез появился в 0.3), генератор проверяет это сам. Повторная генерация на любом
 интерпретаторе не меняет файлов. Эталонные цифры сцены
 держит `tests/test_graph_demo.py`. Люди в наборе — служебные метки (`dev-1`, `qa-1`).
 
@@ -371,29 +385,45 @@ connect-src 'self'` из подкаталога: ни одного наруше�
 
 **Проектных умолчаний в коде нет.** Ручная карта, признак UI-тестов, снимки для «Live» —
 только из `atlas.yaml` (`app_map`, `tests.ui_markers`, `live.*`). Вкладка «Live» читает
-снимки и наружу не ходит: `containers.json` и `mrs.json` кладёт адаптер, `mr_checks.json`
-(отметки) пишет сервер. Интерактивная документация FastAPI выключена — она тянула скрипты
-с CDN.
+снимки и наружу не ходит. Предпочтительный layout — `live/current.json` с
+`schemaVersion: 1` и безопасным относительным идентификатором `generation`, а файлы
+`containers.json`, `mrs.json` и `logs/` лежат в `live/generations/<id>/`. Адаптер полностью
+собирает поколение в staging и атомарно заменяет только pointer; manifest не содержит путей
+машины или секретов. При отсутствии manifest поддерживаются прежние `live/containers.json`,
+`live/mrs.json` и `live.container_logs_dir`. Битый manifest не вызывает fallback к legacy,
+поэтому поколения не смешиваются. Браузер получает id от контейнеров и передаёт его в запросы
+merge request'ов, лога и отметки: смена pointer между запросами не собирает представление из
+разных поколений. Явный неизвестный, удалённый или небезопасный id возвращает 404; внутренний
+`@legacy` закрепляет прежнюю раскладку. Ссылки и выход из корня отклоняются при каждом чтении.
+`mr_checks.json` (отметки) пишет сервер отдельно от поколений. Длинные логи из раздела `logs`
+отдаются порциями с `start/end/total/hasMore`; браузер догружает предыдущие строки по `end`,
+а offline API корректно завершает пагинацию на сохранённом снимке. Интерактивная документация
+FastAPI выключена — она тянула скрипты с CDN.
 
 **Пути к отчётам прогона** — раздел `reports` в `atlas.yaml`:
 `reports.coverage` (файл) и `reports.allure` (каталог), относительно корня данных или
 абсолютные; без ключа — `coverage.json` и `allure-results/` в корне, как раньше. Путь
-считается в одном месте — `Config.coverage_file` и `Config.allure_dir` (`veha/config.py`),
-и через них идут граф, карточка теста и вложения, срез покрытия раннера после прогона,
-очистка и `export-static`. Негодное значение (не строка, пустая строка, `reports` не
-словарь) умолчанием не подменяется: отчёт не читается, причина — в `meta.reportProblems`
-графа, под шапкой и при старте, без путей машины; так же называются каталог на месте файла
-покрытия, файл на месте каталога Allure и `coverage.json`, который не JSON-объект (раньше
-он ронял сборку графа). Очистка из окна раннера удаляет только файлы Allure (`is_allure_file`:
-`<UUID>-result.json`, `<UUID>-container.json`, `<UUID>-attachment.*`; `executor.json`,
-`environment.properties`, `categories.json` остаются) и только если каталог после разрешения ссылок
-лежит строго внутри корня; вне корня, сам корень и ссылка наружу — 409 с причиной; в
-каталоге, общем с проектом (`reports.allure: tests`), остальное цело. Вложение отдаётся
-(`/api/attachment`, снимок) одной проверкой `attachment_allowed`: имя вложения Allure,
-названное в `attachments` тестом текущего каталога (`load_allure` собирает их при сборке
-графа) — при `reports.allure: .` файлы корня по имени не отдаются. Снимок берёт результаты
-и вложения из каталога вне корня под тем же замком `_read_inside` (простое имя, не ссылка,
-внутри каталога) — в отличие от экранов вне корня, которые снимок пропускает. Пути
+текущего прогона считается в одном месте — `Config.coverage_file` и `Config.allure_dir`
+(`veha/config.py`); через них идут накопленная карта, срез покрытия раннера после прогона
+и очистка. Сводка прогона, список, карточка теста и вложения HTTP-интерфейса читают
+выбранный сохранённый raw (`run=<runKey>`, без параметра — последний сохранённый), а текущий
+`reports.allure` — только если сохранённого raw нет. `export-static` фиксирует один такой
+прогон и выгружает его список, карточки и вложения из одного raw-каталога. Негодное значение
+(не строка, пустая строка, `reports` не словарь) умолчанием не подменяется: отчёт не читается,
+причина — в `meta.reportProblems` графа, под шапкой и при старте, без путей машины; так же
+называются каталог на месте файла покрытия, файл на месте каталога Allure и `coverage.json`,
+который не JSON-объект (раньше он ронял сборку графа). Очистка из окна раннера удаляет только
+файлы Allure (`is_allure_file`: `<UUID>-result.json`, `<UUID>-container.json`,
+`<UUID>-attachment.*`; `executor.json`, `environment.properties`, `categories.json` остаются)
+и только если каталог после разрешения ссылок лежит строго внутри корня; вне корня, сам корень
+и ссылка наружу — 409 с причиной; в каталоге, общем с проектом (`reports.allure: tests`),
+остальное цело. Вложение отдаётся (`/api/attachment`, снимок) одной проверкой
+`attachment_allowed`: имя вложения Allure, названное в `attachments` тестом выбранного raw
+(`load_allure` собирает их при чтении этого каталога) — при `reports.allure: .` файлы корня
+по имени не отдаются. Маршрут разрешает выбранный raw один раз за запрос и использует его и
+для проверки имени, и для чтения байтов. Снимок берёт результаты и вложения из каталога вне
+корня под тем же замком `_read_inside` (простое имя, не ссылка, внутри каталога) — в отличие
+от экранов вне корня, которые снимок пропускает. Пути
 `reports.*` проверяет `report_path_problem`: сетевой путь UNC отвергается (на Windows его
 открытие — обращение по сети), управляющий символ, диск без косой черты и буква диска не на
 Windows — причиной; неизвестный ключ раздела — тоже. Каталога Allure нет — отдельное
@@ -453,7 +483,7 @@ Windows — причиной; неизвестный ключ раздела —
   иначе `<путь к каталогу>` и предупреждение: `$(…)`, обратные кавычки и `%…%` развернула
   бы оболочка внутри кавычек. Переменные —
   строками для bash, cmd и PowerShell; `--system/--env` проброшены в команды `collect` и
-  `serve`; установка — `partest-atlas>=0.3`. Несколько служб — команда для первой и
+  `serve`; установка — `partest-atlas>=0.4`. Несколько служб — команда для первой и
   предупреждение: `contract.openapi` один на область (см. [[proposals]]).
 - **Запись.** Текст собирается и кодируется до создания файла; временный файл рядом и
   `os.link` — атомарно и без перезаписи; без жёстких ссылок — открытие `x` и удаление при
@@ -465,7 +495,7 @@ Windows — причиной; неизвестный ключ раздела —
 - **Проверка.** Итог разбирается `partest_atlas.config.load` и `veha.config.load`;
   раскомментированные шаблоны `container_logs` и `database` — кодом владельца
   (`container_logs.rules_from`, `schemas_from`, где он есть) — `tests/test_init.py`.
-  Команды `collect` в подсказках соответствуют partest-atlas 0.3.0.
+  Команды `collect` в подсказках соответствуют partest-atlas 0.4.0.
 
 **Образ Docker** — `Dockerfile`, `.dockerignore`, `compose.example.yaml`,
 [[howto/docker]]. `python:3.14.4-slim` (патч закреплён аргументом `PYTHON_VERSION`),
@@ -490,7 +520,8 @@ uid 10001, `veha serve --root /data --host 0.0.0.0 --no-browser` без `--allow
 Allure ограничены отдельно — UUID и имя из теста).
 **Записи сервера:** в режиме просмотра — ни одной (`tests/test_listen_host.py` ловит любое
 открытие на запись, создание, переименование и удаление под корнем на всех маршрутах);
-отдельный каталог состояния образу не нужен. С `--allow-run` пишутся `runs.json` области,
+отдельный каталог состояния образу не нужен. С `--allow-run` пишутся `runner.history` области,
+`.veha/allure/`, `.veha/map/<система>/<контур>/state.json`, `.veha/lifecycle/` и
 `<live.snapshot_dir>/mr_checks.json`, удаляются файлы Allure, перезапуск кладёт результаты в
 `reports.allure` — всё в корне данных, в образе этого нет. Сам образ не собирался: движок
 Docker на машине разработки выключен; текст `Dockerfile` и compose держит
@@ -565,12 +596,10 @@ Docker на машине разработки выключен; текст `Dock
 
 ## Что дальше
 
-Кандидат 0.4.0 подготовлен локально, номер поднят, выпуск не выполнен. Демо на сайте
-(`/veha/demo/`) пересобирается из тега выпуска вместе со страницами Вехи на сайте. Финальные ворота
-2026-11-16 — НЕПОЛНО: тестовая стадия пройдена за 225,8 с, линтер — за 0,1 с, Bandit — за 0,8 с,
-документация — за 1,2 с; аудит основных зависимостей чист, но extras pip-audit не читает.
-Локальные wheel/sdist собраны для предварительной проверки; официальные артефакты собираются
-только из чистого клона после commit.
+Кандидат 0.5.0 подготовлен локально, номер поднят, выпуск не выполнен; 0.4.0 остаётся
+последним опубликованным выпуском. Демо на сайте (`/veha/demo/`) пересобирается из тега
+выпуска вместе со страницами Вехи на сайте. Официальные wheel/sdist не собирались;
+официальные артефакты собираются только из чистого клона после commit.
 
 Ближайшее для пилота: после отдельного выпуска подключить aqa к `public-origin` и полному
 implementation digest. Настоящий Allure CLI, ротация, POSIX symlink, nginx и durable recovery уже
