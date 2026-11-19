@@ -1,7 +1,7 @@
 ---
 title: Журнал операций над документацией
 status: current
-verified: 2026-11-17
+verified: 2026-11-19
 sources: []
 audience: maintainer
 allow_version_literals: true
@@ -13,6 +13,20 @@ allow_version_literals: true
 
 Хронология: что сделано с документацией и почему. Новые записи сверху.
 Формат строки: дата · операция (ingest / update / lint / restructure) · что затронуто.
+
+## 2026-11-19 · update · кандидат 0.6.0 с maintenance-barrier
+
+PyPI уже содержит 0.5.0, поэтому добавленный после его выпуска maintenance/admission barrier
+перенесён в отдельный кандидат 0.6.0. Обновлены номер в `veha.__version__`, CHANGELOG, README
+и [[status]]; ссылки ведут на тег `v0.6.0`. Commit, push, тег и PyPI не выполнялись.
+
+## 2026-11-19 · update · постоянный режим обслуживания runner
+
+README, CHANGELOG и [[status]] описывают writable maintenance API, атомарное persistent state,
+fail-closed чтение и защиту пути от ссылок. Отдельно зафиксировано, что уже допущенный rerun
+сохраняет `busy=true` до завершения, даже если его процесс ещё не зарегистрирован. Focused-набор —
+42 passed; полные ворота после последней правки: тесты, линтер, Bandit и документация пройдены,
+но общий результат НЕПОЛНО, потому что pip-audit не проверяет extras. Версия и публикации не менялись.
 
 ## 2026-11-17 · update · исправления кандидата 0.5.0
 

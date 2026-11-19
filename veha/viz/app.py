@@ -96,6 +96,12 @@ class RerunRequest(BaseModel):
     nodeid: str
 
 
+class MaintenanceRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool
+
+
 class PluginSettingsRequest(BaseModel):
     """Только enabled и заранее объявленные settings; argv и путей здесь нет."""
     model_config = ConfigDict(extra="forbid")
@@ -144,6 +150,13 @@ class Server:
                 late = None
         if late is not None:
             veha_runner.kill_tree(late)
+
+    def runner_status(self) -> dict:
+        """Rerun занят уже с admission, ещё до регистрации его процесса."""
+        status = self.runner.status()
+        if self.rerun_lock.locked():
+            status["busy"] = True
+        return status
 
     def shutdown(self) -> None:
         """Сервер останавливается — вместе с ним всё, что он запустил.
@@ -748,6 +761,10 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         series = veha_runner.trend_series(history)
         current_rule = series[0]["avgRule"] if series else None
         neutral_rule = veha_runner.current_rule(history)
+        try:
+            status = srv.runner_status()
+        except RuntimeError as exc:
+            raise HTTPException(409, str(exc))
         return {
             "suites": [{"key": s.key, "label": s.label, "args": s.args, "note": s.note,
                         "full": s.full, "scope": s.display_scope, "browser": s.browser,
@@ -765,7 +782,7 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
             "trend": veha_runner.trend(history),
             "trendSeries": series,
             "readonly": srv.readonly,
-            **srv.runner.status(),
+            **status,
         }
 
     def _for_window(entry: Any, current_rule: Any, neutral_rule: int,
@@ -817,12 +834,26 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
                 raise HTTPException(409, str(exc))
             except ValueError as exc:
                 raise HTTPException(400, str(exc))
-        return srv.runner.status()
+        return srv.runner_status()
+
+    @app.post("/api/runner/maintenance")
+    def runner_maintenance(req: MaintenanceRequest) -> dict:
+        """Закрыть admission перед обслуживанием; активный прогон не отменяется."""
+        srv.require_writable("режим обслуживания не меняется")
+        with srv.exec_lock:
+            try:
+                srv.runner.set_maintenance(req.enabled)
+                return srv.runner_status()
+            except (OSError, RuntimeError) as exc:
+                raise HTTPException(409, str(exc))
 
     @app.get("/api/runner/status")
     def runner_status() -> dict:
         """Состояние прогона плюс эндпоинты, которых он уже коснулся."""
-        st = srv.runner.status()
+        try:
+            st = srv.runner_status()
+        except RuntimeError as exc:
+            raise HTTPException(409, str(exc))
         run = st.get("run")
         if run and run.get("touched"):
             by_node: Dict[str, Any] = {}
@@ -842,7 +873,7 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
     def runner_stop() -> dict:
         srv.require_writable("прогон не останавливается")
         stopped = srv.runner.stop()
-        return {"stopped": stopped, **srv.runner.status()}
+        return {"stopped": stopped, **srv.runner_status()}
 
     @app.post("/api/runner/clean")
     def runner_clean() -> dict:
@@ -859,27 +890,32 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         покрытия и всё прочее, что не похоже на файл Allure, остаётся.
         """
         srv.require_writable("набор результатов не очищается")
-        if srv.runner.busy or srv.rerun_lock.locked():
-            raise HTTPException(409, "идёт прогон — очистка может испортить отчёт")
-        d = srv.allure_dir
-        if d is None:
-            raise HTTPException(409, "путь к результатам Allure в atlas.yaml негоден "
-                                     "(reports.allure) — очищать нечего")
-        removed = 0
-        if d.is_dir() and not srv.cfg.inside_root(d):
-            raise HTTPException(409, "каталог результатов Allure (reports.allure) вне корня "
-                                     "данных — Веха не удаляет файлы вне корня; очистите "
-                                     "его средствами проекта")
-        if d.is_dir():
-            for f in d.iterdir():
-                if core_sources.is_allure_file(f.name) and f.is_file():
-                    try:
-                        f.unlink()
-                        removed += 1
-                    except OSError:
-                        pass
-        srv.drop_graph()
-        return {"removed": removed}
+        with srv.exec_lock:
+            try:
+                srv.runner.require_admission()
+            except RuntimeError as exc:
+                raise HTTPException(409, str(exc))
+            if srv.runner.busy or srv.rerun_lock.locked():
+                raise HTTPException(409, "идёт прогон — очистка может испортить отчёт")
+            d = srv.allure_dir
+            if d is None:
+                raise HTTPException(409, "путь к результатам Allure в atlas.yaml негоден "
+                                         "(reports.allure) — очищать нечего")
+            removed = 0
+            if d.is_dir() and not srv.cfg.inside_root(d):
+                raise HTTPException(409, "каталог результатов Allure (reports.allure) вне корня "
+                                         "данных — Веха не удаляет файлы вне корня; очистите "
+                                         "его средствами проекта")
+            if d.is_dir():
+                for f in d.iterdir():
+                    if core_sources.is_allure_file(f.name) and f.is_file():
+                        try:
+                            f.unlink()
+                            removed += 1
+                        except OSError:
+                            pass
+            srv.drop_graph()
+            return {"removed": removed}
 
     @app.post("/api/rerun")
     def rerun(req: RerunRequest) -> dict:
@@ -895,6 +931,10 @@ def create_app(root: Path, *, scope: Optional[Scope] = None, readonly: bool = Tr
         with srv.exec_lock:
             if srv.closing:
                 raise HTTPException(409, "сервер останавливается")
+            try:
+                srv.runner.require_admission()
+            except RuntimeError as exc:
+                raise HTTPException(409, str(exc))
             if srv.runner.busy:
                 raise HTTPException(409, "идёт прогон набора — дождись окончания")
             if not srv.rerun_lock.acquire(blocking=False):

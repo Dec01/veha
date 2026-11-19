@@ -1,8 +1,8 @@
 ---
 title: Статус «Вехи»
 status: current
-verified: 2026-11-17
-sources: [README.md, pyproject.toml, CHANGELOG.md, veha/__init__.py, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/allure_runner.py, veha/lifecycle.py, veha/allure_store.py, tests/test_allure_store.py, tests/test_runner_allure.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/core/map_state.py, tests/test_map_state.py, tests/test_saved_runs_api.py, tests/test_browser_run_state.py, tests/test_live.py, tests/test_log_pagination.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in, veha/scaffold.py, tests/test_init.py, Dockerfile, compose.example.yaml, tests/test_listen_host.py, tests/test_docker_files.py]
+verified: 2026-11-19
+sources: [README.md, pyproject.toml, CHANGELOG.md, veha/__init__.py, veha/viz/static/index.html, veha/viz/static/map2d.js, veha/viz/static/atlas.js, veha/viz/static/dock.js, veha/viz/static/style.css, tests/test_optin.py, tests/test_atlas_records.py, tests/test_import_egress.py, veha/config.py, veha/runner.py, veha/allure_runner.py, veha/lifecycle.py, veha/allure_store.py, tests/test_allure_store.py, tests/test_runner.py, tests/test_runner_allure.py, veha/redact.py, veha/core/sources.py, veha/core/graph.py, veha/core/map_state.py, tests/test_map_state.py, tests/test_saved_runs_api.py, tests/test_browser_run_state.py, tests/test_live.py, tests/test_log_pagination.py, veha/viz/app.py, veha/viz/live.py, veha/viz/export.py, veha/viz/assets.py, tests/test_export.py, veha/viz/static/api.js, veha/cli.py, veha/listen.py, veha/demo.py, demo/generate.py, tests/test_graph_demo.py, tests/test_demo_command.py, tests/test_avg_null.py, tests/test_avg_rule.py, tests/test_reports_paths.py, MANIFEST.in, veha/scaffold.py, tests/test_init.py, Dockerfile, compose.example.yaml, tests/test_listen_host.py, tests/test_docker_files.py]
 audience: agent
 allow_version_literals: true
 ---
@@ -18,10 +18,10 @@ allow_version_literals: true
 |---|---|
 | Стадия | alpha: сервер — устанавливаемый пакет и потребитель `partest-atlas`; демонстрация — `veha demo` из пакета |
 | Код | пакет `veha/`: `config.py`, `core/` (чтение и вывод), `viz/` (FastAPI + статика), `runner.py`, `allure_runner.py`, `lifecycle.py`, `allure_store.py`, `redact.py`, `cli.py`, `listen.py` (слушающий сокет — единственный модуль с `socket`), `demo.py`, `scaffold.py` (`veha init`), данные `demo_data/` |
-| Тесты | `tests/`, pytest, без сети и без стенда; полная тестовая стадия кандидата 0.5.0 в воротах 2026-11-17 пройдена за 641,4 с. Настоящий Allure CLI, POSIX symlink и nginx дополнительно проверены локально на синтетических данных |
-| Версия | кандидат 0.5.0 — 2026-11-17, alpha: накопленная карта, сохранённые прогоны и исправления их сведения. Последний опубликованный выпуск — 0.4.0 от 2026-11-16, опубликован на PyPI. Номер — только в `veha.__version__` (`pyproject.toml` берёт его динамически). Политика версий и граница публичного — в начале `CHANGELOG.md` |
+| Тесты | `tests/`, pytest, без сети и без стенда; полная тестовая стадия кандидата 0.6.0 после последней кодовой правки пройдена в воротах 2026-11-19 за 408,8 с. Настоящий Allure CLI, POSIX symlink и nginx дополнительно проверены локально на синтетических данных |
+| Версия | кандидат 0.6.0 — 2026-11-19, alpha: постоянный maintenance/admission barrier runner. Последний опубликованный выпуск — 0.5.0 от 2026-11-17, опубликован на PyPI. Номер — только в `veha.__version__` (`pyproject.toml` берёт его динамически). Политика версий и граница публичного — в начале `CHANGELOG.md` |
 | Зависимости | `partest-atlas>=0.4,<0.5` (владелец формата артефактов, схема 2; проверка вида и области, поиск областей, ключи полезной нагрузки, безопасная история и полный срез покрытия делегированы ему; записи `db.effects`/`bus.flow` получают `run` и `phase`), `partest>=2.6.0,<3` (`redact.mask_secret`; пол 2.6.0 — ноль исходящего трафика при импорте, держит `tests/test_import_egress.py`; сервер читает JSON отчётов partest обеих эпох), `fastapi>=0.132.0,<1`, `uvicorn>=0.27,<1`, `pydantic>=2.7,<3`, `PyYAML>=6.0.2,<7` |
-| Выпуск | открытый проект, MIT (решение 2026-10-18); 0.4.0 — последний опубликованный выпуск; 0.5.0 подготовлен, но не выпущен. Колесо с демонстрационным набором, метаданные (лицензия SPDX `MIT`, классификатор Python 3.14), `CHANGELOG.md`, sdist с тестами. Официальное колесо собирается только из чистого клона, не из рабочей копии (в ней `veha/demo_data/` мог измениться). Ссылки README и CHANGELOG ведут на тег `v<версия>` выпуска |
+| Выпуск | открытый проект, MIT (решение 2026-10-18); 0.5.0 — последний опубликованный выпуск; 0.6.0 подготовлен, но не выпущен. Колесо с демонстрационным набором, метаданные (лицензия SPDX `MIT`, классификатор Python 3.14), `CHANGELOG.md`, sdist с тестами. Официальное колесо собирается только из чистого клона, не из рабочей копии (в ней `veha/demo_data/` мог измениться). Ссылки README и CHANGELOG ведут на тег `v<версия>` выпуска |
 | История | публичная история начинается с первого коммита репозитория |
 | Вики | заведена 2026-09-07; проектный документ `docs/architecture.md` на страницы не разобран |
 
@@ -111,6 +111,15 @@ pytest берутся только из `runner.suites`, из запроса —
 минут. Процесс, пришедший к регистрации после начала остановки, убивается сразу. Внука,
 пережившего **нормальное** завершение pytest, на Windows добить нечем — см. [[proposals]]
 (Job Object).
+
+**Постоянный режим обслуживания runner.** Writable-сервер принимает
+`POST /api/runner/maintenance` с телом `{"enabled": true|false}`; фактическое `maintenance`
+возвращают status и suites. Включённый режим сохраняется атомарно в `.veha/runner-maintenance.json`,
+переживает restart и закрывает новые start/rerun/clean с HTTP 409. Он не останавливает активный
+pytest; `busy=true` также показывает уже допущенный rerun до регистрации его процесса, а emergency
+stop остаётся доступным. Отсутствующий файл означает открытый admission;
+нечитаемый или непонятный документ закрывает его fail-closed. Ссылка или junction в пути state
+отклоняется до чтения и записи, поэтому запись не уходит за корень проекта.
 
 **Атомарная история Allure** (`veha/allure_store.py`, `veha/allure_runner.py`) —
 opt-in `runner.allure` и публичный Python API `publish`/`recover` для независимого CI-адаптера.
@@ -596,13 +605,13 @@ Docker на машине разработки выключен; текст `Dock
 
 ## Что дальше
 
-Кандидат 0.5.0 подготовлен локально, номер поднят, выпуск не выполнен; 0.4.0 остаётся
+Кандидат 0.6.0 подготовлен локально, номер поднят, выпуск не выполнен; 0.5.0 остаётся
 последним опубликованным выпуском. Демо на сайте (`/veha/demo/`) пересобирается из тега
 выпуска вместе со страницами Вехи на сайте. Официальные wheel/sdist не собирались;
 официальные артефакты собираются только из чистого клона после commit.
 
-Ближайшее для пилота: после отдельного выпуска подключить aqa к `public-origin` и полному
-implementation digest. Настоящий Allure CLI, ротация, POSIX symlink, nginx и durable recovery уже
+Ближайшее для пилота: после отдельного выпуска обновить AQA на maintenance-capable Veha
+и проверить controlled in-place upgrade с сохранением project/Allure state. Настоящий Allure CLI, ротация, POSIX symlink, nginx и durable recovery уже
 проверены локально на синтетических данных; это не заменяет живой end-to-end прогон.
 Затем — переход `core/` на `partest.path_match`; `examples/`; полный цикл на настоящих артефактах
 агента — единственная настоящая проверка, что ядро переносимо.

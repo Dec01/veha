@@ -548,3 +548,94 @@ def test_runner_suites_api_exposes_display_scope_and_browser(small_root):
     assert suites[0]["scope"] == "ui" and suites[0]["browser"] is True
     assert suites[0]["mapScope"] == ""
     assert suites[1]["scope"] == "api" and suites[1]["browser"] is False
+
+
+# ------------------------------------------------------------------
+
+
+def test_maintenance_persists_and_blocks_new_runner_operations(small_root, fake_popen):
+    (small_root / "t_x.py").write_text("def test_x():\n    pass\n", encoding="utf-8")
+    c = make_client(small_root, readonly=False)
+    response = c.post("/api/runner/maintenance", json={"enabled": True})
+    assert response.status_code == 200
+    assert response.json()["maintenance"] is True
+    assert c.get("/api/runner/status").json()["maintenance"] is True
+    assert c.get("/api/runner/suites").json()["maintenance"] is True
+    assert c.post("/api/runner/start", json={"suite": "smoke"}).status_code == 409
+    assert c.post("/api/rerun", json={"nodeid": "t_x.py::test_x"}).status_code == 409
+    assert c.post("/api/runner/clean").status_code == 409
+    assert fake_popen == []
+
+    restarted = make_client(small_root, readonly=False)
+    assert restarted.get("/api/runner/status").json()["maintenance"] is True
+    assert restarted.post("/api/runner/start", json={"suite": "smoke"}).status_code == 409
+    assert fake_popen == []
+    assert restarted.post(
+        "/api/runner/maintenance", json={"enabled": False}).json()["maintenance"] is False
+    assert restarted.post("/api/runner/start", json={"suite": "smoke"}).status_code == 200
+
+
+def test_maintenance_does_not_disable_emergency_stop(small_root, monkeypatch):
+    from veha import runner
+
+    monkeypatch.setattr(runner.subprocess, "Popen", BusyProc)
+    monkeypatch.setattr(runner, "kill_tree", lambda proc: "")
+    c = make_client(small_root, readonly=False)
+    assert c.post("/api/runner/start", json={"suite": "smoke"}).status_code == 200
+    assert c.post("/api/runner/maintenance", json={"enabled": True}).status_code == 200
+    response = c.post("/api/runner/stop")
+    assert response.status_code == 200
+    assert response.json()["stopped"] is True
+    assert response.json()["maintenance"] is True
+
+
+def test_maintenance_is_writable_only_and_unreadable_state_fails_closed(
+        small_root, fake_popen):
+    readonly = make_client(small_root, readonly=True)
+    path = small_root / ".veha" / "runner-maintenance.json"
+    assert readonly.post("/api/runner/maintenance", json={"enabled": True}).status_code == 409
+    assert not path.exists()
+
+    path.parent.mkdir()
+    path.write_text("not json", encoding="utf-8")
+    c = make_client(small_root, readonly=False)
+    assert c.get("/api/runner/status").status_code == 409
+    assert c.get("/api/runner/suites").status_code == 409
+    assert c.post("/api/runner/start", json={"suite": "smoke"}).status_code == 409
+    assert fake_popen == []
+
+
+def test_maintenance_rejects_linked_state_directory(small_root, tmp_path, fake_popen):
+    foreign = tmp_path / "foreign"
+    foreign.mkdir()
+    linked = small_root / ".veha"
+    try:
+        if os.name == "nt":
+            import _winapi
+            _winapi.CreateJunction(str(foreign), str(linked))
+        else:
+            os.symlink(foreign, linked, target_is_directory=True)
+    except (OSError, NotImplementedError, ImportError, AttributeError):
+        pytest.skip("ссылку на каталог здесь не создать")
+
+    c = make_client(small_root, readonly=False)
+    assert c.get("/api/runner/status").status_code == 409
+    assert c.post("/api/runner/maintenance", json={"enabled": True}).status_code == 409
+    assert c.post("/api/runner/start", json={"suite": "smoke"}).status_code == 409
+    assert not (foreign / "runner-maintenance.json").exists()
+    assert fake_popen == []
+
+
+def test_admitted_rerun_is_busy_during_maintenance(small_root):
+    c = make_client(small_root, readonly=False)
+    srv = c.app.state.veha
+    assert srv.rerun_lock.acquire(blocking=False)
+    try:
+        response = c.post("/api/runner/maintenance", json={"enabled": True})
+        assert response.status_code == 200
+        assert response.json()["busy"] is True
+        assert c.get("/api/runner/status").json()["busy"] is True
+        assert c.get("/api/runner/suites").json()["busy"] is True
+    finally:
+        srv.rerun_lock.release()
+    assert c.get("/api/runner/status").json()["busy"] is False

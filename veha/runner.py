@@ -30,7 +30,7 @@ from partest_atlas.artifacts import RUN_ID_ENV, Scope
 from partest_atlas.collect import history
 
 from veha import allure_runner, lifecycle, redact
-from veha.config import Config
+from veha.config import Config, local_to
 from veha.core.sources import (normalize_optin, optin_phrases, optin_record,
                                optin_signature, partial_reasons)
 
@@ -539,9 +539,46 @@ class Runner:
             return True
         return self._plugin_proc is not None and self._plugin_proc.poll() is None
 
+    @property
+    def _maintenance_path(self) -> Path:
+        path = self.cfg.root / ".veha" / "runner-maintenance.json"
+        if not local_to(self.cfg.root, path):
+            raise RuntimeError("путь состояния обслуживания содержит ссылку — "
+                               "новые прогоны заблокированы")
+        return path
+
+    def maintenance_enabled(self) -> bool:
+        """Постоянный запрет новых runner-операций; непонятное состояние закрывает admission."""
+        try:
+            document = json.loads(self._maintenance_path.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            return False
+        except (OSError, ValueError) as exc:
+            raise RuntimeError(
+                f"состояние обслуживания не прочитано ({type(exc).__name__}) — "
+                "новые прогоны заблокированы") from None
+        if not isinstance(document, dict) or document.get("version") != 1 \
+                or not isinstance(document.get("enabled"), bool):
+            raise RuntimeError("состояние обслуживания непонятно — новые прогоны заблокированы")
+        return document["enabled"]
+
+    def require_admission(self) -> None:
+        if self.maintenance_enabled():
+            raise RuntimeError("включён режим обслуживания — новые прогоны заблокированы")
+
+    def set_maintenance(self, enabled: bool) -> None:
+        """Атомарно закрыть или открыть admission; живой процесс этим не останавливается."""
+        if not isinstance(enabled, bool):
+            raise ValueError("maintenance.enabled: ожидался boolean")
+        with self._lock:
+            lifecycle._atomic_json(self._maintenance_path, {
+                "version": 1, "enabled": enabled, "updatedAt": time.time(),
+            })
+
     def status(self) -> Dict[str, Any]:
         st = self._state
-        return {"busy": self.busy, "run": st.as_dict() if st else None}
+        return {"busy": self.busy, "maintenance": self.maintenance_enabled(),
+                "run": st.as_dict() if st else None}
 
     def _remember_plugin_proc(self, proc: Optional[subprocess.Popen]) -> None:
         self._plugin_proc = proc
@@ -589,6 +626,7 @@ class Runner:
         with self._lock:
             if self._closed:
                 raise RuntimeError("сервер останавливается — прогон не запускается")
+            self.require_admission()
             if self.busy:
                 raise RuntimeError("прогон уже идёт — дождитесь окончания или остановите")
             suite = next((s for s in suites(self.cfg) if s.key == suite_key), None)
